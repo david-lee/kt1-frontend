@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 
 const reqOptions = {
   [searchBy.name]: { param: 'primaryName', func: (term) =>  term.length >= 3 },
+  [searchBy.subName]: { param: 'secondaryName', func: (term) =>  term.length >= 3 },
   [searchBy.id]: { param: 'userId', func: (term) => term.length >= 4 },
   [searchBy.ownerName]: { param: 'ownerName', func: (term) => term.length >= 3 },
   [searchBy.phoneNumber]: { param: 'phoneNumber', func: (term) => term.length >= 6 },

@@ -5,7 +5,7 @@ export const AD_TAX = 0.13;
 export const UI_DATE_FORMAT = 'yyyy/MM/dd';
 export const DATA_DATE_FORMAT = 'yyyyMMdd';
 export const DEFAULT_ADDRESS = { addr: '-', city: '-', province: '-', postal: '-' };
-export const API_BASE_URL = 'https://api.koreatimes.net/api/v1';
+export const API_BASE_URL = 'https://api.dev.koreatimes.net/api/v1';
 
 export const codeType = {
   userType: 1,
@@ -40,11 +40,12 @@ export const adTypeCode = {
 
 export const searchBy = {
   name: '1',
-  id: '2',
-  oldId: '3',
-  phoneNumber: '4',
-  ownerName: '5',
-  email: '6',
+  subName: '2',
+  id: '3',
+  oldId: '4',
+  phoneNumber: '5',
+  ownerName: '6',
+  email: '7',
 };
 
 export const displaySize = {
