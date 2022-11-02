@@ -279,7 +279,7 @@ export const adDefaults = {
 
 export const searchOptions = [
   { label: "Company Name", value: searchBy.name },
-  { label: "Company Name2", value: searchBy.subName },
+  { label: "Secondary Name", value: searchBy.subName },
   { label: "Company ID", value: searchBy.id },
   { label: "Owner Name", value: searchBy.ownerName },
   { label: "Phone Number", value: searchBy.phoneNumber },

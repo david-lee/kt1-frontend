@@ -12,7 +12,7 @@ import path from 'data/routes';
 
 const RenewalList = () => {
   const gridRef = useRef();
-  const [renewals, setRenewals] = useState(null);
+  const [renewals, setRenewals] = useState([]);
   const [selectedNodes, setSelectedNodes] = useState(null);
   const navigate = useNavigate();
 
@@ -35,9 +35,7 @@ const RenewalList = () => {
   useEffect(() => {
     axios.get(api.renewal)
       .then(({ data }) => {
-        if (data.length) {
-          setRenewals(data);
-        }
+        setRenewals(data);
       })
       .finally(() => {});
   }, []);
@@ -53,13 +51,13 @@ const RenewalList = () => {
     <Box sx={{ position: "relative "}}>
       <Typography variant="h5">Renewals</Typography>
       
-      {!renewals && (
+      {renewals?.length < 0 && (
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: 400 }}>
           <CircularProgress />
         </Box>
       )}
 
-      {renewals && (
+      {renewals?.length >= 0 && (
         <Grid item component={Box} className="ag-theme-alpine" sx={{ height: 350, width: '100%' }}>
           <AgGridReact
             ref={gridRef}
