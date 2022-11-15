@@ -12,12 +12,15 @@ import api from 'appConfig/restAPIs';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useUserAuth } from 'shared/contexts/UserAuthContext';
+import { useNavigate } from 'react-router-dom';
+import path from 'data/routes';
 
 const AddNewCompany = () => {
   let fmk;
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUserAuth();
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setIsOpen(false);
@@ -57,8 +60,9 @@ const AddNewCompany = () => {
         
         return axios.post(api.address, addressData)
       })
-      .then(() => {
+      .then((company) => {
         console.log("Address saved...");
+        navigate(`/s/${path.advertiser}/${company.data}/0`);
       })
       .catch((e) => {
         console.log("Error on saving company: ", e);
