@@ -58,7 +58,7 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
             />
           )}
           {(role >= roleType.manager) && (
-            <Dropdown id="sales-person" name="salesId" label="Sales Person" value={salesId}
+            <Dropdown id="sales-person" name="salesId" label="Sales Person *" value={salesId}
               fullWidth onChange={handleChange} readOnly={!editMode}
               options={salesPeople}
             />

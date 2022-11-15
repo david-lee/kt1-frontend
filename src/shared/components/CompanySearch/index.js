@@ -69,7 +69,7 @@ const CompanySearch = ({ onReset, onSelectCompany, isDeleted, variant = "full" }
       </Grid>
 
       {!selectedCompany && (
-        <Grid container sx={{ height: 60, overflow: "auto", p: 1 }}>
+        <Grid container sx={{ height: 80, overflow: "auto", p: 1 }}>
           {
             companyList?.map((comp) => (
               <Grid key={comp.userId} item xs={12} onClick={() => selectCompany(comp)} sx={{ cursor: "pointer" }}>

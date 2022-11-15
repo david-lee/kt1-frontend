@@ -73,6 +73,7 @@ const AddNewCompany = () => {
     validationSchema: Yup.object().shape({
       mainCategory: Yup.number().required("Required"),
       primaryName: Yup.string().required("Required"),
+      salesId: Yup.string().required("Required"),
       email: Yup.string().when('eInvoice', {
         is: true,
         then: (schema) => schema.required("Required if eInvoice is checked")
