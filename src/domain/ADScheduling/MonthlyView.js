@@ -45,7 +45,6 @@ const MonthlyView = () => {
   const [cardPayment, setCardPayment] = useState(false);
   const [cadTitle, setCadTitle] = useState('');
   const { user: { role, userId } } = useUserAuth();
-
   const isDirector = role === roleType.director;
 
   const handleDateChange = (type, value) => {
@@ -196,12 +195,13 @@ const MonthlyView = () => {
     const bills = eachMonth.map((month, index) => {
       const cost = Number(removeCommas(price));
       const taxAmount = Number(removeCommas(tax));
-
+      const total = cost + taxAmount;     
       const bill = {
         startDate: index === 0 ? stDate : month,
         endDate: index === eachMonth.length - 1 ? edDate : endOfMonth(month),
         cost,
         taxAmount,
+        total
       }
 
       return bill;
