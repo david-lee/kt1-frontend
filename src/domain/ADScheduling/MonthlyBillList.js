@@ -5,7 +5,7 @@ import { removeCommas, precisionRound } from 'shared/utils';
 import { UI_DATE_FORMAT } from 'data/constants';
 import ADPrice from 'shared/components/ADPrice';
 
-const BillList = ({ bills, onPriceChange}) => {
+const BillList = ({ bills, onPriceChange }) => {
   const handleBillPrice = (index, value) => {
     bills[index].cost = removeCommas(value);
     onPriceChange([...bills]);
@@ -45,17 +45,19 @@ const BillList = ({ bills, onPriceChange}) => {
 
   return (
     <>
-      <Grid container columnGap={2} sx={{ mb: 10 }}>
-        <Grid item xs={1.5}>
-          <ADPrice label="Sum of Price" value={(sumCost === 0) ? "" : sumCost} readOnly />
+      {bills?.length > 0 &&
+        <Grid container columnGap={2} sx={{ mb: 10 }}>
+          <Grid item xs={1.5}>
+            <ADPrice label="Sum of Price" value={sumCost} readOnly />
+          </Grid>
+          <Grid item xs={1.5}>
+            <ADPrice label="Sum of Tax" value={sumTaxAmount} readOnly />
+          </Grid>
+          <Grid item xs={1.5}>
+            <ADPrice label="Sum of Total" value={sumTotal} readOnly />
+          </Grid>
         </Grid>
-        <Grid item xs={1.5}>
-          <ADPrice label="Sum of Tax" value={(sumTaxAmount === 0) ? "" : sumTaxAmount} readOnly />
-        </Grid>
-        <Grid item xs={1.5}>
-          <ADPrice label="Sum of Total" value={(sumTotal === 0) ? "" : sumTotal} readOnly />
-        </Grid>
-      </Grid>
+      }
 
       {bills?.map(({ startDate, endDate, cost, taxAmount, total }, index) => {
         return (
