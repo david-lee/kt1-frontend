@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { addYears, compareAsc, eachMonthOfInterval, endOfMonth, format, isAfter, isBefore, isSameDay, endOfYear, startOfYear } from 'date-fns';
 import { Box, Button, Checkbox, Chip, FormGroup, FormControlLabel, Grid, TextField } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
@@ -39,7 +39,7 @@ const MonthlyView = () => {
   const [isRandom, setIsRandom] = useState(false);
   const [price, setPrice] = useState(null);
   const [tax, setTax] = useState(null);
-  const [total, setTotal] = useState('');
+  const [total, setTotal] = useState(null);
   const [colorChecked, setColor] = useState(true);
   const [taxIncluded, setTaxIncluded] = useState(false);
   const [cardPayment, setCardPayment] = useState(false);
@@ -53,7 +53,6 @@ const MonthlyView = () => {
   };
 
   const handlePrice = (e) => setPrice(e.target.value);
-
   const handleSize = (e) => setSize(e.target.value);
 
   const handleDeleteDate = (date) => {
@@ -73,6 +72,7 @@ const MonthlyView = () => {
     setPrice('');
     setSize('');
     setTax('');
+    setTotal('');
     setAdTitle('');
     setCadTitle('');
     setErrorMessage('');
@@ -107,9 +107,9 @@ const MonthlyView = () => {
     if (!price) return;
 
     const calculated = calculateTax(price, taxIncluded);
-
     setTax(calculated.tax);
     taxIncluded && setPrice(calculated.cost);
+    setTotal(calculated.total);
   };
 
   const handleTaxIncluded = (e) => {
@@ -118,10 +118,10 @@ const MonthlyView = () => {
     if (!price) return;
 
     setTaxIncluded(taxIncluded);
-    const { cost: newCost, tax: newTax } = calculateTaxWithTaxIncluded(price, tax, taxIncluded);
-
+    const { cost: newCost, tax: newTax, total: total } = calculateTaxWithTaxIncluded(price, tax, taxIncluded);
     setPrice(newCost);
     setTax(newTax);
+    setTotal(total);
   };
 
   const scheduleHandler = () => {
@@ -141,7 +141,6 @@ const MonthlyView = () => {
         // it is true all the time for CAD
         webFlag: 1 // webChecked ? 1 : 0,
       };
-
       const formattedBills = bills.map(bill => {
         return { 
           ...bill,
@@ -149,7 +148,6 @@ const MonthlyView = () => {
           endDate: format(bill.endDate, DATA_DATE_FORMAT)
         };
       });
-
       data = { common, bills: formattedBills, days: randomSelectedDates }
       // send common, bills and selectedDates for random
     } else {
@@ -164,6 +162,7 @@ const MonthlyView = () => {
         color: colorChecked ? 1 : 0,
         cost: Number(price),
         taxAmount: tax,
+        total: total
       }
     }
 
@@ -191,11 +190,10 @@ const MonthlyView = () => {
     invalid && setErrorMessage("Please check the start and end date.");
 
     const eachMonth = eachMonthOfInterval({ start: stDate, end: edDate });
-
     const bills = eachMonth.map((month, index) => {
       const cost = Number(removeCommas(price));
       const taxAmount = Number(removeCommas(tax));
-      const total = cost + taxAmount;     
+      const total = cost + taxAmount;
       const bill = {
         startDate: index === 0 ? stDate : month,
         endDate: index === eachMonth.length - 1 ? edDate : endOfMonth(month),
@@ -214,10 +212,6 @@ const MonthlyView = () => {
     setAdType(e.target.value);
     resetOptions(e.target.value);
   }
-
-  useEffect(() => {
-    if (price) setTotal(Number(removeCommas(price)) + +tax)
-  }, [tax]);
 
   return (
     <>
@@ -338,7 +332,7 @@ const MonthlyView = () => {
               </Grid>
 
               <Grid container alignItems="center" rowGap={1} sx={{ mt: 5 }}>
-                <BillList {...{ bills, taxIncluded }} onPriceChange={setBills} />
+                <BillList {...{ bills }} onPriceChange={setBills} />
 
                 {randomSelectedDates?.length > 0 && (
                   <Grid container alignItems="center" columnGap={1} rowGap={2} sx={{ mt: 4, mb: 4 }}>

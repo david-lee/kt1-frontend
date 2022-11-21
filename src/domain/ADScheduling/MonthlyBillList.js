@@ -1,28 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, TextField } from '@mui/material';
 import { format } from 'date-fns';
-import { getTax, removeCommas } from 'shared/utils';
+import { removeCommas, precisionRound } from 'shared/utils';
 import { UI_DATE_FORMAT } from 'data/constants';
 import ADPrice from 'shared/components/ADPrice';
 
-const BillList = ({ bills, onPriceChange, taxIncluded }) => {
+const BillList = ({ bills, onPriceChange}) => {
   const handleBillPrice = (index, value) => {
     bills[index].cost = removeCommas(value);
     onPriceChange([...bills]);
   }
 
-  const handleBillTax = (index) => {
-    const bill = bills[index];
-    bill.taxAmount = getTax(bill.cost, taxIncluded);
+  const handleBillTax = (index, value) => {
+    bills[index].taxAmount = removeCommas(value);
     onPriceChange([...bills]);
   }
 
-  const handleTotal = (index) => {
+  const handleTotal = (index, value) => {
     const bill = bills[index];
-    bill.total = bill.cost + bill.taxAmount;
+    const total = bill.cost + bill.taxAmount;
+    bill.total = precisionRound(total);
     onPriceChange([...bills]);
   }
-
 
   const [sums, setSums] = useState({
     sumCost: 0,
@@ -38,10 +37,9 @@ const BillList = ({ bills, onPriceChange, taxIncluded }) => {
     const sumTt = bills?.reduce((pre, cur) => { return pre + cur.total }, 0);
 
     setSums({
-      ...sums,
-      sumCost: sumC,
-      sumTaxAmount: sumT,
-      sumTotal: sumTt
+      sumCost: precisionRound(sumC),
+      sumTaxAmount: precisionRound(sumT),
+      sumTotal: precisionRound(sumTt)
     });
   }, [bills]);
 
@@ -85,13 +83,16 @@ const BillList = ({ bills, onPriceChange, taxIncluded }) => {
               <ADPrice label="Price" value={cost}
                 onChange={(e) => handleBillPrice(index, e.target.value)}
                 onBlur={() => {
-                  handleBillTax(index);
                   handleTotal(index)
                 }}
               />
             </Grid>
             <Grid item xs={1}>
-              <ADPrice label="Tax" value={taxAmount} readOnly />
+              <ADPrice label="Tax" value={taxAmount}
+                onChange={(e) => handleBillTax(index, e.target.value)}
+                onBlur={() => {
+                  handleTotal(index)
+                }} />
             </Grid>
             <Grid item xs={1}>
               <ADPrice label="Total" value={total} readOnly />
