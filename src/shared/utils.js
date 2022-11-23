@@ -29,6 +29,7 @@ export const formatUIDate = (dateStr, timezone) => {
 export const calculateTax = (cost, taxIncluded) => {
   let newCost;
   let tax;
+  let total;
 
   const numPrice = removeCommas(cost);
 
@@ -36,17 +37,20 @@ export const calculateTax = (cost, taxIncluded) => {
     tax = getTax(numPrice, taxIncluded);
 
     newCost = numPrice - tax;
+    total = tax + newCost;
   }
   else {
     tax = getTax(numPrice);
+    total = numPrice + tax;
   }
-
-  return { cost: precisionRound(newCost), tax: precisionRound(tax) };
+  
+  return { cost: precisionRound(newCost), tax: precisionRound(tax), total: precisionRound(total) };
 };
 
 export const calculateTaxWithTaxIncluded = (cost, tax, taxIncluded) => {
   let newCost;
   let newTax;
+  let total;
 
   const numPrice = removeCommas(cost);
 
@@ -62,5 +66,6 @@ export const calculateTaxWithTaxIncluded = (cost, tax, taxIncluded) => {
     newCost = adjustedPrice;
   }
 
-  return { cost: precisionRound(newCost), tax: precisionRound(newTax) };
+  total = newCost + newTax;
+  return { cost: precisionRound(newCost), tax: precisionRound(newTax), total: precisionRound(total) };
 };
