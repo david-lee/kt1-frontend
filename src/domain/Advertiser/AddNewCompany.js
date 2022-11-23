@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import ClearIcon from '@mui/icons-material/Clear';
+import RestorePageIcon from '@mui/icons-material/RestorePage';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import CompanyInfo from './CompanyInfo';
 import { useFormik } from 'formik';
@@ -30,6 +31,11 @@ const AddNewCompany = () => {
     fmk.resetForm();
     setIsOpen(false);
     setIsLoading(false);
+  }
+
+  const handleClear = () => {
+    fmk.resetForm();
+    setIsOpen(true);
   }
 
   const handleSave = (values) => {
@@ -112,6 +118,7 @@ const AddNewCompany = () => {
 
           <DialogActions>
             <LoadingButton startIcon={<SaveIcon />} onClick={fmk.handleSubmit} variant="contained" disabled={isLoading || !fmk.isValid}>Save</LoadingButton>
+            <Button startIcon={<RestorePageIcon />} onClick={handleClear} variant="outlined">Clear</Button>
             <Button startIcon={<ClearIcon />} onClick={handleCancel} variant="outlined">Cancel</Button>
           </DialogActions>
         </Dialog>
