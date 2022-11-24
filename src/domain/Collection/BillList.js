@@ -47,6 +47,26 @@ const BillList = ({ fmk, isLoading }) => {
     }, 1);
   }
 
+  const calculatedAmount = (e, index) => {
+    const { paidTotal, outstandingCost, outstandingTax, paidCost, paidTax } = fmk.values.bills[index];
+
+    const outCost = removeCommas(outstandingCost);
+    const outTax = removeCommas(outstandingTax);
+    let pTotal = removeCommas(paidTotal);
+    const pCost = removeCommas(paidCost);
+    const pTax = removeCommas(paidTax);
+    pTotal = pCost + pTax;
+    
+    if (pTotal > outCost + outTax) {
+      setErrorMessage("paid Total shouldn't be greater than sum of outstanding cost and tax!");
+      return false;
+    }
+
+    setTimeout(() => {
+      fmk.setFieldValue(`bills.${index}.paidTotal`, precisionRound(pTotal));
+    }, 1);
+  }
+
   const handleCloseSnackbar = (e, reason) => {
     if (reason !== 'clickaway') {
       setErrorMessage('');
@@ -136,6 +156,16 @@ const BillList = ({ fmk, isLoading }) => {
             </Grid>
             <Grid item>
               <ADPrice label="Paid Cost *" name={`bills.${index}.paidCost`} value={paidCost}
+                variant="standard" onChange={fmk.handleChange} onBlur={(e) => calculatedAmount(e, index)}
+              />
+            </Grid>
+            <Grid item>
+              <ADPrice label="Paid Tax *" name={`bills.${index}.paidTax`} value={paidTax} 
+                variant="standard" onChange={fmk.handleChange} onBlur={(e) => calculatedAmount(e, index)}
+              />
+            </Grid>
+            {/* <Grid item>
+              <ADPrice label="Paid Cost *" name={`bills.${index}.paidCost`} value={paidCost}
                 variant="standard" onChange={fmk.handleChange} InputProps={{ readOnly: true }}
               />
             </Grid>
@@ -143,7 +173,7 @@ const BillList = ({ fmk, isLoading }) => {
               <ADPrice label="Paid Tax *" name={`bills.${index}.paidTax`} value={paidTax} 
                 variant="standard" onChange={fmk.handleChange} InputProps={{ readOnly: true }}
               />
-            </Grid>
+            </Grid> */}
             <Grid item>
               <DatePicker label="Payment Date *"
                 onChange={(value) => {
