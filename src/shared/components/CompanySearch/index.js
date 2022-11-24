@@ -51,12 +51,12 @@ const CompanySearch = ({ onReset, onSelectCompany, isDeleted, variant = "full" }
   return (
     <Box sx={{ margin: "0 auto", px: padding, width: "100%" }}>
       <Grid container alignItems="center" columnGap={2} flexWrap="nowrap">
-        <Grid item xs={3}>
+        <Grid item xs={3.5}>
           <Dropdown label="Search By" options={searchOptions} noNone width="100%" 
             value={searchOption} onChange={e => setSearchOption(e.target.value)} 
           />
         </Grid>
-        <Grid container item xs={9} alignItems="flex-end" flexWrap="nowrap" columnGap={2}>
+        <Grid container item xs={8.5} alignItems="flex-end" flexWrap="nowrap" columnGap={2}>
           <SearchInput
             id="companySearch" 
             fullWidth
@@ -73,7 +73,7 @@ const CompanySearch = ({ onReset, onSelectCompany, isDeleted, variant = "full" }
           {
             companyList?.map((comp) => (
               <Grid key={comp.userId} item xs={12} onClick={() => selectCompany(comp)} sx={{ cursor: "pointer" }}>
-                <Typography>{comp.primaryName} ({comp.ownerName})</Typography>
+                <Typography>{comp.primaryName} ({comp.ownerName} - {comp.userId})</Typography>
               </Grid>
             ))
           }
@@ -83,7 +83,7 @@ const CompanySearch = ({ onReset, onSelectCompany, isDeleted, variant = "full" }
       {selectedCompany && (
         <Grid container sx={{ mt: 1, backgroundColor: "lightgreen"}}>
           <Grid item xs={12}>
-            <Typography>{selectedCompany.primaryName} ( {selectedCompany.ownerName} )</Typography>
+            <Typography>{selectedCompany.primaryName} ( {selectedCompany.ownerName} - {selectedCompany.userId} )</Typography>
           </Grid>
         </Grid>
       )}
