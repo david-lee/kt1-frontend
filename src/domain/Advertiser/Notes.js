@@ -11,6 +11,8 @@ import { formatUIDate } from 'shared/utils'
 import AddNote from './AddNote';
 import UpdateNote from './UpdateNote';
 import { roleType } from 'data/constants';
+import { format } from 'date-fns';
+import { DATA_DATE_FORMAT } from 'data/constants';
 
 const Notes = ({ companyId, role }) => {
   const [notes, setNotes] = useState(null);
@@ -54,8 +56,8 @@ const Notes = ({ companyId, role }) => {
 
   // Update a Note
   const current = new Date();
-  const curDate = `${current.getFullYear()}${current.getMonth()+1}${current.getDate()}`;
-  
+  const curDate = format(current, DATA_DATE_FORMAT);
+    
   const updateNote = useCallback( event => {
     if(event.data.regDate === curDate){
       setNoteData(event.data);
