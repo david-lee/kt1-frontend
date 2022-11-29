@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Button, Grid } from '@mui/material';
+import { Box, Button, Grid, Snackbar, Alert } from '@mui/material';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import api from 'appConfig/restAPIs';
 import { AgGridReact } from 'ag-grid-react';
@@ -18,6 +18,7 @@ const Notes = ({ companyId, role }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [noteData, setNoteData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const columnDefs = [
     { field: 'noteId', headerName: 'ID', width: 80, resizable: false },
@@ -59,6 +60,9 @@ const Notes = ({ companyId, role }) => {
     if(event.data.regDate === curDate){
       setNoteData(event.data);
       handleUpdateNote();
+    }else{
+      setErrorMessage("Only the note created at same day is editiable!");
+      return false;
     }
   }, []);
 
@@ -66,9 +70,15 @@ const Notes = ({ companyId, role }) => {
   const onCloseUpdateNote = () => setIsUpdateOpen(false);
 
   const handleOnUpdated = () => {
-    setIsUpdateOpen(false);
+    onCloseUpdateNote();
     fetchNotes(companyId);
   };
+
+  const handleCloseSnackbar = (e, reason) => {
+    if (reason !== 'clickaway') {
+      setErrorMessage("");
+    }
+  }
   // End of Update the Note
 
   useEffect(() => {
@@ -82,6 +92,15 @@ const Notes = ({ companyId, role }) => {
 
   return (
     <>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={3000}
+        open={!!errorMessage}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert severity='error'>{errorMessage}</Alert>
+      </Snackbar>
+
       <Box>
         <Box sx={{ width: '100%', height: 400 }} className="ag-theme-alpine">
           {role !== roleType.director && (
