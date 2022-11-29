@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Button, Grid } from '@mui/material';
+import { Box, Button, Grid, Snackbar, Alert } from '@mui/material';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import api from 'appConfig/restAPIs';
 import { AgGridReact } from 'ag-grid-react';
@@ -9,21 +9,28 @@ import 'assets/styles/table.css';
 import axios from 'axios';
 import { formatUIDate } from 'shared/utils'
 import AddNote from './AddNote';
+import UpdateNote from './UpdateNote';
 import { roleType } from 'data/constants';
+import { format } from 'date-fns';
+import { DATA_DATE_FORMAT } from 'data/constants';
 
 const Notes = ({ companyId, role }) => {
   const [notes, setNotes] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [noteData, setNoteData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const columnDefs = [
-    { field: 'noteId', headerName: 'ID', width: 100, resizable: false },
-    { field: 'regDate', headerName: 'Date', resizable: false, width: 120,
+    { field: 'noteId', headerName: 'ID', width: 80, resizable: false },
+    { field: 'regDate', headerName: 'Date', resizable: false, width: 100,
       valueFormatter: (params) => formatUIDate(params.value) 
     },
-    { field: 'title', headerName: 'Title', minWidth: 250 },
+    { field: 'title', headerName: 'Title', minWidth: 240 },
     { field: 'content', headerName: 'Note', minWidth: 900, autoHeight: true, wrapText: true, suppressSizeToFit: true  },
-    { field: 'regBy', headerName: 'Created By', width: 160, resizable: false },
+    { field: 'regBy', headerName: 'Created By', width: 120, resizable: false },
+    { field: 'updatedBy', headerName: 'Updated By', width: 120, resizable: false },
   ];
 
   const fetchNotes = useCallback((companyId) => {
@@ -47,9 +54,39 @@ const Notes = ({ companyId, role }) => {
     fetchNotes(companyId);
   };
 
+  // Update a Note
+  const current = new Date();
+  const curDate = format(current, DATA_DATE_FORMAT);
+    
+  const updateNote = useCallback( event => {
+    if(event.data.regDate === curDate){
+      setNoteData(event.data);
+      handleUpdateNote();
+    }else{
+      setErrorMessage("Only the note created at same day is editiable!");
+      return false;
+    }
+  }, []);
+
+  const handleUpdateNote = () => setIsUpdateOpen(true);
+  const onCloseUpdateNote = () => setIsUpdateOpen(false);
+
+  const handleOnUpdated = () => {
+    onCloseUpdateNote();
+    fetchNotes(companyId);
+  };
+
+  const handleCloseSnackbar = (e, reason) => {
+    if (reason !== 'clickaway') {
+      setErrorMessage("");
+    }
+  }
+  // End of Update the Note
+
   useEffect(() => {
     fetchNotes(companyId);
   }, [companyId, fetchNotes]);
+  
 
   if (isLoading) return <div>loading...</div>
 
@@ -57,6 +94,15 @@ const Notes = ({ companyId, role }) => {
 
   return (
     <>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={3000}
+        open={!!errorMessage}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert severity='error'>{errorMessage}</Alert>
+      </Snackbar>
+
       <Box>
         <Box sx={{ width: '100%', height: 400 }} className="ag-theme-alpine">
           {role !== roleType.director && (
@@ -76,12 +122,14 @@ const Notes = ({ companyId, role }) => {
               sortable: true,
               resizable: true,
             }}
+            onCellClicked={updateNote}
           >
           </AgGridReact>
         </Box>
       </Box>
 
       {isOpen && <AddNote companyId={companyId} onClose={onCloseAddNote} onSaved={handleOnSaved} isOpen={isOpen} />}
+      {isUpdateOpen && <UpdateNote {...{noteData}} onClose={onCloseUpdateNote} onUpdated={handleOnUpdated} isUpdateOpen={isUpdateOpen} />}
     </>
   );
 }
