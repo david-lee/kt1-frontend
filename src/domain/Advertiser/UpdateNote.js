@@ -17,10 +17,6 @@ const UpdateNote = ({noteData, onClose, onUpdated, isOpen}) => {
   const { user } = useUserAuth();
 
   useEffect(() => {
-    return checkUpdate();
-  }, []);
-  
-  const checkUpdate = () => {
     const current = new Date();
     const curDate = format(current, DATA_DATE_FORMAT);
     if(curDate == regDate){
@@ -28,8 +24,8 @@ const UpdateNote = ({noteData, onClose, onUpdated, isOpen}) => {
     }else{
         setErrorMessage("Only the note created in the same day is editiable!");
     }
-  }
-
+  }, []);
+  
   const handleCancel = () => {
     onClose();
   }
