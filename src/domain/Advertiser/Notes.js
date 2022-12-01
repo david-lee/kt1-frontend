@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Button, Grid, Snackbar, Alert } from '@mui/material';
+import { Box, Button, Grid } from '@mui/material';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import api from 'appConfig/restAPIs';
 import { AgGridReact } from 'ag-grid-react';
@@ -11,8 +11,6 @@ import { formatUIDate } from 'shared/utils'
 import AddNote from './AddNote';
 import UpdateNote from './UpdateNote';
 import { roleType } from 'data/constants';
-import { format } from 'date-fns';
-import { DATA_DATE_FORMAT } from 'data/constants';
 
 const Notes = ({ companyId, role }) => {
   const [notes, setNotes] = useState(null);
@@ -20,7 +18,6 @@ const Notes = ({ companyId, role }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [noteData, setNoteData] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const columnDefs = [
     { field: 'noteId', headerName: 'ID', width: 80, resizable: false },
@@ -28,7 +25,7 @@ const Notes = ({ companyId, role }) => {
       valueFormatter: (params) => formatUIDate(params.value) 
     },
     { field: 'title', headerName: 'Title', minWidth: 240 },
-    { field: 'content', headerName: 'Note', minWidth: 900, autoHeight: true, wrapText: true, suppressSizeToFit: true  },
+    { field: 'content', headerName: 'Note', minWidth: 900, autoHeight: true, wrapText: false, suppressSizeToFit: true  },
     { field: 'regBy', headerName: 'Created By', width: 120, resizable: false },
     { field: 'updatedBy', headerName: 'Updated By', width: 120, resizable: false },
   ];
@@ -53,56 +50,31 @@ const Notes = ({ companyId, role }) => {
     setIsOpen(false);
     fetchNotes(companyId);
   };
-
-  // Update a Note
-  const current = new Date();
-  const curDate = format(current, DATA_DATE_FORMAT);
     
-  const updateNote = useCallback( event => {
-    if(event.data.regDate === curDate){
-      setNoteData(event.data);
-      handleUpdateNote();
-    }else{
-      setErrorMessage("Only the note created at same day is editiable!");
-      return false;
-    }
-  }, []);
+  // update a note
 
-  const handleUpdateNote = () => setIsUpdateOpen(true);
+  const updateNote = useCallback(event => {
+    setNoteData(event.data);
+    setIsUpdateOpen(true);  
+  }, []);
+  
   const onCloseUpdateNote = () => setIsUpdateOpen(false);
 
   const handleOnUpdated = () => {
-    onCloseUpdateNote();
+    setIsUpdateOpen(false);
     fetchNotes(companyId);
   };
-
-  const handleCloseSnackbar = (e, reason) => {
-    if (reason !== 'clickaway') {
-      setErrorMessage("");
-    }
-  }
-  // End of Update the Note
 
   useEffect(() => {
     fetchNotes(companyId);
   }, [companyId, fetchNotes]);
   
-
   if (isLoading) return <div>loading...</div>
 
   if (!notes) return  null;
 
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={3000}
-        open={!!errorMessage}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert severity='error'>{errorMessage}</Alert>
-      </Snackbar>
-
       <Box>
         <Box sx={{ width: '100%', height: 400 }} className="ag-theme-alpine">
           {role !== roleType.director && (
@@ -129,7 +101,7 @@ const Notes = ({ companyId, role }) => {
       </Box>
 
       {isOpen && <AddNote companyId={companyId} onClose={onCloseAddNote} onSaved={handleOnSaved} isOpen={isOpen} />}
-      {isUpdateOpen && <UpdateNote {...{noteData}} onClose={onCloseUpdateNote} onUpdated={handleOnUpdated} isUpdateOpen={isUpdateOpen} />}
+      {isUpdateOpen && <UpdateNote {...{noteData}} onClose={onCloseUpdateNote} onUpdated={handleOnUpdated} isOpen={isUpdateOpen} />}
     </>
   );
 }
