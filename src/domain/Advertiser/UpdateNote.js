@@ -19,7 +19,7 @@ const UpdateNote = ({noteData, onClose, onUpdated, isOpen}) => {
   useEffect(() => {
     const current = new Date();
     const curDate = format(current, DATA_DATE_FORMAT);
-    if(curDate == regDate){
+    if(curDate === regDate){
         setIsUpdate(true);
     }else{
         setErrorMessage("Only the note created in the same day is editiable!");
