@@ -76,7 +76,32 @@ const useSales = () => {
             regDate: regDate,
           }
         });
-        onFetch({main: mapped, randomDates: resp.data.randomDates, payments: resp.data.paidHistory});
+        const random =resp.data.randomDates.map(({
+          adId, pAdId, company, adType, adTitle, page, size, startDate, endDate, cost, taxAmount, cadTitle,scheduleType
+        }) => {
+          return {
+            adId,
+            pAdId,
+            company: company.label,
+            companyId: company.value,
+            adType: adType.label,
+            adTypeCode: adType.value,
+            adTitle,
+            page,
+            size: size?.value || "",
+            sizeCode: size?.codeId,
+            startDate,
+            endDate,
+            cost,
+            taxAmount,
+            total: cost + taxAmount,
+            cadTitle: cadTitle?.value || "",
+            cadTitleCode: cadTitle?.codeId,
+            scheduleTypeCode: scheduleType,
+            scheduleType: scheduleType === 1 ? '회성' : ( scheduleType === 2 ? '고정' : '고정(R)' )
+          }
+        });          
+        onFetch({main: mapped, randomDates: random, payments: resp.data.paidHistory});
       })
       .finally(() => {
         setIsLoading(false);
@@ -98,7 +123,7 @@ const useSales = () => {
 
   const fetchOneTimeADs = useCallback((date, onFetch) => {
     const reqDate = format(date, DATA_DATE_FORMAT);
-    const endpoint = `${api.getAdList}?startDate=${reqDate}&endDate=${reqDate}&scheduleType=1`;
+    const endpoint = `${api.getAdList}?startDate=${reqDate}&endDate=${reqDate}&scheduleType=13`;
 
     fetchADs(endpoint, onFetch);
   }, []);
