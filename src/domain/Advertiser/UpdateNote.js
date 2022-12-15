@@ -22,7 +22,7 @@ const UpdateNote = ({noteData, onClose, onUpdated, isOpen}) => {
     if(curDate === regDate){
         setIsUpdate(true);
     }else{
-        setErrorMessage("Only the note created in the same day is editiable!");
+        setErrorMessage("Only the note created in the same day is editable!");
     }
   }, []);
   

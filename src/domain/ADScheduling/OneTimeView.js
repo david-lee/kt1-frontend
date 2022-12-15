@@ -23,16 +23,21 @@ const OneTimeView = ({ adDate, sizeFilter, nonFilterSize, adType }) => {
 
     let flAD;
     let hfADs = [];
+    let qtADs = [];
 
     // validation check if a new AD can be added
     ads[page]?.forEach(ad => {
       const size = ad.size.toUpperCase();
       if (size === 'FL') flAD = ad;
       if (size === 'HF' || size === 'HP' || size === 'HL') hfADs.push(ad);
+      if (size ==='1/4') qtADs.push(ad);
     });
 
-    // if one full size or two half sizes exist, not allow to add
-    if (flAD || hfADs.length === 2) {
+    // not allow to add
+    // if one full size or two half sizes exist,
+    // if one half size and two quater sizes exist,
+    // if four quater sizes exist
+    if ((flAD || hfADs.length === 2) || (hfADs.length === 1 && qtADs.length === 2) || (qtADs.length === 4)) {
       setError(`There is no space for the page ${page}`);
       return;
     } else {
@@ -50,7 +55,7 @@ const OneTimeView = ({ adDate, sizeFilter, nonFilterSize, adType }) => {
 
   const onFetch = (resp) => {
     const mappedData = {};
-    
+
     resp.main.forEach((ad) => {
       if (ad.scheduleTypeCode === 1) {
         if (mappedData.hasOwnProperty(ad.page)) {
@@ -58,6 +63,14 @@ const OneTimeView = ({ adDate, sizeFilter, nonFilterSize, adType }) => {
         } else {
           mappedData[ad.page] = [ad];
         }
+      }
+    });
+
+    resp.randomDates.forEach((random) => {
+      if (mappedData.hasOwnProperty(random.page)) {
+        mappedData[random.page].push(random);
+      } else {
+        mappedData[random.page] = [random];
       }
     });
 
