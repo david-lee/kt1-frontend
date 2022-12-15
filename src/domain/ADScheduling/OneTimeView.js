@@ -67,12 +67,10 @@ const OneTimeView = ({ adDate, sizeFilter, nonFilterSize, adType }) => {
     });
 
     resp.randomDates.forEach((random) => {
-      if (random.scheduleTypeCode === 3) {
-        if (mappedData.hasOwnProperty(random.page)) {
-          mappedData[random.page].push(random);
-        } else {
-          mappedData[random.page] = [random];
-        }
+      if (mappedData.hasOwnProperty(random.page)) {
+        mappedData[random.page].push(random);
+      } else {
+        mappedData[random.page] = [random];
       }
     });
 

@@ -5,6 +5,7 @@ import { displaySize, roleType } from 'data/constants';
 import { useUserAuth } from 'shared/contexts/UserAuthContext';
 import { numberWithCommas } from 'shared/utils';
 import path from 'data/routes';
+import LooksOneIcon from '@mui/icons-material/LooksOne';
 
 const sizeColor = {
   'FL': "#f44336",
@@ -61,7 +62,7 @@ const PageCell = ({ bgcolor, page, ad, sizeFilter, nonFilterSize, onClickPage })
       </Box>
       <Grid container sx={{ maxHeight: '100%', overflow: "auto", pr: 5 }}>
         {
-          ad?.map(({size, sizeCode, adId, company, companyId, cost, taxAmount, color, adTitle}, index) => {
+          ad?.map(({size, sizeCode, adId, company, companyId, cost, taxAmount, color, adTitle, pAdId}, index) => {
             if (sizeFilter && sizeCode !== displaySize.bt && 
                 sizeCode !== displaySize.pp && sizeFilter !== sizeCode) return null;
             
@@ -69,11 +70,11 @@ const PageCell = ({ bgcolor, page, ad, sizeFilter, nonFilterSize, onClickPage })
 
             return (
               <Grid key={index} item xs={12} sx={{ bgcolor: color ? "inherit" : "rgba(220,220,220, .3)", cursor: "pointer" }}>
-                <Tooltip arrow title={`${adId}: $${numberWithCommas(cost)}, $${numberWithCommas(taxAmount)}`}>
-                  <Typography variant="body2" onClick={() => gotoCompany(companyId)}>
+                <Tooltip arrow title={pAdId != null ? `${pAdId}: ${adId}` : `${adId}: $${numberWithCommas(cost)}, $${numberWithCommas(taxAmount)}`}>
+                  <Typography variant="body2" onClick={() => gotoCompany(companyId)} >
                     <Box component="span" sx={{ color: sizeColor[size], fontWeight: 600 }}>
                       {size}:
-                    </Box> {company} ({`${adTitle || ''}`})
+                    </Box> {company} ({`${adTitle || ''}`}) {pAdId != null && (<LooksOneIcon />)}
                   </Typography>
                 </Tooltip>
               </Grid>

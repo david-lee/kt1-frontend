@@ -94,11 +94,7 @@ const useSales = () => {
             endDate,
             cost,
             taxAmount,
-            total: cost + taxAmount,
-            cadTitle: cadTitle?.value || "",
-            cadTitleCode: cadTitle?.codeId,
-            scheduleTypeCode: scheduleType,
-            scheduleType: scheduleType === 1 ? '회성' : ( scheduleType === 2 ? '고정' : '고정(R)' )
+            total: cost + taxAmount
           }
         });          
         onFetch({main: mapped, randomDates: random, payments: resp.data.paidHistory});
