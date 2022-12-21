@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import { format, isAfter, isBefore, isSameDay, parse, parseISO } from 'date-fns';
-import { addYears, compareAsc, eachMonthOfInterval, endOfMonth, format, isAfter, isBefore, isSameDay, endOfYear, startOfYear } from 'date-fns';
+import { addDays, compareAsc, eachMonthOfInterval, endOfMonth, parse, format, isAfter, isBefore, isSameDay, endOfYear, startOfYear } from 'date-fns';
 import { Button, Grid, Checkbox, TextField, Dialog, DialogTitle, DialogContent, DialogActions, FormGroup, FormControlLabel, Chip, Typography } from "@mui/material";
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // import { styled } from '@mui/material/styles'
@@ -41,8 +41,6 @@ const EditBill = ({ gridApi, selectedNode: bill, randomDates, onSaved, onClose }
   const [cadTitle, setCadTitle] = useState(bill.cadTitleCode);
   const [page, setPage] = useState(bill.page);
   const [size, setSize] = useState(bill.sizeCode);
-  // const [startDate, setStartDate] = useState(() => parse(bill.startDate, 'yyyyMMdd', new Date()));
-  // const [endDate, setEndDate] = useState(() => parse(bill.endDate, 'yyyyMMdd', new Date()));
   const [cost, setCost] = useState(bill.cost);
   const [tax, setTax] = useState(bill.taxAmount);
   const [total, setTotal] = useState('');
@@ -51,8 +49,8 @@ const EditBill = ({ gridApi, selectedNode: bill, randomDates, onSaved, onClose }
   const [taxIncluded, setTaxIncluded] = useState(false);
 
   const [updatedRandomDates, setUpdatedRandomDates] = useState([]);
-  const [stDate, setStDate] = useState(new Date(+bill.startDate.substr(0,4), +bill.startDate.substr(4,2)-1, +bill.startDate.substr(6,2)));
-  const [edDate, setEdDate] = useState(new Date(+bill.endDate.substr(0,4), +bill.endDate.substr(4,2)-1, +bill.endDate.substr(6,2), 23, 59, 59));
+  const [stDate, setStDate] = useState(() => parse(bill.startDate, 'yyyyMMdd', new Date()));
+  const [edDate, setEdDate] = useState(() => parse(bill.endDate, 'yyyyMMdd', new Date()));
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleDeleteDate = (date) => {
@@ -61,7 +59,7 @@ const EditBill = ({ gridApi, selectedNode: bill, randomDates, onSaved, onClose }
   }
 
   const handleRandomDateChange = (selectedDate) => {
-    if (isAfter(selectedDate, edDate) || isBefore(selectedDate, stDate)) {
+    if (isAfter(selectedDate, addDays(edDate, 1)) || isBefore(selectedDate, stDate)) {
       setErrorMessage(`Please select a date between ${format(stDate, UI_DATE_FORMAT)} and ${format(edDate, UI_DATE_FORMAT)}`);
       return;
     }
@@ -146,36 +144,6 @@ const EditBill = ({ gridApi, selectedNode: bill, randomDates, onSaved, onClose }
                 value={adTitle} onChange={(e) => setAdTitle(e.target.value)}
               />
             </Grid>
-            {/* 
-          <Grid item>
-            <ADDate label="Start Date"
-              onChange={(value) => {
-                if (isAfter(value, endDate)) {
-                  // setErrorMessage("paidDate can't be future date!");
-                  alert("cannot be after the end date");
-                } else {
-                  setStartDate(value);
-                }
-              }}
-              width="120px" sx={{ my: 0 }}
-              value={startDate}
-            />                  
-          </Grid>
-          <Grid item>
-            <ADDate label="End Date"
-              onChange={(value) => {
-                if (isBefore(value, startDate)) {
-                  // setErrorMessage("paidDate can't be future date!");
-                  alert("cannot be before the start date");
-                } else {
-                  setEndDate(value);
-                }
-              }}
-              width="120px" sx={{ my: 0 }}
-              value={endDate}
-            />                  
-          </Grid>  
-          */}
           </Grid>
 
           <Grid container columnGap={3} wrap="nowrap">
