@@ -49,7 +49,7 @@ const ADList = ({ companyId, eInvoice, role }) => {
   const [selectedRandomDates, setSelectedRandomDates] = useState([]);
   const { isLoading, deleteAD, fetchADList } = useSales();
   const { isLoading: isInvoiceLoading, checkInvoiceByBill, ...invoiceActions } = useInvoice();
-
+  
   const columnDefs = [
     { field: 'status', headerName: '', width: 40, resizable: false,
       cellRenderer: (props) => {
@@ -194,6 +194,7 @@ const ADList = ({ companyId, eInvoice, role }) => {
 
       {isEditOpen && <EditBill 
         selectedNode={selectedNodes[0]?.data} 
+        randomDates = {selectedRandomDates}
         gridApi={gridRef.current} 
         onClose={() => setIsEditOpen(false)}
         onSaved={() => {
