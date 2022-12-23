@@ -48,7 +48,6 @@ const SideMenuBar = () => {
       setSalesOpen(false);
       return;
     } 
-
     if (route) {
       navigate(`${routePath.prefixAuthed}/${route}`, { replace: true });
     }
@@ -90,7 +89,7 @@ const SideMenuBar = () => {
             minWidth: 40,
           },
           "& .Mui-selected": {
-            backgroundColor: "#E8EAF6",
+            backgroundColor: "#D6D9EF",
           },
         }}
       >
@@ -121,24 +120,21 @@ const SideMenuBar = () => {
               {salesOpen ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton> */}
             <List component="div" disablePadding>
-              <ListItemButton selected={selectedIdx.includes('onetimedad')}
-                onClick={e => handleItemClick(e, `scheduleAD/1/${adTypeCode.dad}`, 'onetimedad')}>
+              <ListItemButton selected={selectedIdx.includes(`${adTypeCode.dad}`)} onClick={e => handleItemClick(e, `scheduleAD/1/${adTypeCode.dad}`, `${adTypeCode.dad}`)}>
                 <ListItemIcon>
                   <NewspaperOutlinedIcon />
                 </ListItemIcon>            
                 <ListItemText primary="One Time - DAD" />
               </ListItemButton>
 
-              <ListItemButton selected={selectedIdx.includes('onetimewky')}
-                onClick={e => handleItemClick(e, `scheduleAD/1/${adTypeCode.wky}`, 'onetimewky')}>
+              <ListItemButton selected={selectedIdx.includes(`${adTypeCode.wky}`)} onClick={e => handleItemClick(e, `scheduleAD/1/${adTypeCode.wky}`, `${adTypeCode.wky}`)}>
                 <ListItemIcon>
                   <ImportContactsOutlinedIcon />
                 </ListItemIcon>            
                 <ListItemText primary="One Time - WKY" />
               </ListItemButton>
               
-              <ListItemButton selected={selectedIdx.includes('fixed')}
-                onClick={e => handleItemClick(e, `scheduleAD/2/fixed`, 'fixed')}>
+              <ListItemButton selected={selectedIdx.includes('fixed')} onClick={e => handleItemClick(e, `scheduleAD/2/fixed`, 'fixed')}>
                 <ListItemIcon>
                   <EventRepeatOutlinedIcon />
                 </ListItemIcon>            
@@ -166,14 +162,14 @@ const SideMenuBar = () => {
 
         {canUseCollection && (
           <>
-            <ListItemButton selected={selectedIdx.includes('collections - invoices')} onClick={e => handleItemClick(e, routePath.collection)}>
+            <ListItemButton selected={selectedIdx.includes(routePath.collection)} onClick={e => handleItemClick(e, routePath.collection)}>
               <ListItemIcon>
                 <LocalAtmIcon />
               </ListItemIcon>
               <ListItemText primary="Collections - Invoices" />
             </ListItemButton>
 
-            <ListItemButton selected={selectedIdx.includes('collections - bills')} onClick={e => handleItemClick(e, routePath.collectionBills)}>
+            <ListItemButton selected={selectedIdx.includes(routePath.collectionBills)} onClick={e => handleItemClick(e, routePath.collectionBills)}>
               <ListItemIcon>
                 <MoneyOffIcon />
               </ListItemIcon>
