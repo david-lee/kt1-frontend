@@ -202,7 +202,9 @@ const EditBill = ({ gridApi, selectedNode: bill, randomDates, onSaved, onClose }
             </Grid>
 
           )}
-          <LoadingButton loading={isLoading} startIcon={<SaveIcon />} variant="contained"
+        </DialogActions>
+        <DialogActions>
+        <LoadingButton loading={isLoading} startIcon={<SaveIcon />} variant="contained"
             onClick={saveChanges}
           >
             Save
