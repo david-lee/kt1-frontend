@@ -3,6 +3,7 @@ import axios from 'axios';
 import useLocalStorage from 'shared/hooks/useLocalStorage';
 import api from '../../appConfig/restAPIs';
 import { permissionType, roleType } from 'data/constants';
+import { API_BASE_URL } from 'data/constants';
 
 const UserContext = createContext();
 
@@ -51,6 +52,26 @@ const UserAuthProvider = ({children}) => {
 
     return {};
   }, [user]);
+
+  // inteceptors
+  axios.defaults.baseURL = API_BASE_URL;
+  axios.interceptors.request.use((config) => {
+    const user = JSON.parse(window.localStorage.getItem('user'));
+    let newConfig = user ? {...config, headers: { ...config.headers, Authorization: `Bearer ${user.authToken}`}} : config;
+    return newConfig;
+  }, (err) => {
+    console.log("axios error: ", err);
+  });
+    
+  axios.interceptors.response.use((response) => {
+    return response;
+  }, (err) =>{
+    if(err.response && err.response.status === 401){
+      logout();    
+    }else{
+      console.log("response error: ", err);
+    }    
+  });
 
   return (
     <UserContext.Provider value={{ user, error, canDo, login, logout, resetPassword }}>
