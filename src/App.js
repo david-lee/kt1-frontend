@@ -15,16 +15,16 @@ const App = () => {
     <Suspense fallback={<div>Loading...</div>}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <AppProvider>
-              <UserAuthProvider>
+          <UserAuthProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <AppProvider>
                 <CssBaseline />
                 <IntlWrapper>
                   <AppRoutes />
                 </IntlWrapper>
-              </UserAuthProvider>
-            </AppProvider>
-          </LocalizationProvider>
+              </AppProvider>
+            </LocalizationProvider>
+          </UserAuthProvider>
         </ThemeProvider>
       </BrowserRouter>
     </Suspense>
