@@ -7,18 +7,18 @@ import ADPrice from 'shared/components/ADPrice';
 
 const BillList = ({ bills, onPriceChange }) => {
   const handleBillPrice = (index, value) => {
-    bills[index].cost = removeCommas(value);
+    bills[index].cost = value;
     onPriceChange([...bills]);
   }
 
   const handleBillTax = (index, value) => {
-    bills[index].taxAmount = removeCommas(value);
+    bills[index].taxAmount = value;
     onPriceChange([...bills]);
   }
 
-  const handleTotal = (index, value) => {
+  const handleTotal = (index) => {
     const bill = bills[index];
-    const total = bill.cost + bill.taxAmount;
+    const total = Number(removeCommas(bill.cost)) + Number(removeCommas(bill.taxAmount));
     bill.total = precisionRound(total);
     onPriceChange([...bills]);
   }
@@ -32,8 +32,8 @@ const BillList = ({ bills, onPriceChange }) => {
   const { sumCost, sumTaxAmount, sumTotal } = sums;
 
   useEffect(() => {
-    const sumC = bills?.reduce((pre, cur) => { return pre + cur.cost }, 0);
-    const sumT = bills?.reduce((pre, cur) => { return pre + cur.taxAmount }, 0);
+    const sumC = bills?.reduce((pre, cur) => { return pre + Number(removeCommas(cur.cost)) }, 0);
+    const sumT = bills?.reduce((pre, cur) => { return pre + Number(removeCommas(cur.taxAmount)) }, 0);
     const sumTt = bills?.reduce((pre, cur) => { return pre + cur.total }, 0);
 
     setSums({
