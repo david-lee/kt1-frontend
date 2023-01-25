@@ -17,10 +17,10 @@ const RenewalList = () => {
   const navigate = useNavigate();
 
   const columnDefs = [
-    { field: 'adId', headerName: 'Bill No', width: 120 },
+    { field: 'companyId', headerName: 'Company Id', width: 120 },
     { field: 'companyName', headerName: 'Company', width: 350 },
+    { field: 'adId', headerName: 'Bill No', width: 120 },
     { field: 'adTitle', headerName: 'Title', width: 350 },
-    { field: 'companyId', header: '', hide: true },
     { field: 'endDate', headerName: 'End Date', width: 130, valueFormatter: (params) => formatUIDate(params.value) },
     { field: 'adType', headerName: 'Type', width: 100 },
     { field: 'page', headerName: 'Page', width: 100 },
