@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -8,13 +8,8 @@ import useSales from 'shared/hooks/useSales';
 
 const CardPayment = () => {
   const { isLoading, fetchCardPayList } = useSales();
-  const [ adType, setAdType ] = useState('1911');
-  const [ adList, setAdList ] = useState([]);
+  const [ adType, setAdType ] = useState('');
 
-  useEffect(() => {
-    setAdList([...adTypeOptions, {value: 'ALL', codeId: '0'}]);
-  }, []);
-  
   const downloadPDF = () => {
     fetchCardPayList(adType);
   };
@@ -28,8 +23,7 @@ const CardPayment = () => {
       <Grid container item columnGap={5} sx={{ mt: 8 }}>
         <Dropdown id="adType" name="adType" label="Ad Type" value={adType}
            onChange={e => setAdType(e.target.value)}
-           options={adList} width={160}
-           noNone = {true}
+           options={adTypeOptions} width={160}
         />
 
         <LoadingButton startIcon={<DownloadIcon />} variant="contained" disabled={isLoading}
