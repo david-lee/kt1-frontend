@@ -136,10 +136,10 @@ const useSales = () => {
       });
   }
 
-  const fetchCardPayList = (onFetch) => {
+  const fetchCardPayList = (adType, onFetch) => {
     setIsLoading(true);
 
-    axios.get(`${api.cardPayList}`, { responseType: 'blob' })
+    axios.get(`${api.cardPayList}?codeId=${adType}`, { responseType: 'blob' })
       .then(resp => {
         const file = new Blob([resp.data], {type: 'application/pdf'});
         const fileURL = URL.createObjectURL(file);
