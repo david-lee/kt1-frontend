@@ -8,23 +8,8 @@ import useSales from 'shared/hooks/useSales';
 
 const CardPayment = () => {
   const { isLoading, fetchCardPayList } = useSales();
-  const [ adType, setAdType ] = useState(1911);
-  const [ adList, setAdList] = useState([]);
-  const [ isEmpty, setIsEmpty ] = useState(false);
-
-  useEffect(() => {
-    setAdList([...adTypeOptions, {value: 'ALL', codeId: '0'}]);
-  }, []);
- 
-  const handleButton = (type) => {
-    setAdType(type);
-    if(!type){
-      setIsEmpty(true);
-    }else{
-      setIsEmpty(false);
-    }
-  }
-
+  const [ adType, setAdType ] = useState('');
+  
   const downloadPDF = () => {
     fetchCardPayList(adType);
   };
@@ -36,12 +21,12 @@ const CardPayment = () => {
       </Grid>
 
       <Grid container item columnGap={5} sx={{ mt: 8 }}>
-        <Dropdown id="adType" name="adType" label="Ad Type *" value={adType}
-           onChange={e => handleButton(e.target.value)}
-           options={adList} width={160}
+        <Dropdown id="adType" name="adType" label="Ad Type" value={adType}
+           onChange={e => setAdType(e.target.value)}
+           options={adTypeOptions} width={160}
         />
 
-        <LoadingButton startIcon={<DownloadIcon />} variant="contained" disabled={isEmpty}
+        <LoadingButton startIcon={<DownloadIcon />} variant="contained" disabled={isLoading}
           onClick={() => downloadPDF()} loading={isLoading}
         >
           Download List
