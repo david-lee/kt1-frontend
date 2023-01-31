@@ -36,6 +36,14 @@ const useSales = () => {
     return updateStatus(data, onDeleted);
   };
 
+  const toPendingAD = (adIds, onToPending) => {
+    const data = {
+      status: salesStatus.pending,
+      adIds
+    }
+    return updateStatus(data, onToPending);
+  };
+
   const fetchADs = (endpoint, onFetch) => {
     setIsLoading(true);
 
@@ -158,7 +166,8 @@ const useSales = () => {
     fetchADList,
     fetchCardPayList,
     confirmAD,
-    deleteAD, 
+    deleteAD,
+    toPendingAD,
     updateAD
   };
 }

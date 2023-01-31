@@ -26,6 +26,7 @@ import { formatUIDate, precisionRound } from 'shared/utils';
 import { roleType } from 'data/constants';
 import EditBill from './EditBill';
 import useSales from 'shared/hooks/useSales';
+import UndoIcon from '@mui/icons-material/Undo';
 
 const IconLoadingButton = styled(LoadingButton)({
   "& .MuiButton-startIcon": {
@@ -47,9 +48,10 @@ const ADList = ({ companyId, eInvoice, role }) => {
   // const [isLoading, setIsLoading] = useState(false);
   const [clickedAction, setClickedAction] = useState("view");
   const [selectedRandomDates, setSelectedRandomDates] = useState([]);
-  const { isLoading, deleteAD, fetchADList } = useSales();
+  const { isLoading, deleteAD, toPendingAD, fetchADList } = useSales();
   const { isLoading: isInvoiceLoading, checkInvoiceByBill, ...invoiceActions } = useInvoice();
-  
+  const [isBackToPendingOpen, setIsBackToPendingOpen] = useState(false);
+
   const columnDefs = [
     { field: 'status', headerName: '', width: 40, resizable: false,
       cellRenderer: (props) => {
@@ -107,6 +109,17 @@ const ADList = ({ companyId, eInvoice, role }) => {
       setIsOpen(true);
     } else {
       setIsOpen(false);
+      alert(`It is already issued in invoices ${resp.data.list.map(inv => inv.invoiceNo).join(",")}`);
+    }
+  }
+
+  const backToPending = async () => {
+    const resp = await checkInvoiceByBill(companyId, selectedNodes.map(rowNode => +rowNode.id));
+    if (resp.data === "success") {
+      toPendingAD(selectedNodes.map(rowNode => +rowNode.id), () => fetchADs(companyId, stDate, edDate));
+      setIsBackToPendingOpen(false);
+    } else {
+      setIsBackToPendingOpen(false);
       alert(`It is already issued in invoices ${resp.data.list.map(inv => inv.invoiceNo).join(",")}`);
     }
   }
@@ -192,6 +205,12 @@ const ADList = ({ companyId, eInvoice, role }) => {
         onCancel={() => setIsDeleteOpen(false)} onClose={() => setIsDeleteOpen(false)} 
       />
 
+      <ConfirmDialog open={isBackToPendingOpen}
+        message={`Do you want the Ad to return to pending?`}
+        onOK={backToPending} 
+        onCancel={() => setIsBackToPendingOpen(false)} onClose={() => setIsBackToPendingOpen(false)} 
+      />
+
       {isEditOpen && <EditBill 
         selectedNode={selectedNodes[0]?.data} 
         randomDates = {selectedRandomDates}
@@ -233,7 +252,15 @@ const ADList = ({ companyId, eInvoice, role }) => {
                 onClick={() => setIsDeleteOpen(true)}
                 loading={isLoading}
                 disabled={!canEdit}>
-              </IconLoadingButton>              
+              </IconLoadingButton>
+
+              {role >= roleType.manager && (
+                <IconLoadingButton variant="outlined" startIcon={<UndoIcon />}
+                  loadingPosition='start'
+                  onClick={() => setIsBackToPendingOpen(true)}
+                  disabled={!canIssue}>
+                </IconLoadingButton>
+              )}  
             </Grid>
 
             <Grid container item justifyContent="flex-end"  alignItems="center" columnGap={2}>
