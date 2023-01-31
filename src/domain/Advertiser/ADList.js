@@ -117,11 +117,10 @@ const ADList = ({ companyId, eInvoice, role }) => {
     const resp = await checkInvoiceByBill(companyId, selectedNodes.map(rowNode => +rowNode.id));
     if (resp.data === "success") {
       toPendingAD(selectedNodes.map(rowNode => +rowNode.id), () => fetchADs(companyId, stDate, edDate));
-      setIsBackToPendingOpen(false);
     } else {
-      setIsBackToPendingOpen(false);
       alert(`It is already issued in invoices ${resp.data.list.map(inv => inv.invoiceNo).join(",")}`);
     }
+    setIsBackToPendingOpen(false);
   }
 
   const setInvoiceAction = (action) => {
@@ -206,7 +205,7 @@ const ADList = ({ companyId, eInvoice, role }) => {
       />
 
       <ConfirmDialog open={isBackToPendingOpen}
-        message={`Do you want the Ad to return to pending?`}
+        message={`Do you want to change the AD to Pending status?`}
         onOK={backToPending} 
         onCancel={() => setIsBackToPendingOpen(false)} onClose={() => setIsBackToPendingOpen(false)} 
       />
