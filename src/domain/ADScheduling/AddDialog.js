@@ -24,6 +24,7 @@ const AddDialog = ({isOpen, onClose, onSaved, onError, adDate, page, adType}) =>
   const [total, setTotal] = useState('');
   const [size, setSize] = useState('');
   const [colorChecked, setColor] = useState(true);
+  const [cardPayChecked, setCardPay] = useState(false);
   const [taxIncluded, setTaxIncluded] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const { user } = useUserAuth();
@@ -70,6 +71,7 @@ const AddDialog = ({isOpen, onClose, onSaved, onError, adDate, page, adType}) =>
       adType: Number(adType),
       page,
       size,
+      cardPayment: cardPayChecked,
       color: colorChecked,
       cost: price,
       taxAmount: tax,
@@ -104,7 +106,7 @@ const AddDialog = ({isOpen, onClose, onSaved, onError, adDate, page, adType}) =>
     
         {selectedCompany && (
           <Grid container alignItems="center" columnGap={3} flexWrap="nowrap" sx={{ mt: 3 }}>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextField
                 id="add-memo"
                 label="AD description"
@@ -132,6 +134,14 @@ const AddDialog = ({isOpen, onClose, onSaved, onError, adDate, page, adType}) =>
                   label="Tax Included" labelPlacement="top" sx={{ position: "relative", top: "10px", mx: 0 }} />
               </FormGroup>
             </Grid>
+            <Grid item xs={1}>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox size="small" checked={cardPayChecked} onChange={e => setCardPay(e.target.checked)} />} 
+                  label="Card" labelPlacement='top' sx={{ position: "relative", top: "10px", ml: 0 }}
+                />
+              </FormGroup>
+            </Grid>       
             <Grid item xs={1}>
               <FormGroup>
                 <FormControlLabel
