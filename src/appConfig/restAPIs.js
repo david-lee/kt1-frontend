@@ -33,7 +33,7 @@ const restApi = {
   subscriber: '/subscriber',
   statsAD: '/stats/advertisement',
   statsPayment: '/stats/payment',
-
+  monthlySales: '/sales/monthlySales'
 }
 
 export default restApi;
