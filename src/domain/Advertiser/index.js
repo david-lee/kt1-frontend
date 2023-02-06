@@ -12,6 +12,7 @@ import AddressContainer from './AddressContainer';
 import ADList from './ADList';
 import Notes from './Notes';
 import InvoiceList from './InvoiceList';
+import MonthlySales from './MonthlySales';
 import AddNewCompany from './AddNewCompany';
 
 const Advertiser = () => {
@@ -22,7 +23,7 @@ const Advertiser = () => {
   const params = useParams();
   const navigate = useNavigate();
   const loc = useLocation();
-
+  
   // const [ads, setADs] = useState(null);
   // const [invoices, setInvoices] = useState(null);
   const { user: { role, dept }} = useUserAuth();
@@ -107,6 +108,7 @@ const Advertiser = () => {
                 <Tab label="Notes" value={1} />
                 <Tab label="AD List" value={2} />
                 <Tab label="Issued Invoice List" value={3} />
+                <Tab label="Monthly Sales" value={4} />
               </Tabs>
             </Grid>
             <Grid item><Typography color="green" variant="body1b">{company.primaryName} ({company.userId})</Typography></Grid>
@@ -135,6 +137,9 @@ const Advertiser = () => {
           </TabPanel>
           <TabPanel value={tabIndex} index={3}>
             <InvoiceList companyId={company.userId} role={role} eInvoice={company.eInvoice} />
+          </TabPanel>
+          <TabPanel value={tabIndex} index={4}>
+            <MonthlySales companyId={company.userId} tabIndex={tabIndex} />
           </TabPanel>
         </Box>
       )}
