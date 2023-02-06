@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import { numberWithCommas } from 'shared/utils';
 import { LoadingButton } from '@mui/lab';
@@ -34,7 +34,7 @@ const MonthlySales = ({ companyId }) => {
 
     if (isLoading) return <div>loading...</div>
 
-    if (!sales) return null;
+    if (!sales || sales[0].sum === 0) return <Typography sx={{fontSize: 16, fontWeight:600, color: '#e90000'}}>There is no sales for this month</Typography>
 
     return (
       <Grid container direction="column" rowGap={3}>
