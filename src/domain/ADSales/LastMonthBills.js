@@ -53,7 +53,7 @@ const LastMonthBills = ({selectedCompany, lastMonth, isOpen, onClose}) =>{
     
     return (
       <>
-        <Dialog open={isOpen} fullWidth={true} maxWidth={true} PaperProps={{sx:{position:"fixed", bottom:20, m:0}}} >
+        <Dialog open={isOpen} fullWidth={true} maxWidth={true} PaperProps={{sx:{position:"fixed", bottom:40, m:0}}} >
           <DialogContent>
             {!billList && (
               <Grid container justifyContent="center" alignItems="center" sx={{ height: '20vh', margin: "0 auto" }}>
@@ -63,7 +63,7 @@ const LastMonthBills = ({selectedCompany, lastMonth, isOpen, onClose}) =>{
               </Grid>
             )}
             {billList && (
-              <Grid className="ag-theme-alpine" sx={{width:'100%', height:300}}>
+              <Grid className="ag-theme-alpine" sx={{width:'100%', height:200}}>
                 <AgGridReact
                   rowData={billList.main}
                   columnDefs={columnDefs}
