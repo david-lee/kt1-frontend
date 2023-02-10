@@ -15,7 +15,7 @@ import { useUserAuth } from 'shared/contexts/UserAuthContext';
 import ConfirmDialog from 'shared/components/ConfirmDialog';
 import { roleType } from 'data/constants';
 import useSales from 'shared/hooks/useSales';
-import { subMonths, format } from 'date-fns';
+import { addMonths, subMonths, format } from 'date-fns';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import LastMonthBills from './LastMonthBills';
 import SnackbarMessage from 'shared/components/SnackbarMessage';
@@ -102,21 +102,15 @@ const ADSales = () => {
 
   const fetchLastMonthData = (selectedData) =>{
      
-    const currentDate = new Date();
-    const currentYM = format(currentDate, 'yyyyMM');
-    const lastYM = format(subMonths(currentDate, 1), 'yyyyMM');
-     
     const data = selectedData[0].data;
-
-    setLastMonth(lastYM);
+    const adStartDate = new Date(formatUIDate(data.startDate));
+    const lastAdYM = format(subMonths(adStartDate, 1), 'yyyyMM');
+   
+    setLastMonth(lastAdYM);
     setSelectedCompany(data.companyId);
 
     if(data.scheduleTypeCode === 1){
       setErrorMessage("One Time Ad does not provide the previouse list");
-      return false;
-    }
-    if(data.startDate.substr(0,6) !== currentYM){
-      setErrorMessage("Only this month's ad provides the previouse list");
       return false;
     }
 
