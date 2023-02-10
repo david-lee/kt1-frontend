@@ -15,7 +15,7 @@ import { useUserAuth } from 'shared/contexts/UserAuthContext';
 import ConfirmDialog from 'shared/components/ConfirmDialog';
 import { roleType } from 'data/constants';
 import useSales from 'shared/hooks/useSales';
-import { getYear, getMonth } from 'date-fns';
+import { subMonths, format } from 'date-fns';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import LastMonthBills from './LastMonthBills';
 import SnackbarMessage from 'shared/components/SnackbarMessage';
@@ -101,24 +101,21 @@ const ADSales = () => {
   const [isConfirm, setIsConfirm] = useState(false);
 
   const fetchLastMonthData = (selectedData) =>{
-      
-    const date = new Date();
-    const year = getYear(date);
-    const month = getMonth(date) + 1;
-
-    const currentMonth = month < 10 ? '0' + month : month;
-    const lastMonth = currentMonth === '01' ? year-1 + '12' : (currentMonth - 1 < 10 ? year + '0' + (currentMonth - 1) : year + currentMonth - 1);
-
+     
+    const currentDate = new Date();
+    const currentYM = format(currentDate, 'yyyyMM');
+    const lastYM = format(subMonths(currentDate, 1), 'yyyyMM');
+     
     const data = selectedData[0].data;
 
-    setLastMonth(lastMonth);
+    setLastMonth(lastYM);
     setSelectedCompany(data.companyId);
 
     if(data.scheduleTypeCode === 1){
       setErrorMessage("One Time Ad does not provide the previouse list");
       return false;
     }
-    if(data.startDate.substr(4,2) !== currentMonth){
+    if(data.startDate.substr(0,6) !== currentYM){
       setErrorMessage("Only this month's ad provides the previouse list");
       return false;
     }
