@@ -92,7 +92,7 @@ const AddNewCompany = () => {
     initialValues: {
       addresses: [{ addressType: 1, ...DEFAULT_ADDRESS  }, { addressType: 2, ...DEFAULT_ADDRESS  }],
       mainCategory: '',subCategory: '', salesId: '', primaryName: '', secondaryName: '', status: companyStatus.confirmed,
-      ownerName: '', phoneNumber: '', email: '', contactName: '', contactNumber: '', contactEmail: '', eInvoice: false,
+      ownerName: '', phoneNumber: '', email: '', contactName: '', contactNumber: '', contactEmail: '', eInvoice: false, bulkInvoice: true,
       sameAddress: false,
     },
     onSubmit: handleSave,
