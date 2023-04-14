@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { LoadingButton } from '@mui/lab';
 import ConfirmDialog from "shared/components/ConfirmDialog";
+import UpdateCard from './UpdateCard';
 
 const IconLoadingButton = styled(LoadingButton)({
     "& .MuiButton-startIcon": {
@@ -25,6 +26,9 @@ const CardInfo = ({ companyId, role }) => {
     const [selectedRow, setSelectedRow] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+    const [cardUpdate, setCardUpdate] = useState(null);
+    const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
     const columnDefs = [
         { field: 'holderName', headerName: 'Card Holder', width: 260, minWidth: 200 },
@@ -58,10 +62,21 @@ const CardInfo = ({ companyId, role }) => {
         setSelectedRow(selectedRows[0]);
       }, [])
 
-    const deleteCard = () => {
-      const customerId = selectedRow.customerId;
+    const deleteCard = async () => {
+      const { customerId } = await selectedRow;
       axios.delete(`${api.stripeCustomer}/${customerId}`)
         .then(() => setIsDeleteOpen(false), () => fetchCards(companyId));
+    }
+
+    // const editCard = async () => {
+    //     const {customerId, cardId} = await selectedRow;
+    //     setCardUpdate({customerId, cardId, ...cardUpdate});
+    //     axios.put(`${api.stripeCustomer}/customer`, cardUpdate)
+    //       .then(() => setIsUpdateOpen(false), () => fetchCards(companyId));
+    // }
+
+    const updateCard = () => {
+        setIsUpdateOpen(true);
     }
 
     if (isLoading) return <div>loading...</div>
@@ -74,6 +89,17 @@ const CardInfo = ({ companyId, role }) => {
                 isLoading={isLoading} onOK={deleteCard} 
                 onCancel={() => setIsDeleteOpen(false)} onClose={() => setIsDeleteOpen(false)} 
             />
+            
+            {isUpdateOpen && <
+                UpdateCard
+                  selectedRow = {selectedRow}
+                  onClose={() => setIsUpdateOpen(false)}
+                  onSaved={() => {
+                    fetchCards(companyId);
+                    setIsUpdateOpen(false);
+                }} 
+                />}
+
             <Grid container direction="column">
                 <Grid container item wrap="nowrap" alignItems="center" sx={{ mb: 2 }} columnGap={1}>
                     <Button startIcon={<NoteAddIcon />} variant="contained" >
@@ -81,9 +107,9 @@ const CardInfo = ({ companyId, role }) => {
                     </Button>
                     <IconLoadingButton variant="outlined" startIcon={<EditIcon />}
                         loadingPosition='start'
-                    // onClick={editBill}
-                    // loading={isInvoiceLoading}
-                    // disabled={!canEdit}
+                        onClick={updateCard}
+                        loading={isLoading}
+                        disabled={!selectedRow}
                     >
                     </IconLoadingButton>
                     <IconLoadingButton startIcon={<DeleteForeverIcon />} color="error" variant="outlined"
@@ -111,8 +137,6 @@ const CardInfo = ({ companyId, role }) => {
                 </Grid>
             </Grid>
             
-            {/* {isOpen && <AddNote companyId={companyId} onClose={onCloseAddNote} onSaved={handleOnSaved} isOpen={isOpen} />}
-        {isUpdateOpen && <UpdateNote {...{noteData}} onClose={onCloseUpdateNote} onUpdated={handleOnUpdated} isOpen={isUpdateOpen} />} */}
         </>
     );
 }
