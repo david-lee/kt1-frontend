@@ -6,21 +6,44 @@ import ClearIcon from '@mui/icons-material/Clear';
 import SaveIcon from '@mui/icons-material/Save';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
+import { validCardNumber } from 'shared/utils';
 
 const UpdateCard = ({ selectedRow, onClose, onSaved }) => {
     const { holderName, lastDigit } = selectedRow;
     const [expMonth, setExpMonth] = useState(selectedRow.expirationMonth);
     const [expYear, setExpYear] = useState(selectedRow.expirationYear);
-    const [secNum, setSecNum] = useState("***");
+    const [secNum, setSecNum] = useState(null);
+    const [validCard, setValidCard] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    
+    const doUpdateCard = async (data) => {    
+        await axios.put(`${api.stripeCustomer}`, data)
+            .then((res) => {
+                console.log(res.status);
+        });
+    }
 
-    console.log("updateCard", selectedRow)
-
-    const doUpdateCard = async (data) => {
-        // const {customerId, cardId} = await selectedRow;
-        // setCardUpdate({customerId, cardId, ...cardUpdate});
-        axios.put(`${api.stripeCustomer}/customer`, data)
-          .then(console.log("need to make a useCard component"));
+    const isValidCard = () => {
+        const cur = new Date();
+        const validYear = expYear - cur.getFullYear();
+        const curMonth = cur.getMonth()+1;
+        const inputMonth = expMonth;
+        
+        if(!validCardNumber.test(expMonth) || expMonth > 12 ){
+            setErrorMessage(`Please correct expiration Month`);
+            setValidCard(false);
+        }else if(!validCardNumber.test(expYear) || validYear < 0 || validYear > 10 ){
+            setErrorMessage(`Please correct expiration Year`);
+            setValidCard(false);
+        }else if(!validCardNumber.test(secNum) || secNum.toString().length !== 3){
+            setErrorMessage(`Please correct cvc number`);
+            setValidCard(false);
+        }else if(validYear === 0 && (curMonth > inputMonth)){
+            setErrorMessage(`Please correct expiration Month and Year`);
+            setValidCard(false);
+        }else{
+            setValidCard(true);
+        }   
     }
 
     const saveChanges = async () => {
@@ -31,9 +54,9 @@ const UpdateCard = ({ selectedRow, onClose, onSaved }) => {
           expirationYear: expYear,
           cvc: secNum
         };
-    
+
         await doUpdateCard(data);
-        onSaved();
+        onSaved();       
     };
 
     return (
@@ -70,18 +93,21 @@ const UpdateCard = ({ selectedRow, onClose, onSaved }) => {
                                     value={expMonth}
                                     variant='standard'
                                     onChange={(e) => setExpMonth(e.target.value)}
+                                    onBlur={() => isValidCard()}
                                 />
                                 <TextField
                                     label="Exp. Year"
                                     value={expYear}
                                     variant='standard'
                                     onChange={(e) => setExpYear(e.target.value)}
+                                    onBlur={() => isValidCard()}
                                 />
                                 <TextField
                                     label="Cvc"
                                     value={secNum}
                                     variant='standard'
                                     onChange={(e) => setSecNum(e.target.value)}
+                                    onBlur={() => isValidCard()}
                                 />
                             </Grid>
                         </Grid>
@@ -91,6 +117,7 @@ const UpdateCard = ({ selectedRow, onClose, onSaved }) => {
                 <DialogActions>
                     <LoadingButton startIcon={<SaveIcon />} variant="contained"
                         onClick={saveChanges}
+                        disabled={!validCard}
                     >
                         Save
                     </LoadingButton>

@@ -69,3 +69,5 @@ export const calculateTaxWithTaxIncluded = (cost, tax, taxIncluded) => {
   total = newCost + newTax;
   return { cost: precisionRound(newCost), tax: precisionRound(newTax), total: precisionRound(total) };
 };
+
+export const validCardNumber = new RegExp('[0-9]+');

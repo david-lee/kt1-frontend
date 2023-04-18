@@ -25,9 +25,7 @@ const CardInfo = ({ companyId, role }) => {
     const [cards, setCards] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-    const [cardUpdate, setCardUpdate] = useState(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);    
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
     const columnDefs = [
@@ -68,13 +66,6 @@ const CardInfo = ({ companyId, role }) => {
         .then(() => setIsDeleteOpen(false), () => fetchCards(companyId));
     }
 
-    // const editCard = async () => {
-    //     const {customerId, cardId} = await selectedRow;
-    //     setCardUpdate({customerId, cardId, ...cardUpdate});
-    //     axios.put(`${api.stripeCustomer}/customer`, cardUpdate)
-    //       .then(() => setIsUpdateOpen(false), () => fetchCards(companyId));
-    // }
-
     const updateCard = () => {
         setIsUpdateOpen(true);
     }
@@ -97,7 +88,8 @@ const CardInfo = ({ companyId, role }) => {
                   onSaved={() => {
                     fetchCards(companyId);
                     setIsUpdateOpen(false);
-                }} 
+                    setSelectedRow(null);
+                  }}
                 />}
 
             <Grid container direction="column">
