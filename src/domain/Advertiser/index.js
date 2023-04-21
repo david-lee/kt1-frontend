@@ -27,7 +27,7 @@ const Advertiser = () => {
   
   // const [ads, setADs] = useState(null);
   // const [invoices, setInvoices] = useState(null);
-  const { user: { role, dept }} = useUserAuth();
+  const { user: { role, dept, userId }} = useUserAuth();
 
   const fetchCompany = useCallback((userId) => {
     setIsLoading(true);
@@ -144,7 +144,7 @@ const Advertiser = () => {
             <MonthlySales companyId={company.userId} tabIndex={tabIndex} />
           </TabPanel>
           <TabPanel value={tabIndex} index={5}>
-            <CardInfo companyId={company.userId} role={role} />
+            <CardInfo companyId={company.userId} companyName={company.primaryName} companyEmail={company.email} userId={userId} />
           </TabPanel>
         </Box>
       )}

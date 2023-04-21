@@ -70,4 +70,25 @@ export const calculateTaxWithTaxIncluded = (cost, tax, taxIncluded) => {
   return { cost: precisionRound(newCost), tax: precisionRound(newTax), total: precisionRound(total) };
 };
 
-export const validCardNumber = new RegExp('[0-9]+');
+
+// Credit Card Validation
+
+export const validCardHolderName = new RegExp(/^[a-zA-Z, \s]+$/);
+export const validCardNumber = new RegExp(/^[3-8][0-9, -]{16,18}$/);
+export const validCardMonth = new RegExp(/^[1-9]$|^0[1-9]$|^1[0-2]$/);
+export const validCardYear = new RegExp(/^20[2-9][0-9]$/);
+export const validSecNumber = new RegExp(/^[0-9]{3}$/);
+
+export const validCardMonthYear = (cardMonth, cardYear) => {
+  const validYear = cardYear - new Date().getFullYear();
+  const curMonth = new Date().getMonth()+1;
+  if(validYear < 0 || (validYear === 0  && (curMonth > cardMonth))){
+    return false;
+  }else{
+    return true;
+  }
+}
+
+export const cardNumberWithDash = (num) => {
+  return num.toString().replace(/(?<=[0-9]{4})(?=[0-9]{4})/, '-');
+}

@@ -6,11 +6,13 @@ import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 import { formatUIDate } from 'shared/utils';
 import { roleType } from 'data/constants';
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
+
 import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { LoadingButton } from '@mui/lab';
 import ConfirmDialog from "shared/components/ConfirmDialog";
+import AddCard from './AddCard';
 import UpdateCard from './UpdateCard';
 
 const IconLoadingButton = styled(LoadingButton)({
@@ -19,14 +21,20 @@ const IconLoadingButton = styled(LoadingButton)({
     }
 });
 
-const CardInfo = ({ companyId, role }) => {
+const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
     const gridRef = useRef();
-
     const [cards, setCards] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);    
+    const [isAddOpen, setIsAddOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+    const [customerInfo, setCustomerInfo] = useState({
+        companyId: companyId,
+        companyName: companyName,
+        companyEmail: companyEmail,
+        regBy: userId
+    });
 
     const columnDefs = [
         { field: 'holderName', headerName: 'Card Holder', width: 260, minWidth: 200 },
@@ -62,8 +70,13 @@ const CardInfo = ({ companyId, role }) => {
 
     const deleteCard = async () => {
       const { customerId } = await selectedRow;
-      axios.delete(`${api.stripeCustomer}/${customerId}`)
-        .then(() => setIsDeleteOpen(false), () => fetchCards(companyId));
+      await axios.delete(`${api.stripeCustomer}/${customerId}`)
+        .then(() => fetchCards(companyId))
+        .then(() => setIsDeleteOpen(false));
+    }
+
+    const addCard = () => {
+        setIsAddOpen(true);
     }
 
     const updateCard = () => {
@@ -81,6 +94,16 @@ const CardInfo = ({ companyId, role }) => {
                 onCancel={() => setIsDeleteOpen(false)} onClose={() => setIsDeleteOpen(false)} 
             />
             
+            {isAddOpen && <
+                AddCard
+                  customerInfo={customerInfo}
+                  onClose={() => setIsAddOpen(false)}
+                  onSaved={() => {
+                    fetchCards(companyId);
+                    setIsAddOpen(false);
+                  }}
+                />}
+
             {isUpdateOpen && <
                 UpdateCard
                   selectedRow = {selectedRow}
@@ -94,7 +117,9 @@ const CardInfo = ({ companyId, role }) => {
 
             <Grid container direction="column">
                 <Grid container item wrap="nowrap" alignItems="center" sx={{ mb: 2 }} columnGap={1}>
-                    <Button startIcon={<NoteAddIcon />} variant="contained" >
+                    <Button startIcon={<AddIcon />} variant="contained"
+                        onClick={addCard}
+                    >
                         Add a Card
                     </Button>
                     <IconLoadingButton variant="outlined" startIcon={<EditIcon />}
@@ -127,8 +152,7 @@ const CardInfo = ({ companyId, role }) => {
                     >
                     </AgGridReact>
                 </Grid>
-            </Grid>
-            
+            </Grid>   
         </>
     );
 }
