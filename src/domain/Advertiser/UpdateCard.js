@@ -7,6 +7,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
 import { validCardMonth, validCardYear, validSecNumber, validCardMonthYear } from 'shared/utils';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
 
 const UpdateCard = ({ selectedRow, onClose, onSaved }) => {
     const { holderName, lastDigit } = selectedRow;
@@ -15,43 +17,46 @@ const UpdateCard = ({ selectedRow, onClose, onSaved }) => {
     const [secNum, setSecNum] = useState(null);
     const [validCard, setValidCard] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    
-    const doUpdateCard = async (data) => {    
+    const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+
+    const doUpdateCard = async (data) => {
         await axios.put(`${api.stripeCustomer}`, data)
             .then((res) => {
                 console.log(res.status);
-        });
+            });
     }
 
-    const isValidCard = () => {               
-        if(!validCardMonth.test(expMonth)){
+    const isValidCard = () => {
+        if (!validCardMonth.test(expMonth)) {
             setErrorMessage(`Please correct expiration Month`);
             setValidCard(false);
-        }else if(!validCardYear.test(expYear)){
+        } else if (!validCardYear.test(expYear)) {
             setErrorMessage(`Please correct expiration Year`);
             setValidCard(false);
-        }else if(!validSecNumber.test(secNum)){
+        } else if (!validSecNumber.test(secNum)) {
             setErrorMessage(`Please correct cvc number`);
             setValidCard(false);
-        }else if(!validCardMonthYear(expMonth, expYear)){
+        } else if (!validCardMonthYear(expMonth, expYear)) {
             setErrorMessage(`Please correct expiration Month and Year`);
             setValidCard(false);
-        }else{
+        } else {
             setValidCard(true);
-        }   
+        }
     }
 
     const saveChanges = async () => {
+        setIsUpdateLoading(true);
         const data = {
-          customerId: selectedRow.customerId,
-          cardId: selectedRow.cardId,
-          expirationMonth: expMonth,
-          expirationYear: expYear,
-          cvc: secNum
+            customerId: selectedRow.customerId,
+            cardId: selectedRow.cardId,
+            expirationMonth: expMonth,
+            expirationYear: expYear,
+            cvc: secNum
         };
 
         await doUpdateCard(data);
-        onSaved();       
+        await onSaved();
+        setIsUpdateLoading(false);
     };
 
     return (
@@ -64,6 +69,11 @@ const UpdateCard = ({ selectedRow, onClose, onSaved }) => {
             >
                 <DialogTitle>Update the card</DialogTitle>
                 <DialogContent>
+                    {isUpdateLoading && (
+                        <Box sx={{ width: '100%' }}>
+                          <LinearProgress />
+                        </Box>
+                    )}
                     <Grid container direction="column" sx={{ mb: 4 }} rowGap={3}>
                         <Grid item>
                             <TextField

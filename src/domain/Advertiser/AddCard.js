@@ -7,8 +7,10 @@ import api from 'appConfig/restAPIs';
 import axios from 'axios';
 import { cardNumberWithDash, validCardHolderName, validCardNumber, validCardMonth, validCardYear, validSecNumber, validCardMonthYear } from 'shared/utils';
 import SnackbarMessage from 'shared/components/SnackbarMessage';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
 
-const AddCard = ({ customerInfo, onClose, onSaved }) =>{
+const AddCard = ({ customerInfo, onClose, onSaved }) => {
     const [holderName, setHolderName] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [expMonth, setExpMonth] = useState(null);
@@ -16,40 +18,42 @@ const AddCard = ({ customerInfo, onClose, onSaved }) =>{
     const [secNum, setSecNum] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [validCard, setValidCard] = useState(false);
+    const [isAddLoading, setIsAddLoading] = useState(false);
 
     const handleAddCard = async (data) => {
         await axios.post(`${api.stripeCustomer}`, data)
-        .then((res) => {
-          console.log(res.status);
-        });
-    };
-    
-    const isValidCard = () => {
-        
-        if(!validCardHolderName.test(holderName)){
-            setErrorMessage(`Please correct holder name`);
-            setValidCard(false);
-        }else if(!validCardNumber.test(cardNumber)){
-            setErrorMessage(`Please correct card number`);
-            setValidCard(false);
-        }else if(!validCardMonth.test(expMonth)){
-            setErrorMessage(`Please correct expiration Month`);
-            setValidCard(false);
-        }else if(!validCardYear.test(expYear)){
-            setErrorMessage(`Please correct expiration Year`);
-            setValidCard(false);
-        }else if(!validSecNumber.test(secNum)){
-            setErrorMessage(`Please correct cvc number`);
-            setValidCard(false);
-        }else if(!validCardMonthYear(expMonth, expYear)){
-            setErrorMessage(`Please correct expiration Month and Year`);
-            setValidCard(false);
-        }else{
-            setValidCard(true);
-        }   
+            .then((res) => {
+                console.log(res.status);
+            });
     };
 
-    const saveAdd = async () => {      
+    const isValidCard = () => {
+
+        if (!validCardHolderName.test(holderName)) {
+            setErrorMessage(`Please correct holder name`);
+            setValidCard(false);
+        } else if (!validCardNumber.test(cardNumber)) {
+            setErrorMessage(`Please correct card number`);
+            setValidCard(false);
+        } else if (!validCardMonth.test(expMonth)) {
+            setErrorMessage(`Please correct expiration Month`);
+            setValidCard(false);
+        } else if (!validCardYear.test(expYear)) {
+            setErrorMessage(`Please correct expiration Year`);
+            setValidCard(false);
+        } else if (!validSecNumber.test(secNum)) {
+            setErrorMessage(`Please correct cvc number`);
+            setValidCard(false);
+        } else if (!validCardMonthYear(expMonth, expYear)) {
+            setErrorMessage(`Please correct expiration Month and Year`);
+            setValidCard(false);
+        } else {
+            setValidCard(true);
+        }
+    };
+
+    const saveAdd = async () => {
+        setIsAddLoading(true);
         const data = {
             ...customerInfo,
             creditCard: {
@@ -61,7 +65,8 @@ const AddCard = ({ customerInfo, onClose, onSaved }) =>{
             }
         }
         await handleAddCard(data);
-        onSaved();
+        await onSaved();
+        setIsAddLoading(false);
     };
 
     return (
@@ -74,7 +79,12 @@ const AddCard = ({ customerInfo, onClose, onSaved }) =>{
             >
                 <DialogTitle>Add a card</DialogTitle>
                 <DialogContent>
-                <Grid container direction="column" sx={{ mb: 4 }} rowGap={3}>
+                    {isAddLoading && (
+                        <Box sx={{ width: '100%' }}>
+                            <LinearProgress />
+                        </Box>
+                    )}
+                    <Grid container direction="column" sx={{ mb: 4 }} rowGap={3}>
                         <Grid item>
                             <TextField
                                 label="Holder Name"
@@ -122,7 +132,7 @@ const AddCard = ({ customerInfo, onClose, onSaved }) =>{
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                <LoadingButton startIcon={<SaveIcon />} variant="contained"
+                    <LoadingButton startIcon={<SaveIcon />} variant="contained"
                         onClick={saveAdd}
                         disabled={!validCard}
                     >
