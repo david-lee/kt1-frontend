@@ -14,7 +14,7 @@ const UpdateCard = ({ selectedRow, onClose, onSaved }) => {
     const { holderName, lastDigit } = selectedRow;
     const [expMonth, setExpMonth] = useState(selectedRow.expirationMonth);
     const [expYear, setExpYear] = useState(selectedRow.expirationYear);
-    const [secNum, setSecNum] = useState(null);
+    const [secNum, setSecNum] = useState("");
     const [validCard, setValidCard] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isUpdateLoading, setIsUpdateLoading] = useState(false);

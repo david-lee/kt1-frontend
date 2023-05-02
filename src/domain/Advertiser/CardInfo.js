@@ -10,6 +10,8 @@ import { roleType } from 'data/constants';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import CheckIcon from '@mui/icons-material/Check';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { LoadingButton } from '@mui/lab';
 import ConfirmDialog from "shared/components/ConfirmDialog";
 import AddCard from './AddCard';
@@ -29,6 +31,7 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);    
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+    const [isChangeCardOpen, setIsChangeCardOpen] = useState(false);
     const [customerInfo, setCustomerInfo] = useState({
         companyId: companyId,
         companyName: companyName,
@@ -44,6 +47,13 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
         {
             field: 'regDate', headerName: 'Register Date', resizable: false, width: 140,
             valueFormatter: (params) => formatUIDate(params.value)
+        },
+        { 
+            field: 'isPrimary', headerName: 'Primary Card', resizable: false, width: 120,
+            cellRenderer: (props) => {
+                return props.value === true ? <CheckCircleIcon sx={{ position: 'relative', top: 5, color: "green" }} /> : ''
+            },
+            valueGetter: (params) => params.data.isPrimary
         }
     ];
 
@@ -75,6 +85,16 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
         .then(() => setIsDeleteOpen(false));
     }
 
+    const changeCard = async () => {
+        const data = {
+            companyId: selectedRow.companyId,
+            customerId: selectedRow.customerId
+        }
+        await axios.put(`${api.stripeCustomerCard}`, data)
+          .then(() => fetchCards(companyId))
+          .then(() => setIsChangeCardOpen(false));
+    }
+
     const addCard = () => {
         setIsAddOpen(true);
     }
@@ -92,6 +112,12 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
                 message={`Do you want to delete it?`}
                 isLoading={isLoading} onOK={deleteCard} 
                 onCancel={() => setIsDeleteOpen(false)} onClose={() => setIsDeleteOpen(false)} 
+            />
+
+            <ConfirmDialog open={isChangeCardOpen}
+                message={`Do you want to change the primary card?`}
+                isLoading={isLoading} onOK={changeCard} 
+                onCancel={() => setIsChangeCardOpen(false)} onClose={() => setIsChangeCardOpen(false)} 
             />
             
             {isAddOpen && <
@@ -132,6 +158,13 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
                     <IconLoadingButton startIcon={<DeleteForeverIcon />} color="error" variant="outlined"
                         loadingPosition='start'
                         onClick={() => setIsDeleteOpen(true)}
+                        loading={isLoading}
+                        disabled={!selectedRow}
+                    >
+                    </IconLoadingButton>
+                    <IconLoadingButton startIcon={<CheckIcon />} color="success" variant="outlined"
+                        loadingPosition='start'
+                        onClick={() => setIsChangeCardOpen(true)}
                         loading={isLoading}
                         disabled={!selectedRow}
                     >
