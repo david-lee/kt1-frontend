@@ -1,6 +1,6 @@
-import { Button, Link, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SnackbarMessage from 'shared/components/SnackbarMessage';
 import { LoadingButton } from '@mui/lab';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -12,6 +12,48 @@ const CardTransaction = ({onClose, onOpen, payData}) => {
 console.log("payData", payData);
     const [errorMessage, setErrorMessage] = useState('');
     const [isPayLoading, setIsPayLoading] = useState(false);
+    const [validTotal, setValidTotal] = useState(true);
+    const {creditCard, receiptEmail, cost, taxAmount, invoiceNo, adId, adType, companyName} = payData;
+        
+    const [price, setPrice] = useState(cost);
+    const [tax, setTax] = useState(taxAmount);
+    const [total, setTotal] = useState(parseInt(cost)+parseInt(taxAmount));
+
+    const handleTotal = () => {
+        if(price + tax > cost + taxAmount){
+            setErrorMessage(`Sum of Cost and Tax should be same or less than Original Total`);
+            setValidTotal(false);
+        }else{
+            setValidTotal(true);
+            setTotal(price + tax);
+        }
+    };
+
+    useEffect(() => {
+        setTotal(price + tax);
+        handleTotal();
+    },[price, tax]);
+
+    const onReset = () => {
+        setPrice(cost);
+        setTax(taxAmount);
+        setTotal(parseInt(cost) + parseInt(taxAmount));
+    };
+    
+    const submitCardPay = () => {
+        setIsPayLoading(true);
+        const data = {
+            adId: adId,
+            invoiceNo: invoiceNo,
+            customerId: creditCard.customerId,
+            receiptEmail: receiptEmail,
+            description: `${adId}-${adType}-${companyName}`,
+            currency: 'cad',
+            amount: total
+        };
+
+        setIsPayLoading(false);
+    };
 
     return (
         <>
@@ -19,7 +61,7 @@ console.log("payData", payData);
             <Dialog
                 open={onOpen}
                 onClose={() => onClose()}
-                sx={{ "& .MuiPaper-root": { maxWidth: 1000, minWidth: 600, minHeight: 300 } }}
+                sx={{ "& .MuiPaper-root": { maxWidth: 700, minWidth: 400, minHeight: 200 } }}
             >
                 <DialogTitle>
                     <Grid container direction="row" sx={{ justifyContent: 'space-between' }}>
@@ -29,9 +71,7 @@ console.log("payData", payData);
                         <Grid item>
                             <Button startIcon={<ClearIcon />} onClick={() => onClose()} variant="outlined" fontSize="small"></Button>
                         </Grid>
-                    </Grid>
-                    
-                    
+                    </Grid>               
                 </DialogTitle>
                 <DialogContent>
                     {isPayLoading && (
@@ -39,18 +79,41 @@ console.log("payData", payData);
                           <LinearProgress />
                         </Box>
                     )}
-                    <Grid container direction="column" sx={{ mb: 4 }} rowGap={3}>
-                        
+                    <Grid container direction="row" sx={{ mb: 4 }} rowGap={3}>
+                        <Grid item>
+                            <TextField
+                                label="Total"
+                                value={total}
+                                variant='standard'
+                                
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                label="Cost"
+                                value={price}
+                                variant='standard'
+                                onChange={(e) => setPrice(parseInt(e.target.value))}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                label="Tax"
+                                value={tax}
+                                variant='standard'
+                                onChange={(e) => setTax(parseInt(e.target.value))}
+                            />
+                        </Grid>
                     </Grid>
                 </DialogContent>
                 <DialogActions>
                     <LoadingButton startIcon={<SaveIcon />} variant="contained"
-                        
+                        disabled={!validTotal}
+                        onClick={submitCardPay}
                     >
                         Submit
                     </LoadingButton>
-                    {/* 초기화 */}
-                    <Button startIcon={<RestartAltIcon />} onClick={() => onClose()} variant="outlined">Reset</Button>
+                    <Button startIcon={<RestartAltIcon />} onClick={() => onReset()} variant="outlined">Reset</Button>
                 </DialogActions>
             </Dialog>
         </>
