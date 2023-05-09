@@ -64,7 +64,7 @@ const AddCard = ({ customerInfo, onClose, onSaved }) => {
                 cvc: secNum
             }
         }
-        console.log("data", data);
+        
         await handleAddCard(data);
         await onSaved();
         setIsAddLoading(false);
