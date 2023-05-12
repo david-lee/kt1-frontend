@@ -7,17 +7,22 @@ import ClearIcon from '@mui/icons-material/Clear';
 import SaveIcon from '@mui/icons-material/Save';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import Box from '@mui/material/Box';
+import api from 'appConfig/restAPIs';
+import axios from 'axios';
+import { useUserAuth } from 'shared/contexts/UserAuthContext';
 
-const CardTransaction = ({onClose, onOpen, payData}) => {
-console.log("payData", payData);
+const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
+    console.log("payData", payData);
     const [errorMessage, setErrorMessage] = useState('');
     const [isPayLoading, setIsPayLoading] = useState(false);
     const [validTotal, setValidTotal] = useState(true);
-    const {creditCard, receiptEmail, cost, taxAmount, invoiceNo, adId, adType, companyName} = payData;
+    const {creditCard, receiptEmail, cost, taxAmount, invoiceNo, adId, adType, companyName, method} = payData;
         
     const [price, setPrice] = useState(cost);
     const [tax, setTax] = useState(taxAmount);
-    const [total, setTotal] = useState(parseInt(cost)+parseInt(taxAmount));
+    const [total, setTotal] = useState(cost + taxAmount);
+
+    const { user } = useUserAuth();
 
     const handleTotal = () => {
         if(price + tax > cost + taxAmount){
@@ -37,22 +42,38 @@ console.log("payData", payData);
     const onReset = () => {
         setPrice(cost);
         setTax(taxAmount);
-        setTotal(parseInt(cost) + parseInt(taxAmount));
+        setTotal(cost + taxAmount);
     };
     
+    const handleCardPay = async (data) => {
+        await axios.post(`${api.stripePayment}`, data)
+            .then((res) => {
+                console.log(res.status);
+                setIsPayLoading(false);
+            });
+    };
+
+    const completeCardPay = async () => {
+        // call updated list
+        fetchCardPayBills()
+
+        // close dialog
+        onClose();
+    }
+
     const submitCardPay = () => {
         setIsPayLoading(true);
         const data = {
-            adId: adId,
-            invoiceNo: invoiceNo,
             customerId: creditCard.customerId,
             receiptEmail: receiptEmail,
-            description: `${adId}-${adType}-${companyName}`,
+            description: `${adId}:${adType}:${invoiceNo}:${companyName}:${price}:${tax}:${user.userId}:${method}`,
             currency: 'cad',
             amount: total
         };
 
+        handleCardPay(data);
         setIsPayLoading(false);
+        completeCardPay();
     };
 
     return (
@@ -60,7 +81,7 @@ console.log("payData", payData);
             <SnackbarMessage errorMessage={errorMessage} onClose={() => setErrorMessage('')} />
             <Dialog
                 open={onOpen}
-                onClose={() => onClose()}
+                // onClose={() => onClose()}
                 sx={{ "& .MuiPaper-root": { maxWidth: 700, minWidth: 400, minHeight: 200 } }}
             >
                 <DialogTitle>
@@ -93,7 +114,7 @@ console.log("payData", payData);
                                 label="Cost"
                                 value={price}
                                 variant='standard'
-                                onChange={(e) => setPrice(parseInt(e.target.value))}
+                                onChange={(e) => setPrice(parseInt(e.target.value) || "")}
                             />
                         </Grid>
                         <Grid item>
@@ -101,7 +122,7 @@ console.log("payData", payData);
                                 label="Tax"
                                 value={tax}
                                 variant='standard'
-                                onChange={(e) => setTax(parseInt(e.target.value))}
+                                onChange={(e) => setTax(parseInt(e.target.value) || "")}
                             />
                         </Grid>
                     </Grid>
@@ -121,3 +142,7 @@ console.log("payData", payData);
 }
 
 export default CardTransaction;
+
+// paid와 ad 계산해서 original amount와 balance 나눠서 보여주기
+// 이미 다 지불한건 balance 0, disabled
+// original amount - paid history - pay == 0 이면 invoice status update
