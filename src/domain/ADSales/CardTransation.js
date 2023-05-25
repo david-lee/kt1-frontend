@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
-import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import React, { useState, useEffect } from 'react';
 import SnackbarMessage from 'shared/components/SnackbarMessage';
 import { LoadingButton } from '@mui/lab';
@@ -16,16 +16,16 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [isPayLoading, setIsPayLoading] = useState(false);
     const [validTotal, setValidTotal] = useState(true);
-    const {creditCard, receiptEmail, cost, taxAmount, invoiceNo, adId, adType, companyName, method} = payData;
+    const {creditCard, receiptEmail, cost, taxAmount, paidAmount, paidTax, invoiceNo, adId, adType, companyName, method} = payData;
         
-    const [price, setPrice] = useState(cost);
-    const [tax, setTax] = useState(taxAmount);
-    const [total, setTotal] = useState(cost + taxAmount);
+    const [price, setPrice] = useState(cost-paidAmount);
+    const [tax, setTax] = useState(taxAmount-paidTax);
+    const [total, setTotal] = useState(cost + taxAmount - paidAmount - paidTax);
 
     const { user } = useUserAuth();
 
     const handleTotal = () => {
-        if(price + tax > cost + taxAmount){
+        if(price + tax > cost + taxAmount - paidAmount - paidTax){
             setErrorMessage(`Sum of Cost and Tax should be same or less than Original Total`);
             setValidTotal(false);
         }else{
@@ -35,31 +35,23 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
     };
 
     useEffect(() => {
-        setTotal(price + tax);
+        //setTotal(price + tax);
         handleTotal();
     },[price, tax]);
 
     const onReset = () => {
-        setPrice(cost);
-        setTax(taxAmount);
-        setTotal(cost + taxAmount);
+        setPrice(cost - paidAmount);
+        setTax(taxAmount - paidTax);
+        setTotal(cost + taxAmount - paidAmount - paidTax);
     };
     
     const handleCardPay = async (data) => {
         await axios.post(`${api.stripePayment}`, data)
             .then((res) => {
                 console.log(res.status);
-                setIsPayLoading(false);
+                fetchCardPayBills();
             });
     };
-
-    const completeCardPay = async () => {
-        // call updated list
-        fetchCardPayBills()
-
-        // close dialog
-        onClose();
-    }
 
     const submitCardPay = () => {
         setIsPayLoading(true);
@@ -73,7 +65,7 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
 
         handleCardPay(data);
         setIsPayLoading(false);
-        completeCardPay();
+        onClose();
     };
 
     return (
@@ -96,8 +88,8 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
                 </DialogTitle>
                 <DialogContent>
                     {isPayLoading && (
-                        <Box sx={{ width: '100%' }}>
-                          <LinearProgress />
+                        <Box sx={{ display:'flex' }}>
+                          <CircularProgress />
                         </Box>
                     )}
                     <Grid container direction="row" sx={{ mb: 4 }} rowGap={3}>
