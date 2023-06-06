@@ -10,12 +10,10 @@ import Box from '@mui/material/Box';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
 import { useUserAuth } from 'shared/contexts/UserAuthContext';
-import { subMonths, format } from 'date-fns';
+import { subMonths } from 'date-fns';
 import { precisionRound } from 'shared/utils';
-import ADPrice from 'shared/components/ADPrice';
 
 const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
-    console.log("payData", payData);
     const [errorMessage, setErrorMessage] = useState('');
     const [isPayLoading, setIsPayLoading] = useState(false);
     const [validTotal, setValidTotal] = useState(true);

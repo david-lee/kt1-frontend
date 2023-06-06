@@ -84,7 +84,6 @@ const CardPayForBill = () => {
 
         axios.get(`${api.cardPayBillList}?startDate=${stDate}&endDate=${edDate}`)
             .then((res) => {
-                console.log(res);
                 setCardPayList([...res.data]);
             })
             .finally(() => {
@@ -186,7 +185,7 @@ const CardPayForBill = () => {
                                         </StyledTableCell>
                                         <StyledTableCell>
                                             <Button variant="outlined" onClick={() => payCard(row)} disabled={!row.creditCard.lastDigit
-                                                || (row.cost - row.paidAmount == 0 && row.taxAmount - row.paidTax == 0)}>
+                                                || (row.cost - row.paidAmount === 0 && row.taxAmount - row.paidTax === 0)}>
                                                 {(row.cost - row.paidAmount > 0 || row.taxAmount - row.paidTax > 0) ? "Pay" : "Done"}
                                             </Button>
                                         </StyledTableCell>
