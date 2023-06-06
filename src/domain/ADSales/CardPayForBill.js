@@ -186,9 +186,8 @@ const CardPayForBill = () => {
                                         </StyledTableCell>
                                         <StyledTableCell>
                                             <Button variant="outlined" onClick={() => payCard(row)} disabled={!row.creditCard.lastDigit
-                                                || row.cost + row.taxAmount - row.paidAmount - row.paidTax <= 0.00000000000001}>
-                                                {(row.cost + row.taxAmount - row.paidAmount - row.paidTax > 0.00000000000001) ? "Pay" : "Done"}
-                                                {row.cost}, {row.taxAmount}, {row.paidAmount}, {row.paidTax}
+                                                || (row.cost - row.paidAmount == 0 && row.taxAmount - row.paidTax == 0)}>
+                                                {(row.cost - row.paidAmount > 0 || row.taxAmount - row.paidTax > 0) ? "Pay" : "Done"}
                                             </Button>
                                         </StyledTableCell>
                                     </StyledTableRow>
