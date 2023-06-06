@@ -17,8 +17,9 @@ import { numberWithCommas } from 'shared/utils';
 import ADDate from 'shared/components/ADDate';
 import SearchIcon from '@mui/icons-material/Search';
 import { LoadingButton } from '@mui/lab';
-import { subMonths, format } from 'date-fns';
+import { subMonths, addDays, format } from 'date-fns';
 import { DATA_DATE_FORMAT } from 'data/constants';
+import { precisionRound } from 'shared/utils';
 
 const IconLoadingButton = styled(LoadingButton)({
     "& .MuiButton-startIcon": {
@@ -92,9 +93,9 @@ const CardPayForBill = () => {
     }, [])
 
     useEffect(() => {
-        
-        const endDate = new Date()
-        const startDate = subMonths(endDate, 2);
+        const currentDate = new Date();
+        const startDate = subMonths(currentDate, 2);
+        const endDate = addDays(currentDate, 1);
              
         fetchCardPayBills(startDate, endDate);
         setFromDate(startDate);
@@ -111,14 +112,13 @@ const CardPayForBill = () => {
             />
             }
             
-            <Grid container alignItems="center" xs={4}>
+            <Grid container alignItems="center" xs={4} sx={{mt:8}}>
                 <ADDate label="From Date" width="120px" value={fromDate}
                     onChange={(newValue) => { handleDateChange('from', newValue); }}
                 />
                 <ADDate label="to Date" width="120px" value={toDate}
                     onChange={(newValue) => { handleDateChange('to', newValue); }}
                 />
-
                 <IconLoadingButton variant="contained" startIcon={<SearchIcon />} loading={isListLoading}
                     onClick={() => fetchCardPayBills(fromDate, toDate)}
                     sx={{ position: "relative", top: 5, ml: 1 }}>
@@ -175,9 +175,9 @@ const CardPayForBill = () => {
                                         <StyledTableCell>{row.companyId}</StyledTableCell>
                                         <StyledTableCell>{row.companyName}</StyledTableCell>
                                         <StyledTableCell>{row.invoiceNo}</StyledTableCell>
-                                        <StyledTableCell>{numberWithCommas(row.cost + row.taxAmount)}</StyledTableCell>
-                                        <StyledTableCell>{numberWithCommas(row.paidAmount + row.paidTax)}</StyledTableCell>
-                                        <StyledTableCell>{numberWithCommas(row.cost + row.taxAmount - row.paidAmount - row.paidTax)}</StyledTableCell>
+                                        <StyledTableCell>{numberWithCommas(precisionRound(row.cost + row.taxAmount))}</StyledTableCell>
+                                        <StyledTableCell>{numberWithCommas(precisionRound(row.paidAmount + row.paidTax))}</StyledTableCell>
+                                        <StyledTableCell>{numberWithCommas(precisionRound(row.cost + row.taxAmount - row.paidAmount - row.paidTax))}</StyledTableCell>
                                         <StyledTableCell>
                                             {(row.creditCard.lastDigit !== "")
                                                 ? row.creditCard.lastDigit
@@ -186,8 +186,9 @@ const CardPayForBill = () => {
                                         </StyledTableCell>
                                         <StyledTableCell>
                                             <Button variant="outlined" onClick={() => payCard(row)} disabled={!row.creditCard.lastDigit
-                                                || row.cost + row.taxAmount - row.paidAmount - row.paidTax == 0}>
-                                                {(row.cost + row.taxAmount - row.paidAmount - row.paidTax > 0) ? "Pay" : "Done"}
+                                                || row.cost + row.taxAmount - row.paidAmount - row.paidTax <= 0.00000000000001}>
+                                                {(row.cost + row.taxAmount - row.paidAmount - row.paidTax > 0.00000000000001) ? "Pay" : "Done"}
+                                                {row.cost}, {row.taxAmount}, {row.paidAmount}, {row.paidTax}
                                             </Button>
                                         </StyledTableCell>
                                     </StyledTableRow>

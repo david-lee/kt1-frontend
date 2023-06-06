@@ -10,6 +10,9 @@ import Box from '@mui/material/Box';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
 import { useUserAuth } from 'shared/contexts/UserAuthContext';
+import { subMonths, format } from 'date-fns';
+import { precisionRound } from 'shared/utils';
+import ADPrice from 'shared/components/ADPrice';
 
 const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
     console.log("payData", payData);
@@ -49,21 +52,24 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
         await axios.post(`${api.stripePayment}`, data)
             .then((res) => {
                 console.log(res.status);
-                fetchCardPayBills();
+                // fetchCardPayBills();
             });
     };
 
-    const submitCardPay = () => {
+    const submitCardPay = async () => {
         setIsPayLoading(true);
         const data = {
             customerId: creditCard.customerId,
             receiptEmail: receiptEmail,
             description: `${adId}:${adType}:${invoiceNo}:${companyName}:${price}:${tax}:${user.userId}:${method}`,
             currency: 'cad',
-            amount: total
+            amount: Math.round(total * 100)
         };
 
-        handleCardPay(data);
+        await handleCardPay(data);
+        const endDate = new Date()
+        const startDate = subMonths(endDate, 2);
+        fetchCardPayBills(startDate, endDate);
         setIsPayLoading(false);
         onClose();
     };
@@ -96,25 +102,29 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
                         <Grid item>
                             <TextField
                                 label="Total"
-                                value={total}
+                                value={precisionRound(total)}
                                 variant='standard'
                                 
                             />
                         </Grid>
                         <Grid item>
                             <TextField
+                                type ="number"
                                 label="Cost"
-                                value={price}
+                                value={precisionRound(price)}
                                 variant='standard'
-                                onChange={(e) => setPrice(parseInt(e.target.value) || "")}
+                                inputProps={{maxLength:8, step:"2"}}
+                                onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
                             />
                         </Grid>
                         <Grid item>
                             <TextField
+                                type="number"
                                 label="Tax"
-                                value={tax}
+                                value={precisionRound(tax)}
                                 variant='standard'
-                                onChange={(e) => setTax(parseInt(e.target.value) || "")}
+                                inputProps={{maxLength:8, step:"2"}}
+                                onChange={(e) => setTax(parseFloat(e.target.value) || 0)}
                             />
                         </Grid>
                     </Grid>
