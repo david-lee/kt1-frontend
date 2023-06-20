@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
 import { useUserAuth } from 'shared/contexts/UserAuthContext';
-import { subMonths } from 'date-fns';
+import { subMonths, addDays } from 'date-fns';
 import { precisionRound } from 'shared/utils';
 
 const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
@@ -51,6 +51,7 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
             .then((res) => {
                 console.log(res.status);
                 // fetchCardPayBills();
+                
             });
     };
 
@@ -65,9 +66,13 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
         };
 
         await handleCardPay(data);
-        const endDate = new Date()
-        const startDate = subMonths(endDate, 2);
+
+        const currentDate = new Date();
+        const startDate = subMonths(currentDate, 2);
+        const endDate = addDays(currentDate, 1);
+        
         fetchCardPayBills(startDate, endDate);
+        
         setIsPayLoading(false);
         onClose();
     };
