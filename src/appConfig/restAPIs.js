@@ -5,6 +5,7 @@ const restApi = {
   companySearch: '/company/search',
   createCompany: '/auth/register',
   cardPayList: '/sales/cardPayList',
+  cardPayBillList: '/sales/cardPayBillList',
   createAdOnetime: '/sales/oneTime',
   createAdFixed: '/sales/fixed',
   createAdRandom: '/sales/random',
@@ -33,7 +34,10 @@ const restApi = {
   subscriber: '/subscriber',
   statsAD: '/stats/advertisement',
   statsPayment: '/stats/payment',
-  monthlySales: '/sales/monthlySales'
+  monthlySales: '/sales/monthlySales',
+  stripeCustomer: '/stripe/customer',
+  stripeCustomerCard: '/stripe/customer/card',
+  stripePayment: '/stripe/payment'
 }
 
 export default restApi;
