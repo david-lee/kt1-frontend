@@ -51,7 +51,6 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
             .then((res) => {
                 console.log(res.status);
                 // fetchCardPayBills();
-                
             });
     };
 
@@ -147,7 +146,3 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
 }
 
 export default CardTransaction;
-
-// paid와 ad 계산해서 original amount와 balance 나눠서 보여주기
-// 이미 다 지불한건 balance 0, disabled
-// original amount - paid history - pay == 0 이면 invoice status update
