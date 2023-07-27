@@ -94,11 +94,10 @@ const CardPayForBill = () => {
     useEffect(() => {
         const currentDate = new Date();
         const startDate = subMonths(currentDate, 2);
-        const endDate = addDays(currentDate, 1);
              
-        fetchCardPayBills(startDate, endDate);
+        fetchCardPayBills(startDate, currentDate);
         setFromDate(startDate);
-        setToDate(endDate);
+        setToDate(currentDate);
     }, [fetchCardPayBills])
 
     return (

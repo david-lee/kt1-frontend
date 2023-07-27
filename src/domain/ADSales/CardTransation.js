@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import React, { useState, useEffect } from 'react';
 import SnackbarMessage from 'shared/components/SnackbarMessage';
@@ -22,6 +22,7 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
     const [price, setPrice] = useState(cost-paidAmount);
     const [tax, setTax] = useState(taxAmount-paidTax);
     const [total, setTotal] = useState(cost + taxAmount - paidAmount - paidTax);
+    const [directReceipt, setDirectReceipt] = useState(false);
 
     const { user } = useUserAuth();
 
@@ -58,12 +59,12 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
         setIsPayLoading(true);
         const data = {
             customerId: creditCard.customerId,
-            receiptEmail: receiptEmail,
+            receiptEmail: directReceipt ? receiptEmail : 'receipt.koreatimes@gmail.com',
             description: `${adId}:${adType}:${invoiceNo}:${companyName}:${price}:${tax}:${user.userId}:${method}`,
             currency: 'cad',
             amount: Math.round(total * 100)
         };
-
+        
         await handleCardPay(data);
 
         const currentDate = new Date();
@@ -75,6 +76,10 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
         setIsPayLoading(false);
         onClose();
     };
+
+    const handleDirectReceipt = (e) => {
+        setDirectReceipt(e.target.checked);
+    }
 
     return (
         <>
@@ -128,6 +133,12 @@ const CardTransaction = ({onClose, onOpen, payData, fetchCardPayBills}) => {
                                 inputProps={{maxLength:8, step:"2"}}
                                 onChange={(e) => setTax(parseFloat(e.target.value) || 0)}
                             />
+                        </Grid>
+                        <Grid item>
+                            <FormGroup>
+                                <FormControlLabel control={<Checkbox size="small" checked={directReceipt} onChange={handleDirectReceipt}/>}
+                                    label="direct receipt" labelPlacement="top" sx={{position:"relative", mx: 0}} />
+                            </FormGroup>
                         </Grid>
                     </Grid>
                 </DialogContent>
