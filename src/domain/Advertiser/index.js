@@ -15,6 +15,7 @@ import InvoiceList from './InvoiceList';
 import MonthlySales from './MonthlySales';
 import AddNewCompany from './AddNewCompany';
 import CardInfo from './CardInfo';
+import Receipt from './Receipt';
 
 const Advertiser = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -111,6 +112,7 @@ const Advertiser = () => {
                 <Tab label="Issued Invoice List" value={3} />
                 <Tab label="Monthly Sales" value={4} />
                 <Tab label="Card Info" value={5} />
+                <Tab label="Issue Receipt" value={6} />
               </Tabs>
             </Grid>
             <Grid item><Typography color="green" variant="body1b">{company.primaryName} ({company.userId})</Typography></Grid>
@@ -145,6 +147,9 @@ const Advertiser = () => {
           </TabPanel>
           <TabPanel value={tabIndex} index={5}>
             <CardInfo companyId={company.userId} companyName={company.primaryName} companyEmail={company.email} userId={userId} />
+          </TabPanel>
+          <TabPanel value={tabIndex} index={6}>
+            <Receipt companyId={company.userId} eInvoice={company.eInvoice} role={role} />
           </TabPanel>
         </Box>
       )}
