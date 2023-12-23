@@ -31,10 +31,10 @@ const Receipt = ({ companyId, eInvoice, role }) => {
   const [stDate, setStDate] = useState(() => subYears(new Date(), 1));
   const [edDate, setEdDate] = useState(null);
   const [isReceiptLoading, setIsReceiptLoading] = useState(false);
-  const [canIssue, setCanIssue] = useState(false);
+  // const [canIssue, setCanIssue] = useState(false);
   const [clickedAction, setClickedAction] = useState("view");
-  
-
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [numOfSelected, setNumOfSelected] = useState(0);
 
   const getList = useCallback((companyId, stDate, edDate) => {
 
@@ -56,9 +56,10 @@ const Receipt = ({ companyId, eInvoice, role }) => {
 
   useEffect(() => {
     getList(companyId, stDate, edDate);
+    console.log("receiptList in Receipt", receiptList);
   }, [companyId, getList]);
 
-  console.log("receiptList2", receiptList);
+  
   
   const handleDateChange = (type, value) => {
     if (type === 'start') setStDate(value);
@@ -70,10 +71,68 @@ const Receipt = ({ companyId, eInvoice, role }) => {
     setIsOpen(true);
   }
 
-  const handleReceipt = () => {
+  
+  const handleReceipt = async () => {    
+    const receiptList = await selectedItems.map((row) => {
+      return{
+        billNo: row.adId,
+        desc: row.adTitle,
+        startDate: row.startDate,
+        endDate: row.endDate,
+        cost: row.cost,
+        taxAmount: row.taxAmount,
+        issueReceiptListDetail : row.getReceiptListDetail.map((detail) => {
+          return {
+            payId: detail.payId,
+            paidAmount: detail.paidAmount,
+            paidTax: detail.paidTax,
+            paidDate: detail.paidDate,
+            paidMethod: detail.paidMethod
+          }
+        })
+      }
+    })
 
+    const data = {
+      companyId: companyId,
+      issueType: "view" ? 1 : "issue" ? 2 : 3,
+      issueReceiptList : receiptList
+    }
+    submitReceiptList(data);
+    
   }
 
+  
+  const submitReceiptList = async(data, viewPdf = true) => {
+    console.log("data",data);
+    await axios.post(`${api.issueReceipt}`, data, {responseType: 'blob'})
+            .then((res) => {
+              if (viewPdf) {
+                const file = new Blob([res.data], {type: 'application/pdf'});
+                const fileURL = URL.createObjectURL(file);
+                window.open(fileURL);
+              }
+            }).finallyy(() => {
+              setIsOpen(false);
+            })
+  }
+
+  const handleSelected = async (event, row) => {
+                
+    console.log("event.target.checked", event.target.checked);
+    
+    if(event.target.checked){
+      setNumOfSelected(numOfSelected+1);
+      await setSelectedItems([...selectedItems, row]);
+    }else{
+      setNumOfSelected(numOfSelected-1);
+      let selectUpdated = selectedItems.filter(val => val.adId !== row.adId);
+      await setSelectedItems([...selectUpdated]);
+    }
+  }
+  console.log("selectedItems-out", selectedItems);
+  console.log("numOfSelected", numOfSelected);
+  
   const headCells = ["BillNo", "Type", "Title", "StartDate", "EndDate", "Cost", "Tax", "Total", "Page", "Size", "CadTitle"];
 
   return (
@@ -81,7 +140,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
       <ConfirmDialog open={isOpen}
         message={`Do you want to ${clickedAction} the receipt?`}
         isLoading={isReceiptLoading}
-        onOk={handleReceipt}
+        onOK={handleReceipt}
         onCancel={() => setIsOpen(false)}
         onClose={() => setIsOpen(false)}
       />
@@ -106,7 +165,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
               onClick={() => setReceiptAction("view")}
               loadingPosition="start"
               loading={isReceiptLoading}
-              disabled={!canIssue}
+              disabled={!(numOfSelected>0)}
             ></IconLoadingButton>
 
             {role !== roleType.director && (
@@ -115,14 +174,14 @@ const Receipt = ({ companyId, eInvoice, role }) => {
                   onClick={() => setReceiptAction("issue")}
                   loadingPosition="start"
                   loading={isReceiptLoading}
-                  disabled={!canIssue}
+                  disabled={!(numOfSelected>0)}
                 ></IconLoadingButton>
 
                 <IconLoadingButton variant="contained" startIcon={<EmailIcon />}
                   onClick={() => setReceiptAction("email")}
                   loadingPosition="start"
                   loading={isReceiptLoading}
-                  disabled={!canIssue || !eInvoice}
+                  disabled={!(numOfSelected>0) || !eInvoice}
                 ></IconLoadingButton>
               </>
             )}
@@ -153,7 +212,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
                   </TableHead>
                   <TableBody>
                     {receiptList.data.map((row) => (
-                      <ReceiptDetail key={row.adId.toString()} row={row} />
+                      <ReceiptDetail key={row.adId.toString()} row={row} handleSelected={handleSelected} />
                     ))}
                   </TableBody>
                 </Table>

@@ -4,33 +4,33 @@ import { formatUIDate, numberWithCommas } from 'shared/utils';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
-const ReceiptDetail = ({row}) => {
+const ReceiptDetail = ({row, handleSelected}) => {
   //const { row } = row;
   const [detailOpen, setDetailOpen] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
+  
+  console.log("isSelected",isSelected);
 
-
-  const handleSelected = (event) => {
-    setIsSelected(!isSelected);
+  // const handleSelected = (event) => {
+  //   setIsSelected(!isSelected);
         
-    console.log("isSelected",isSelected);
-    console.log("event.target.checked", event.target.checked);
-    // 체크했을때 같은게 없다면 추가 있다면 그대로
-    // 언체크했을때 같은게 있다면 빼고 없다면 그대로
+  //   console.log("isSelected",isSelected);
+  //   console.log("event.target.checked", event.target.checked);
+  //   // 체크했을때 같은게 없다면 추가 있다면 그대로
+  //   // 언체크했을때 같은게 있다면 빼고 없다면 그대로
     
-    if(event.target.checked){
-      setSelectedItems([...selectedItems, row]);
-    }else{
-      let selectUpdated = selectedItems.filter(val => val.adId !== row.adId);
-      setSelectedItems([...selectUpdated]);
-    }
+  //   if(event.target.checked){
+  //     setSelectedItems([...selectedItems, row]);
+  //   }else{
+  //     let selectUpdated = selectedItems.filter(val => val.adId !== row.adId);
+  //     setSelectedItems([...selectUpdated]);
+  //   }
 
-    console.log("selectedItems", selectedItems);
-  }
+  //   console.log("selectedItems", selectedItems);
+  // }
 
-  const onSelectedChange = () => {
-    setIsSelected(!isSelected);
+  const onSelectedChange = async () => {
+    await setIsSelected(!isSelected);
   }
   
 
@@ -45,8 +45,8 @@ const ReceiptDetail = ({row}) => {
            // 언체크하면 isSelected 상태 변하고, 해당 객체 제외
            
            checked={isSelected}
-           onClick={(event) => handleSelected(event)}
-           //onChange={onSelectedChange}
+           onClick={(event) => handleSelected(event, row)}
+           onChange={onSelectedChange}
           // indeterminate={numSelected > 0 && numSelected === rowCount}
           // checked={rowCount > 0 && numSelected === rowCount}
           // onChange={onSelectAllClick}

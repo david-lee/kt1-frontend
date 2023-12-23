@@ -38,7 +38,8 @@ const restApi = {
   stripeCustomer: '/stripe/customer',
   stripeCustomerCard: '/stripe/customer/card',
   stripePayment: '/stripe/payment',
-  getReceiptList: '/Receipt/getReceiptList'
+  getReceiptList: '/Receipt/getReceiptList',
+  issueReceipt: '/Receipt/issueReceipt'
 }
 
 export default restApi;
