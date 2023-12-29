@@ -8,49 +8,24 @@ const ReceiptDetail = ({row, handleSelected}) => {
   //const { row } = row;
   const [detailOpen, setDetailOpen] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
-  
-  console.log("isSelected",isSelected);
 
-  // const handleSelected = (event) => {
-  //   setIsSelected(!isSelected);
-        
-  //   console.log("isSelected",isSelected);
-  //   console.log("event.target.checked", event.target.checked);
-  //   // 체크했을때 같은게 없다면 추가 있다면 그대로
-  //   // 언체크했을때 같은게 있다면 빼고 없다면 그대로
-    
-  //   if(event.target.checked){
-  //     setSelectedItems([...selectedItems, row]);
-  //   }else{
-  //     let selectUpdated = selectedItems.filter(val => val.adId !== row.adId);
-  //     setSelectedItems([...selectUpdated]);
-  //   }
-
-  //   console.log("selectedItems", selectedItems);
-  // }
+  const onDetailOpen = async () => {
+    await setDetailOpen(!detailOpen)
+  }
 
   const onSelectedChange = async () => {
     await setIsSelected(!isSelected);
   }
   
-
   return (
     <>
       <TableRow sx={{ '&>*': { borderBottom: 'unset' } }} style={{backgroundColor: detailOpen ? "lightblue" : ""}}>
         <TableCell padding="checkbox">
           <Checkbox
-           color="primary"
-           
-           // 체크하면 isSelected 상태변하고, 해당 객체 포함
-           // 언체크하면 isSelected 상태 변하고, 해당 객체 제외
-           
+           color="primary"       
            checked={isSelected}
            onClick={(event) => handleSelected(event, row)}
            onChange={onSelectedChange}
-          // indeterminate={numSelected > 0 && numSelected === rowCount}
-          // checked={rowCount > 0 && numSelected === rowCount}
-          // onChange={onSelectAllClick}
-          // inputProps={{'aria-label': 'select all desserts'}}
           />
         </TableCell>
         <TableCell>{row.adId}</TableCell>
@@ -68,7 +43,7 @@ const ReceiptDetail = ({row, handleSelected}) => {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setDetailOpen(!detailOpen)}
+            onClick={onDetailOpen}
           >
             {detailOpen ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
           </IconButton>

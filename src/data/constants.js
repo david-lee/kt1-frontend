@@ -5,7 +5,9 @@ export const AD_TAX = 0.13;
 export const UI_DATE_FORMAT = 'yyyy/MM/dd';
 export const DATA_DATE_FORMAT = 'yyyyMMdd';
 export const DEFAULT_ADDRESS = { addr: '-', city: '-', province: '-', postal: '-' };
-export const API_BASE_URL = 'https://api.koreatimes.net/api/v1';
+// export const API_BASE_URL = 'https://api.koreatimes.net/api/v1';
+export const API_BASE_URL = 'https://api.dev.koreatimes.net/api/v1';
+// export const API_BASE_URL = 'https://localhost:5000/api/v1';
 
 export const codeType = {
   userType: 1,

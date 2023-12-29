@@ -46,9 +46,9 @@ const Receipt = ({ companyId, eInvoice, role }) => {
       .then((resp) => {
         setReceiptList(resp);
       })
-      // .catch(err => {
-      //   console.log(err.response.data.error);
-      // })
+      .catch(err => {
+        console.log(err.response.data.error);
+      })
       .finally(() => {
         setIsLoading(false);
       })
@@ -56,11 +56,8 @@ const Receipt = ({ companyId, eInvoice, role }) => {
 
   useEffect(() => {
     getList(companyId, stDate, edDate);
-    console.log("receiptList in Receipt", receiptList);
   }, [companyId, getList]);
-
-  
-  
+   
   const handleDateChange = (type, value) => {
     if (type === 'start') setStDate(value);
     if (type === 'end') setEdDate(value);
@@ -70,7 +67,6 @@ const Receipt = ({ companyId, eInvoice, role }) => {
     setClickedAction(action);
     setIsOpen(true);
   }
-
   
   const handleReceipt = async () => {    
     const receiptList = await selectedItems.map((row) => {
@@ -95,14 +91,12 @@ const Receipt = ({ companyId, eInvoice, role }) => {
 
     const data = {
       companyId: companyId,
-      issueType: "view" ? 1 : "issue" ? 2 : 3,
+      issueType: clickedAction === "view" ? 1 : clickedAction === "issue" ? 2 : 3,
       issueReceiptList : receiptList
     }
-    submitReceiptList(data);
-    
+    submitReceiptList(data);   
   }
 
-  
   const submitReceiptList = async(data, viewPdf = true) => {
     console.log("data",data);
     await axios.post(`${api.issueReceipt}`, data, {responseType: 'blob'})
@@ -112,7 +106,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
                 const fileURL = URL.createObjectURL(file);
                 window.open(fileURL);
               }
-            }).finallyy(() => {
+            }).finally(() => {
               setIsOpen(false);
             })
   }
@@ -130,8 +124,6 @@ const Receipt = ({ companyId, eInvoice, role }) => {
       await setSelectedItems([...selectUpdated]);
     }
   }
-  console.log("selectedItems-out", selectedItems);
-  console.log("numOfSelected", numOfSelected);
   
   const headCells = ["BillNo", "Type", "Title", "StartDate", "EndDate", "Cost", "Tax", "Total", "Page", "Size", "CadTitle"];
 
