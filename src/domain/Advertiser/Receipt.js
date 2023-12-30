@@ -4,7 +4,7 @@ import axios from 'axios';
 import api from 'appConfig/restAPIs';
 import { format } from 'date-fns';
 import { DATA_DATE_FORMAT } from 'data/constants';
-import { Box, Grid, Typography, Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Checkbox, Paper, IconButton, Collapse } from '@mui/material';
+import { Grid, Typography, Table, TableContainer, TableHead, TableBody, TableRow, TableCell, LinearProgress, Paper } from '@mui/material';
 import ADDate from 'shared/components/ADDate';
 import { LoadingButton } from '@mui/lab';
 import SearchIcon from '@mui/icons-material/Search';
@@ -31,10 +31,10 @@ const Receipt = ({ companyId, eInvoice, role }) => {
   const [stDate, setStDate] = useState(() => subYears(new Date(), 1));
   const [edDate, setEdDate] = useState(null);
   const [isReceiptLoading, setIsReceiptLoading] = useState(false);
-  // const [canIssue, setCanIssue] = useState(false);
   const [clickedAction, setClickedAction] = useState("view");
   const [selectedItems, setSelectedItems] = useState([]);
   const [numOfSelected, setNumOfSelected] = useState(0);
+  const [isSubmiting, setIsSubmiting] = useState(false);
 
   const getList = useCallback((companyId, stDate, edDate) => {
 
@@ -68,7 +68,8 @@ const Receipt = ({ companyId, eInvoice, role }) => {
     setIsOpen(true);
   }
   
-  const handleReceipt = async () => {    
+  const handleReceipt = async () => {
+    setIsSubmiting(true);    
     const receiptList = await selectedItems.map((row) => {
       return{
         billNo: row.adId,
@@ -107,6 +108,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
                 window.open(fileURL);
               }
             }).finally(() => {
+              setIsSubmiting(false);
               setIsOpen(false);
             })
   }
@@ -129,6 +131,14 @@ const Receipt = ({ companyId, eInvoice, role }) => {
 
   return (
     <>
+      
+      {isSubmiting && (
+        <>
+          <LinearProgress color="secondary" />
+          <LinearProgress color="success" />
+        </>
+      )}
+      
       <ConfirmDialog open={isOpen}
         message={`Do you want to ${clickedAction} the receipt?`}
         isLoading={isReceiptLoading}
