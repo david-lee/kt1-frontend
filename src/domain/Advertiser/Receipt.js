@@ -97,7 +97,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
     submitReceiptList(data);   
   }
 
-  const submitReceiptList = async(data, viewPdf = data.issueType == 2 ? true : false) => {
+  const submitReceiptList = async(data, viewPdf = data.issueType != 3 ? true : false) => {
     console.log("data",data);
     await axios.post(`${api.issueReceipt}`, data, {responseType: 'blob'})
             .then((res) => {
