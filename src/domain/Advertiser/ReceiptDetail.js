@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Box, Grid, Typography, Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Checkbox, Paper, IconButton, Collapse } from '@mui/material';
-import { formatUIDate, numberWithCommas } from 'shared/utils';
+import { formatUIDate, numberWithCommas, precisionRound } from 'shared/utils';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
@@ -8,6 +8,7 @@ const ReceiptDetail = ({row, handleSelected}) => {
   //const { row } = row;
   const [detailOpen, setDetailOpen] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
+  const [balance, setBalance] = useState(0);
 
   const onDetailOpen = async () => {
     await setDetailOpen(!detailOpen)
@@ -16,7 +17,17 @@ const ReceiptDetail = ({row, handleSelected}) => {
   const onSelectedChange = async () => {
     await setIsSelected(!isSelected);
   }
-  
+
+  useEffect(() => {
+    handleBalance();
+  }, [onDetailOpen])
+
+  const handleBalance = async () => {
+    let paidAmountSum = row.getReceiptListDetail.reduce((acc, cur) => acc + cur.paidAmount, 0);
+    let paidTaxSum = row.getReceiptListDetail.reduce((acc, cur) => acc + cur.paidTax, 0);
+    await setBalance(row.cost + row.taxAmount - paidAmountSum - paidTaxSum);
+  }
+
   return (
     <>
       <TableRow sx={{ '&>*': { borderBottom: 'unset' } }} style={{backgroundColor: detailOpen ? "lightblue" : ""}}>
@@ -64,7 +75,7 @@ const ReceiptDetail = ({row, handleSelected}) => {
                   <TableCell>Paid Method</TableCell>
                 </TableHead>
                 <TableBody>
-                  {row.getReceiptListDetail.map((detailRow) => (
+                {row.getReceiptListDetail.map((detailRow) => (
                     <TableRow key={detailRow.payId.toString()}>
                       <TableCell />
                       <TableCell>{detailRow.payId}</TableCell>
@@ -74,9 +85,10 @@ const ReceiptDetail = ({row, handleSelected}) => {
                       <TableCell>{formatUIDate(detailRow.paidDate)}</TableCell>
                       <TableCell>{detailRow.paidMethod}</TableCell>
                     </TableRow>
-                  ))}
+                  ))}          
                 </TableBody>
               </Table>
+              <Typography sx={{ fontWeight: 'bold'}} align="right">Balance: {numberWithCommas(precisionRound(balance))}</Typography>
             </Box>
           </Collapse>
         </TableCell>
