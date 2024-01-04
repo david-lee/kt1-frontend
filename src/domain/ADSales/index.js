@@ -7,6 +7,7 @@ import CardPayments from './CardPayments';
 import { useNavigate } from 'react-router-dom';
 import { deptType } from 'data/constants';
 import BulkInvoices from './BulkInvoices';
+import BulkEReceipts from './BulkEReceipts';
 
 const ADSales = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -31,6 +32,7 @@ const ADSales = () => {
             <Tab label="Pending ADs" value={0} />
             <Tab label="Card Payments" value={1} />
             <Tab label="Issue All Invoices" value={2} />
+            <Tab label="Issue All E-Receipts" value={3} />
           </Tabs>
         </Grid>
       </Grid>
@@ -45,6 +47,10 @@ const ADSales = () => {
 
       <TabPanel value={tabIndex} index={2}>
         <BulkInvoices />
+      </TabPanel>
+
+      <TabPanel value={tabIndex} index={3}>
+        <BulkEReceipts />
       </TabPanel>
     </Box>
   )

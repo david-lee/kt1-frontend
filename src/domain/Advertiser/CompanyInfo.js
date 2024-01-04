@@ -66,7 +66,7 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
         </Grid>
         <Grid item xs={1}>
           <FormGroup sx={{ mr: 4 }}>
-            <FormControlLabel label="eInvoice" sx={{ position: "relative", top: "10px", mx: 0 }} 
+            <FormControlLabel label="E-Inv&Rec" sx={{ position: "relative", top: "10px", mx: 0 }} 
               control={
                 <Checkbox size="small" name="eInvoice" checked={eInvoice} onChange={editMode ? handleChange : undefined} />
               }/>
@@ -74,7 +74,15 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
         </Grid>
         <Grid item xs={1}>
           <FormGroup sx={{ mr: 4 }}>
-            <FormControlLabel label="bulkInvoice" sx={{ position: "relative", top: "10px", mx: 0 }} 
+            <FormControlLabel label="BulkInvoice" sx={{ position: "relative", top: "10px", mx: 0 }} 
+              control={
+                <Checkbox size="small" name="bulkInvoice" checked={bulkInvoice} onChange={editMode ? handleChange : undefined} />
+              }/>
+          </FormGroup>        
+        </Grid>
+        <Grid item xs={1}>
+          <FormGroup sx={{ mr: 4 }}>
+            <FormControlLabel label="RandomList" sx={{ position: "relative", top: "10px", mx: 0 }} 
               control={
                 <Checkbox size="small" name="bulkInvoice" checked={bulkInvoice} onChange={editMode ? handleChange : undefined} />
               }/>
@@ -126,7 +134,7 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
           />
         </Grid>
         <Grid item xs={3}>
-          <TextField label={`Invoice Email ${eInvoice ? "*" : ""}`} name="email" value={email} 
+          <TextField label={`Invoice/Receipt Email ${eInvoice ? "*" : ""}`} name="email" value={email} 
             variant="standard" InputProps={{ readOnly: !editMode }} fullWidth
             onChange={handleChange}
           />

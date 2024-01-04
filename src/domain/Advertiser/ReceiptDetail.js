@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Box, Grid, Typography, Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Checkbox, Paper, IconButton, Collapse } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Table, TableHead, TableBody, TableRow, TableCell, Checkbox, IconButton, Collapse } from '@mui/material';
 import { formatUIDate, numberWithCommas, precisionRound } from 'shared/utils';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
