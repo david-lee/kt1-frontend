@@ -23,10 +23,10 @@ const BulkEReceipts = () => {
     const curDate = format(new Date(), DATA_DATE_FORMAT).substring(0,7) + "01";
     
     const period = {
-      // fromDate:preDate,
-      // toDate:curDate
-      fromDate:"20230501",
-      toDate:"20230601"
+      fromDate:preDate,
+      toDate:curDate
+      // fromDate:"20240101",
+      // toDate:"20240106"
     }
     issueAllReceipts(onIssued, period);
   };
