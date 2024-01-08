@@ -10,7 +10,7 @@ import { roleType } from 'data/constants';
 
 const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) => {
   const { mainCategory, subCategory, salesId, primaryName, secondaryName, userId, oldCustomerId = "", ownerName, 
-    phoneNumber, email, contactName, contactNumber, contactEmail, regDate, updatedDate, updatedBy, eInvoice, bulkInvoice, status } = values;
+    phoneNumber, email, contactName, contactNumber, contactEmail, regDate, updatedDate, updatedBy, eInvoice, bulkInvoice, randomList, status } = values;
 
   const { user: { userId: loginUserId, role } } = useUserAuth();
   const [subCategories, setSubCategories] = useState([]);
@@ -50,7 +50,7 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
             options={subCategories}
           />        
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1.5}>
           {role === roleType.staff && (
             <TextField label="Sales Person" name="salesId" value={salesId}
               variant="standard" InputProps={{ readOnly: !editMode }} disabled
@@ -66,15 +66,15 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
         </Grid>
         <Grid item xs={1}>
           <FormGroup sx={{ mr: 4 }}>
-            <FormControlLabel label="E-Inv&Rec" sx={{ position: "relative", top: "10px", mx: 0 }} 
+            <FormControlLabel label="eInvoice" sx={{ position: "relative", top: "10px", mx: 0 }} 
               control={
                 <Checkbox size="small" name="eInvoice" checked={eInvoice} onChange={editMode ? handleChange : undefined} />
               }/>
           </FormGroup>        
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={0.8}>
           <FormGroup sx={{ mr: 4 }}>
-            <FormControlLabel label="BulkInvoice" sx={{ position: "relative", top: "10px", mx: 0 }} 
+            <FormControlLabel label="Bulk" sx={{ position: "relative", top: "10px", mx: 0 }} 
               control={
                 <Checkbox size="small" name="bulkInvoice" checked={bulkInvoice} onChange={editMode ? handleChange : undefined} />
               }/>
@@ -84,7 +84,7 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
           <FormGroup sx={{ mr: 4 }}>
             <FormControlLabel label="RandomList" sx={{ position: "relative", top: "10px", mx: 0 }} 
               control={
-                <Checkbox size="small" name="bulkInvoice" checked={bulkInvoice} onChange={editMode ? handleChange : undefined} />
+                <Checkbox size="small" name="randomList" checked={randomList} onChange={editMode ? handleChange : undefined} />
               }/>
           </FormGroup>        
         </Grid>

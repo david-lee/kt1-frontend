@@ -92,7 +92,7 @@ const AddNewCompany = () => {
     initialValues: {
       addresses: [{ addressType: 1, ...DEFAULT_ADDRESS  }, { addressType: 2, ...DEFAULT_ADDRESS  }],
       mainCategory: '',subCategory: '', salesId: '', primaryName: '', secondaryName: '', status: companyStatus.confirmed,
-      ownerName: '', phoneNumber: '', email: '', contactName: '', contactNumber: '', contactEmail: '', eInvoice: false, bulkInvoice: true,
+      ownerName: '', phoneNumber: '', email: '', contactName: '', contactNumber: '', contactEmail: '', eInvoice: false, bulkInvoice: true, randomList: false,
       sameAddress: false,
     },
     onSubmit: handleSave,
@@ -103,7 +103,7 @@ const AddNewCompany = () => {
     <>
       {isOpen &&
         <Dialog open={isOpen} onClose={handleClose} 
-          sx={{ "& .MuiPaper-root": { maxWidth: 1000, minWidth: 600, minHeight: 340 }}}>
+          sx={{ "& .MuiPaper-root": { maxWidth: 1080, minWidth: 600, minHeight: 340 }}}>
           <DialogTitle>Add New Company</DialogTitle>
           <DialogContent>
             <CompanyInfo {
