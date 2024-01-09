@@ -51,7 +51,7 @@ const useSales = () => {
       .then((resp) => {
         const mapped = resp.data.main.map(({
           adId, company, adType, adTitle, page, size, startDate, endDate, cardPayment, paymentStatus,
-          status, cost, taxAmount, cadTitle, webFlag, color, scheduleType, regBy, regDate
+          status, cost, taxAmount, cadTitle, webFlag, color, scheduleType, isInvoiced, regBy, regDate
         }) => {
           // TODO: try to pass object with code and use formatValue
           return {
@@ -80,6 +80,7 @@ const useSales = () => {
             scheduleType: scheduleType === 1 ? '회성' : ( scheduleType === 2 ? '고정' : '고정(R)' ),
             status: status.value,
             statusCode: status.codeId,
+            isInvoiced,
             regBy: regBy.label,
             regDate: regDate,
           }

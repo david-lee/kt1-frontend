@@ -35,7 +35,7 @@ const PageCell = ({ bgcolor, page, ad, sizeFilter, nonFilterSize, onClickPage })
   }, []);
 
   const isDirector = role === roleType.director;
-
+console.log("ad",ad);
   return (
     <Box sx={{
         position: "relative", 
@@ -62,7 +62,7 @@ const PageCell = ({ bgcolor, page, ad, sizeFilter, nonFilterSize, onClickPage })
       </Box>
       <Grid container sx={{ maxHeight: '100%', overflow: "auto", pr: 5 }}>
         {
-          ad?.map(({size, sizeCode, adId, company, companyId, cost, taxAmount, color, adTitle, statusCode, pAdId}, index) => {
+          ad?.map(({size, sizeCode, adId, company, companyId, cost, taxAmount, color, adTitle, isInvoiced, pAdId}, index) => {
             if (sizeFilter && sizeCode !== displaySize.bt && 
                 sizeCode !== displaySize.pp && sizeFilter !== sizeCode) return null;
             
@@ -71,7 +71,7 @@ const PageCell = ({ bgcolor, page, ad, sizeFilter, nonFilterSize, onClickPage })
             return (
               <Grid key={index} item xs={12} sx={{ bgcolor: color ? "inherit" : "rgba(220,220,220, .3)", cursor: "pointer" }}>
                 <Tooltip arrow title={pAdId != null ? `${pAdId}: ${adId}` : `${adId}: $${numberWithCommas(cost)}, $${numberWithCommas(taxAmount)}`}>
-                  <Typography variant="body2" onClick={() => gotoCompany(companyId)} sx={{textDecoration: statusCode === 2191 ? "underline" : ""}}>
+                  <Typography variant="body2" onClick={() => gotoCompany(companyId)} sx={{textDecoration: isInvoiced === true ? "underline" : ""}}>
                     <Box component="span" sx={{ color: sizeColor[size], fontWeight: 600 }}>
                       {size}:
                     </Box> {company} ({`${adTitle || ''}`}) {pAdId != null && (<LooksOneIcon />)}
