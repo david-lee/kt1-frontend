@@ -99,7 +99,6 @@ const Receipt = ({ companyId, eInvoice, role }) => {
   }
 
   const submitReceiptList = async(data, viewPdf = data.issueType != 3 ? true : false) => {
-    console.log("data",data);
     await axios.post(`${api.issueReceipt}`, data, {responseType: 'blob'})
             .then((res) => {
               if (viewPdf) {
@@ -113,10 +112,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
             })
   }
 
-  const handleSelected = async (event, row) => {
-                
-    console.log("event.target.checked", event.target.checked);
-    
+  const handleSelected = async (event, row) => {    
     if(event.target.checked){
       setNumOfSelected(numOfSelected+1);
       await setSelectedItems([...selectedItems, row]);

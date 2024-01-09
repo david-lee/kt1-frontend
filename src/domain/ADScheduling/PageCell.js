@@ -35,7 +35,7 @@ const PageCell = ({ bgcolor, page, ad, sizeFilter, nonFilterSize, onClickPage })
   }, []);
 
   const isDirector = role === roleType.director;
-console.log("ad",ad);
+
   return (
     <Box sx={{
         position: "relative", 
