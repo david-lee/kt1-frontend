@@ -66,9 +66,9 @@ const CompanyOverview = ({ company, onSave }) => {
     validationSchema: Yup.object().shape({
       mainCategory: Yup.number().required("Required"),
       primaryName: Yup.string().required("Required"),
-      email: Yup.string().when('eInvoice', {
-        is: true,
-        then: (schema) => schema.required("Required if eInvoice is checked")
+      email: Yup.string().when(['eInvoice','eReceipt'], {
+        is: (eInvoice, eReceipt) => eInvoice || eReceipt,
+        then: (schema) => schema.required("Required if eInvoice or eReceipt checked")
       }),
     }),    
     initialValues: {
@@ -82,7 +82,7 @@ const CompanyOverview = ({ company, onSave }) => {
     onSubmit: saveInfo,
     enableReinitialize: true,
   });
-
+  
   return (
     <>
       <Snackbar

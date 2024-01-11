@@ -24,7 +24,7 @@ const IconLoadingButton = styled(LoadingButton)({
   }
 });
 
-const Receipt = ({ companyId, eInvoice, role }) => {
+const Receipt = ({ companyId, eReceipt, role }) => {
   const [receiptList, setReceiptList] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -180,7 +180,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
                   onClick={() => setReceiptAction("email")}
                   loadingPosition="start"
                   loading={isReceiptLoading}
-                  disabled={!(numOfSelected>0) || !eInvoice}
+                  disabled={!(numOfSelected>0) || !eReceipt}
                 ></IconLoadingButton>
               </>
             )}

@@ -84,16 +84,16 @@ const AddNewCompany = () => {
       mainCategory: Yup.number().required("Required"),
       primaryName: Yup.string().required("Required"),
       salesId: Yup.string().required("Required"),
-      email: Yup.string().when('eInvoice', {
-        is: true,
-        then: (schema) => schema.required("Required if eInvoice is checked")
+      email: Yup.string().when(['eInvoice','eReceipt'], {
+        is: (eInvoice, eReceipt) => eInvoice || eReceipt,
+        then: (schema) => schema.required("Required if eInvoice or eReceipt checked")
       }),
     }),
     initialValues: {
       addresses: [{ addressType: 1, ...DEFAULT_ADDRESS  }, { addressType: 2, ...DEFAULT_ADDRESS  }],
       mainCategory: '',subCategory: '', salesId: '', primaryName: '', secondaryName: '', status: companyStatus.confirmed,
       ownerName: '', phoneNumber: '', email: '', contactName: '', contactNumber: '', contactEmail: '', eInvoice: false, bulkInvoice: true, randomList: false,
-      sameAddress: false,
+      eReceipt: false, bulkReceipt: false, sameAddress: false,
     },
     onSubmit: handleSave,
     enableReinitialize: true,

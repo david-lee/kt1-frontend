@@ -149,7 +149,7 @@ const Advertiser = () => {
             <CardInfo companyId={company.userId} companyName={company.primaryName} companyEmail={company.email} userId={userId} />
           </TabPanel>
           <TabPanel value={tabIndex} index={6}>
-            <Receipt companyId={company.userId} eInvoice={company.eInvoice} role={role} />
+            <Receipt companyId={company.userId} eReceipt={company.eReceipt} role={role} />
           </TabPanel>
         </Box>
       )}

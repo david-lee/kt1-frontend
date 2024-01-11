@@ -10,7 +10,7 @@ import { roleType } from 'data/constants';
 
 const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) => {
   const { mainCategory, subCategory, salesId, primaryName, secondaryName, userId, oldCustomerId = "", ownerName, 
-    phoneNumber, email, contactName, contactNumber, contactEmail, regDate, updatedDate, updatedBy, eInvoice, bulkInvoice, randomList, status } = values;
+    phoneNumber, email, contactName, contactNumber, contactEmail, regDate, updatedDate, updatedBy, eInvoice, bulkInvoice, randomList, eReceipt, bulkReceipt, status } = values;
 
   const { user: { userId: loginUserId, role } } = useUserAuth();
   const [subCategories, setSubCategories] = useState([]);
@@ -38,19 +38,19 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
   return (
     <Grid container rowGap={4} direction='column' sx={{ mb: isNew ? 5 : 0 }}>
       <Grid container columnGap={2} wrap="nowrap">
-        <Grid item xs={4}>
+        <Grid item xs={3.5}>
           <Dropdown id="main-category" name="mainCategory" label="Main Category *" value={mainCategory}
             fullWidth onChange={handleChange} readOnly={!editMode}
             options={mainCategories}
           />          
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <Dropdown id="sub-category" name="subCategory" label="Sub Category" value={subCategory}
             fullWidth onChange={handleChange} readOnly={!editMode}
             options={subCategories}
           />        
         </Grid>
-        <Grid item xs={1.5}>
+        <Grid item xs={1.2}>
           {role === roleType.staff && (
             <TextField label="Sales Person" name="salesId" value={salesId}
               variant="standard" InputProps={{ readOnly: !editMode }} disabled
@@ -64,7 +64,7 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
             />
           )}
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={1.2}>
           <FormGroup sx={{ mr: 4 }}>
             <FormControlLabel label="eInvoice" sx={{ position: "relative", top: "10px", mx: 0 }} 
               control={
@@ -72,15 +72,15 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
               }/>
           </FormGroup>        
         </Grid>
-        <Grid item xs={0.8}>
+        <Grid item xs={1.2}>
           <FormGroup sx={{ mr: 4 }}>
-            <FormControlLabel label="Bulk" sx={{ position: "relative", top: "10px", mx: 0 }} 
+            <FormControlLabel label="BulkInvoice" sx={{ position: "relative", top: "10px", mx: 0 }} 
               control={
                 <Checkbox size="small" name="bulkInvoice" checked={bulkInvoice} onChange={editMode ? handleChange : undefined} />
               }/>
           </FormGroup>        
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={1.2}>
           <FormGroup sx={{ mr: 4 }}>
             <FormControlLabel label="RandomList" sx={{ position: "relative", top: "10px", mx: 0 }} 
               control={
@@ -91,13 +91,13 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
       </Grid>
 
       <Grid container columnGap={2} wrap="nowrap">
-        <Grid item xs={4}>
+        <Grid item xs={3.5}>
           <TextField label="Company Name *" name="primaryName" value={primaryName}
             variant="standard" InputProps={{ readOnly: !editMode }} onChange={handleChange}
             sx={{ width: "100%" }}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={3.2}>
           <TextField label="Secondary Name" name="secondaryName" value={secondaryName}
             variant="standard" InputProps={{ readOnly: !editMode }} onChange={handleChange}
             sx={{ width: "100%" }}
@@ -105,19 +105,35 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
         </Grid>
         {!isNew && (
           <>
-            <Grid item xs={2}>
+            <Grid item xs={1.2}>
               <TextField label="Company ID" name="userId" value={userId} 
                 variant="standard" disabled={editMode}
                 sx={{ width: '100%' }}
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1.2}>
               <TextField label="Old Company ID" name="oldCustomerId" value={oldCustomerId} 
-                variant="standard" disabled={editMode}
+                variant="standard" disabled={true}
               />
             </Grid>
           </>
         )}
+        <Grid item xs={1.2}>
+          <FormGroup sx={{ mr: 4 }}>
+            <FormControlLabel label="eReceipt" sx={{ position: "relative", top: "10px", mx: 0 }} 
+              control={
+                <Checkbox size="small" name="eReceipt" checked={eReceipt} onChange={editMode ? handleChange : undefined} />
+              }/>
+          </FormGroup>        
+        </Grid>
+        <Grid item xs={1.2}>
+          <FormGroup sx={{ mr: 4 }}>
+            <FormControlLabel label="BulkReceipt" sx={{ position: "relative", top: "10px", mx: 0 }} 
+              control={
+                <Checkbox size="small" name="bulkReceipt" checked={bulkReceipt} onChange={editMode ? handleChange : undefined} />
+              }/>
+          </FormGroup>        
+        </Grid>
       </Grid>
 
       <Grid container columnGap={2} wrap="nowrap">
@@ -134,7 +150,7 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew }) =
           />
         </Grid>
         <Grid item xs={3}>
-          <TextField label={`Invoice/Receipt Email ${eInvoice ? "*" : ""}`} name="email" value={email} 
+          <TextField label={`Invoice/Receipt Email ${eInvoice || eReceipt ? "*" : ""}`} name="email" value={email} 
             variant="standard" InputProps={{ readOnly: !editMode }} fullWidth
             onChange={handleChange}
           />
