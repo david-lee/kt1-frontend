@@ -70,7 +70,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
   
   const handleReceipt = async () => {
     setIsSubmiting(true);    
-    const receiptList = await selectedItems.map((row) => {
+    const issueReceiptList = await selectedItems.map((row) => {
       return{
         billNo: row.adId,
         desc: row.adTitle,
@@ -93,7 +93,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
     const data = {
       companyId: companyId,
       issueType: clickedAction === "view" ? 1 : clickedAction === "issue" ? 2 : 3,
-      issueReceiptList : receiptList
+      issueReceiptList : issueReceiptList
     }
     submitReceiptList(data);   
   }
@@ -109,6 +109,7 @@ const Receipt = ({ companyId, eInvoice, role }) => {
             }).finally(() => {
               setIsSubmiting(false);
               setIsOpen(false);
+              setSelectedItems([]);
             })
   }
 

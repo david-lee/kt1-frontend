@@ -22,7 +22,7 @@ const useReceipt = () => {
   
     axios.post(`${api.receiptBulkIssue}?fromDate=${period.fromDate}&toDate=${period.toDate}`)
       .then(resp => {
-        console.log(resp);
+        console.log(resp.data);
         onIssued();
       })
       .finally(() => {
