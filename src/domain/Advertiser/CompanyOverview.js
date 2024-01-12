@@ -70,6 +70,11 @@ const CompanyOverview = ({ company, onSave }) => {
         is: (eInvoice, eReceipt) => eInvoice || eReceipt,
         then: (schema) => schema.required("Required if eInvoice or eReceipt checked")
       }),
+      bulkReceipt: Yup.boolean(),
+      eReceipt: Yup.boolean().when('bulkReceipt', {
+        is: true,
+        then: (schema) => schema.oneOf([true])
+      })
     }),    
     initialValues: {
       ...company, 
@@ -82,7 +87,7 @@ const CompanyOverview = ({ company, onSave }) => {
     onSubmit: saveInfo,
     enableReinitialize: true,
   });
-  
+
   return (
     <>
       <Snackbar

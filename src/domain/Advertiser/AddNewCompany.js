@@ -88,6 +88,11 @@ const AddNewCompany = () => {
         is: (eInvoice, eReceipt) => eInvoice || eReceipt,
         then: (schema) => schema.required("Required if eInvoice or eReceipt checked")
       }),
+      bulkReceipt: Yup.boolean(),
+      eReceipt: Yup.boolean().when('bulkReceipt', {
+        is: true,
+        then: (schema) => schema.oneOf([true])
+      })
     }),
     initialValues: {
       addresses: [{ addressType: 1, ...DEFAULT_ADDRESS  }, { addressType: 2, ...DEFAULT_ADDRESS  }],
