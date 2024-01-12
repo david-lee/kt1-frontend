@@ -5,6 +5,7 @@ import api from 'appConfig/restAPIs';
 const usePayments = (onFetch) => {
   const [isLoading, setIsLoading] = useState(false);
   const [billPayments, setBillPayments] = useState(null);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
 
   const fetchPayments = useCallback((adId) => {
     setIsLoading(true);
@@ -37,7 +38,11 @@ const usePayments = (onFetch) => {
     setIsLoading(true);
 
     axios.delete(`${api.payment}`, { data: { payId: payIds, userId } })
-      .then(() => {
+      .then((resp) => {
+        if(resp.data === "rejected")
+        {
+          setDeleteSuccess(true);
+        }
         fetchPayments(adId);
       })
       .finally(() => {
@@ -50,6 +55,8 @@ const usePayments = (onFetch) => {
     billPayments,
     fetchPayments,
     deletePayment,
+    deleteSuccess,
+    setDeleteSuccess
   };
 };
 

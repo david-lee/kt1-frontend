@@ -8,6 +8,7 @@ import usePayments from 'shared/hooks/usePayments';
 import ConfirmDialog from 'shared/components/ConfirmDialog';
 import { deptType } from 'data/constants';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
 
 const CollectionBills = () => {
   const { user } = useUserAuth();
@@ -26,15 +27,17 @@ const CollectionBills = () => {
     setIsOpen(true);
   }
 
-  const { isLoading, billPayments, deletePayment, fetchPayments } = usePayments(onFetch);
+  const { isLoading, billPayments, deletePayment, fetchPayments, deleteSuccess, setDeleteSuccess } = usePayments(onFetch);
   
   if (dept.toLowerCase() === deptType.sales || dept.toLowerCase() === deptType.sub) {
     navigate('/s/dashboard', { replace: true });
     return null;
   }
-
   return (
     <>
+      <ConfirmDialog open={deleteSuccess} message="Request is rejected due to this payment has already issued the Receipt."
+        onOK={()=>setDeleteSuccess(false)} />
+
       <ConfirmDialog open={isOpen} title="Delete Payment" message="Do you want to delete the payment?" 
         isLoading={isLoading} deleteOp
         onOK={() => deletePayment([selectedPayId], user.userId, billNumber)} 
