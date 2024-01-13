@@ -25,8 +25,6 @@ const BulkEReceipts = () => {
     const period = {
       fromDate:preDate,
       toDate:curDate
-      // fromDate:"20240101",
-      // toDate:"20240106"
     }
     issueAllReceipts(onIssued, period);
   };
