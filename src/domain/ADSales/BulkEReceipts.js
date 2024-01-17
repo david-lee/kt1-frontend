@@ -12,9 +12,12 @@ const BulkEReceipts = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [alreadyIssued, setAlreadyIssued] = useState(false);
   const { isLoading, checkBulkIssue, issueAllReceipts } = useReceipt();
+  const [numberOfIssues, setNumberOfIssues] = useState(0);
+  const [isResult, setIsResult] = useState(false);
 
   const onIssued = () => {
     setIsOpen(false);
+    setIsResult(true);
     setAlreadyIssued(true);
   };
 
@@ -26,7 +29,7 @@ const BulkEReceipts = () => {
       fromDate:preDate,
       toDate:curDate
     }
-    issueAllReceipts(onIssued, period);
+    issueAllReceipts(onIssued, setNumberOfIssues, period);
   };
 
   useEffect(() => {
@@ -50,6 +53,13 @@ const BulkEReceipts = () => {
             </Box>
           </Grid>
         )}
+
+        <ConfirmDialog open={isResult}
+          title="The result of All issues"
+          message={`Total ` + numberOfIssues + ` receipts are issued and sent via email.`}
+          isLoading={isLoading}
+          onOK={() => setIsResult(false)}
+        />
         
         <Typography variant="body1">
           All receipt will be issued and sent via email if companies set "eReceipt" option to active while other companies with inactive option are excluded.

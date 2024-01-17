@@ -17,12 +17,12 @@ const useReceipt = () => {
       });
   }, []);
 
-  const issueAllReceipts = useCallback((onIssued, period) => {
+  const issueAllReceipts = useCallback((onIssued, setNumberOfIssues, period) => {
     setIsLoading(true);
   
     axios.post(`${api.receiptBulkIssue}?fromDate=${period.fromDate}&toDate=${period.toDate}`)
       .then(resp => {
-        console.log(resp.data);
+        setNumberOfIssues(resp.data);
         onIssued();
       })
       .finally(() => {
