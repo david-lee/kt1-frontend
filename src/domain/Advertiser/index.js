@@ -16,6 +16,9 @@ import MonthlySales from './MonthlySales';
 import AddNewCompany from './AddNewCompany';
 import CardInfo from './CardInfo';
 import Receipt from './Receipt';
+import CompanyList from './CompanyList';
+import ReplayIcon from '@mui/icons-material/Replay';
+import { LoadingButton } from '@mui/lab';
 
 const Advertiser = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,10 +28,10 @@ const Advertiser = () => {
   const params = useParams();
   const navigate = useNavigate();
   const loc = useLocation();
-  
+
   // const [ads, setADs] = useState(null);
   // const [invoices, setInvoices] = useState(null);
-  const { user: { role, dept, userId }} = useUserAuth();
+  const { user: { role, dept, userId } } = useUserAuth();
 
   const fetchCompany = useCallback((userId) => {
     setIsLoading(true);
@@ -43,7 +46,7 @@ const Advertiser = () => {
         console.log("Error on refresh: ", error.message);
       })
       .finally(() => {
-        setIsLoading(false); 
+        setIsLoading(false);
       });
   }, []);
 
@@ -75,7 +78,7 @@ const Advertiser = () => {
       setTabIndex(+params.tabIndex || 0);
       // if it reloads after saving or comes from a link in the renewal alarm, it doesn't have state
       loc.state ? setCompany(loc.state) : fetchCompany(params.userId);
-    } 
+    }
     else {
       setCompany(null);
     }
@@ -88,18 +91,31 @@ const Advertiser = () => {
 
   return (
     <>
-      <Grid container>
+      <Grid container direction="row">
         <Grid item xs={9}>
           <CompanySearch onReset={resetHandler} isDeleted={isDeleted} />
         </Grid>
         {
           role !== roleType.director && (
-            <Grid item xs={2} sx={{ pt: 5 }}>
+            <Grid item xs={1.5} sx={{ pt: 5 }}>
               <AddNewCompany />
             </Grid>
           )
         }
+        <Grid item xs={1.5} sx={{ pt: 5 }}>
+          <LoadingButton loading={isLoading}
+            variant="outlined"
+            onClick={() => {
+              setCompany(null);
+            }}
+            startIcon={<ReplayIcon />}
+          >
+            Company List
+          </LoadingButton>
+        </Grid>
       </Grid>
+      
+      {!company && (<CompanyList />)}
 
       {company && (
         <Box sx={{ width: '100%', typography: 'body1', margin: "0 auto", mt: 2 }}>

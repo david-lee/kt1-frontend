@@ -4,11 +4,16 @@ import { LoadingButton } from '@mui/lab';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import ConfirmDialog from 'shared/components/ConfirmDialog';
 import useInvoice from 'shared/hooks/useInvoice';
+import axios from 'axios';
+import api from "appConfig/restAPIs";
 
 const BulkInvoices = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [alreadyIssued, setAlreadyIssed] = useState(false);
-  const { isLoading, checkBulkIssue, issueAllInvoices } = useInvoice();
+  const { isLoading, checkBulkIssue, issueAllInvoices, issuePreviewAllInvoices } = useInvoice();
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [numberOfIssues, setNumberOfIssues] = useState({download:0,email:0});
+  const [isResult, setIsResult] = useState(false);
 
   const onIssued = () => {
     setIsOpen(false);
@@ -17,11 +22,28 @@ const BulkInvoices = () => {
 
   const issueInvoices = () => {
     issueAllInvoices(onIssued);
+    handleNumberOfIssues();
   };
+
+  const issuePreviewInvoices = () => {
+    issuePreviewAllInvoices();
+    setIsPreviewOpen(false);
+  }
 
   useEffect(() => {
     checkBulkIssue((resp) => setAlreadyIssed(resp));
   }, []);
+
+  const handleNumberOfIssues = () => {
+    axios.get(`${api.invoiceNumberOfIssues}`)
+      .then((resp) => {
+        setNumberOfIssues({email:resp.data[0].emails, download:resp.data[0].downloads});
+      })
+      .finally(() => {
+        setIsResult(true);
+      });
+    
+  }
 
   return (
     <>
@@ -32,6 +54,21 @@ const BulkInvoices = () => {
           isLoading={isLoading}
           onOK={issueInvoices} 
           onCancel={() => setIsOpen(false)} onClose={() => setIsOpen(false)} 
+        />
+
+        <ConfirmDialog open={isPreviewOpen}
+          title="Preview Bulk Invoices"
+          message="Do you want to issue all invoices to confirm?"
+          isLoading={isLoading}
+          onOK={issuePreviewInvoices} 
+          onCancel={() => setIsPreviewOpen(false)} onClose={() => setIsPreviewOpen(false)} 
+        />
+
+        <ConfirmDialog open={isResult}
+          title="The result of All issues"
+          message={numberOfIssues.download + ` download invoices and ` + numberOfIssues.email + ` email invoices are issued.`}
+          isLoading={isLoading}
+          onOK={() => setIsResult(false)}
         />
 
         {false && (
@@ -45,7 +82,14 @@ const BulkInvoices = () => {
           It will create invoices into a PDF file and download it. If companies set "eInvoice" option to active, those invoices will be emailed and not included in the file.
         </Typography>
 
-        {alreadyIssued && <Typography color="error" variant="h6" sx={{ mt: 5 }}>It has been already issued for the month.</Typography>}
+        {alreadyIssued && <Typography color="error" variant="h6" sx={{ mt: 5 }}>
+          It has been already issued for the month.</Typography>}
+
+        <LoadingButton startIcon={<ReceiptIcon />} variant="outlined"
+          onClick={() => setIsPreviewOpen(true)} sx={{ mt: 5, mr: 3 }}
+        >
+          Issue Preview All Invoices
+        </LoadingButton>
 
         <LoadingButton startIcon={<ReceiptIcon />} variant="contained"
           disabled={isLoading || alreadyIssued} onClick={() => setIsOpen(true)} sx={{ mt: 5 }}

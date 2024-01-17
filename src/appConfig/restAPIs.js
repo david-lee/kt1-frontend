@@ -19,6 +19,7 @@ const restApi = {
   invoiceReissue: '/invoice/reissue',
   invoiceBulkCheck: '/invoice/bulkIssuedCheck',
   invoicebulkIssue: '/invoice/issueAll',
+  invoiceNumberOfIssues: '/invoice/numberOfIssues',
   login: '/auth/login',
   logout: '/auth/logout',
   notes: '/note',
@@ -41,7 +42,8 @@ const restApi = {
   getReceiptList: '/Receipt/getReceiptList',
   issueReceipt: '/Receipt/issueReceipt',
   receiptBulkCheck: '/Receipt/bulkIssuedCheck',
-  receiptBulkIssue: '/Receipt/issueAllReceipt'
+  receiptBulkIssue: '/Receipt/issueAllReceipt',
+  allCompanyList: '/company/allCompanyList'
 }
 
 export default restApi;

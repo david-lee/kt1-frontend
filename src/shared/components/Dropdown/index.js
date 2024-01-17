@@ -25,7 +25,7 @@ const Dropdown = ({
           return <MenuItem key={codeId || value} value={codeId || value}>{label || value}</MenuItem>
         })}
       </Select>
-    </FormControl>   
+    </FormControl>
   );
 }
 

@@ -427,3 +427,12 @@ export const provinces = [
       "value": "Other",
   }
 ]
+
+export const salesPersons = [
+//   { codeId: 100003, value: "Stephanie Chwae" },
+//   { codeId: 100004, value: "Minju Kim" },
+//   { codeId: 100954, value: "Company" }
+  { codeId: 100003, value: "Stephanie Chwae" },
+  { codeId: 100004, value: "Minju Kim" },
+  { codeId: 100954, value: "Company" }
+];
