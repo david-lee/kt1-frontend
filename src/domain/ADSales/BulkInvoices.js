@@ -34,8 +34,8 @@ const BulkInvoices = () => {
     checkBulkIssue((resp) => setAlreadyIssed(resp));
   }, []);
 
-  const handleNumberOfIssues = () => {
-    axios.get(`${api.invoiceNumberOfIssues}`)
+  const handleNumberOfIssues = async () => {
+    await axios.get(`${api.invoiceNumberOfIssues}`)
       .then((resp) => {
         setNumberOfIssues({email:resp.data[0].emails, download:resp.data[0].downloads});
       })
