@@ -158,7 +158,7 @@ const AddDialog = ({isOpen, onClose, onSaved, onError, adDate, page, adType}) =>
         <Button onClick={handleSchedule}
           variant="contained"
           startIcon={<SaveIcon />}
-          disabled={isLoading || !selectedCompany || price <= 0 || !size}
+          disabled={isLoading || !selectedCompany || !price || price < 0 || !size}
         >
           Save
         </Button>

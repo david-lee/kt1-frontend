@@ -180,7 +180,7 @@ const ADList = ({ companyId, eInvoice, role }) => {
         setCanEdit(false);
       } else {
         const { data: { status, paymentStatus}} = selectedNodes[0];
-        setCanEdit(status.toLowerCase() === 'pending' && !paymentStatus);
+        setCanEdit(status.toLowerCase() === 'pending' && (!paymentStatus || selectedNodes[0].data.cost === 0));
       }
     } else {
       setCanIssue(false);
