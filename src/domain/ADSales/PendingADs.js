@@ -35,7 +35,7 @@ const ADSales = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const columnDefs = [
-    { field: 'status', headerName: '', width: 50, resizable: false,
+    { field: 'status', headerName: '', width: 40, resizable: false,
       cellRenderer: (props) => {
         return props.value.toLowerCase() === "confirmed" ? <CheckCircleIcon sx={{ position: 'relative', top: 5, color: "green" }} /> : <PendingIcon sx={{ color: "red", position: 'relative', top: 5 }} />
       },
@@ -47,31 +47,31 @@ const ADSales = () => {
       },
       valueGetter: (params) => params.data.color ? 1 : 0,
     },    
-    { field: 'adId', headerName: 'Bill No', width: 110 },
+    { field: 'adId', headerName: 'Bill No', width: 90 },
     { field: 'companyId', headerName: 'Company Id', width: 120 },
     { field: 'company', headerName: 'Company Name', width: 200 },
     { field: 'companyId', hide: true },
     { field: 'adType', headerName: 'Type', width: 80 },
-    { field: 'adTitle', headerName: 'Title', minWidth: 120 },
+    { field: 'adTitle', headerName: 'Title', minWidth: 100 },
     { field: 'page', headerName: 'Page', width: 80 },
     { field: 'size', headerName: 'Size', width: 80 },
-    { field: 'startDate', headerName: 'Start Date', width: 125, valueFormatter: (params) => formatUIDate(params.value) },
-    { field: 'endDate', headerName: 'End Date', width: 125, valueFormatter: (params) => formatUIDate(params.value) },
-    { field: 'cost', headerName: 'Cost', width: 90, filter: false, valueFormatter: (params) => precisionRound(params.value).toLocaleString() },
-    { field: 'taxAmount', headerName: 'Tax', width: 90, filter: false, valueFormatter: (params) => precisionRound(params.value).toLocaleString() },
-    { field: 'total', headerName: 'Total', width: 95, filter: false, valueFormatter: (params) => precisionRound(params.value).toLocaleString() },
+    { field: 'startDate', headerName: 'Start Date', width: 110, valueFormatter: (params) => formatUIDate(params.value) },
+    { field: 'endDate', headerName: 'End Date', width: 110, valueFormatter: (params) => formatUIDate(params.value) },
+    { field: 'cost', headerName: 'Cost', width: 80, filter: false, valueFormatter: (params) => precisionRound(params.value).toLocaleString() },
+    { field: 'taxAmount', headerName: 'Tax', width: 80, filter: false, valueFormatter: (params) => precisionRound(params.value).toLocaleString() },
+    { field: 'total', headerName: 'Total', width: 80, filter: false, valueFormatter: (params) => precisionRound(params.value).toLocaleString() },
     { field: 'cardPayment', headerName: 'Card', width: 80, resizable: false,
       cellRenderer: (props) => {
         return props.value ? <CreditCardIcon sx={{ position: 'relative', top: 5, color: "gray" }} /> : <></>
       },
       valueGetter: (params) => params.data.cardPayment ? 1 : 0,
     },    
-    { field: 'scheduleType', headerName: 'Schedule', width: 100 },
+    { field: 'scheduleType', headerName: 'Schedule', width: 90 },
     { field: 'cadTitle', headerName: 'CAD Title', width: 120 },
     // { field: 'color', headerName: 'Color', width: 80 },
     // { field: 'webFlag', headerName: 'Web', width: 80 },
     { field: 'regBy', headerName: 'Reg By', width: 100 },
-    { field: 'regDate', headerName: 'Reg Date', width: 140, valueFormatter: (params) => formatUIDate(params.value)}
+    { field: 'regDate', headerName: 'Reg Date', width: 110, valueFormatter: (params) => formatUIDate(params.value)}
   ];
 
   // TODO: need randomDates? no place to show it in this view
@@ -163,7 +163,7 @@ const ADSales = () => {
               )}
             </Grid>
 
-            <Grid item component={Box} className="ag-theme-alpine" sx={{ height: 600, width: '100%' }}>
+            <Grid item component={Box} className="ag-theme-alpine" sx={{ height: 700, width: '100%' }}>
               <AgGridReact
                 ref={gridRef}
                 rowData={ads}
@@ -172,11 +172,14 @@ const ADSales = () => {
                   sortable: true,
                   resizable: true,
                   filter: true,
+                  maxWidth: 700,
                 }}
                 getRowId={params => params.data.adId}
                 rowSelection={`${role >= roleType.manager ? "multiple" : "none"}`}
                 rowMultiSelectWithClick={true}
                 onSelectionChanged={onSelectionChanged}
+                pagination={true}
+                paginationPageSize={20}
               >
               </AgGridReact>
             </Grid>
