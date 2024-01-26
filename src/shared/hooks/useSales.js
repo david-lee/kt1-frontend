@@ -118,6 +118,13 @@ const useSales = () => {
     fetchADs(endpoint, onFetch);
   }, []);
 
+  const fetchConfirmedADList = useCallback(({startDate, endDate}, onFetch) => {
+    const stDate = startDate ? format(startDate, DATA_DATE_FORMAT) : "";
+    const edDate = endDate ? format(endDate, DATA_DATE_FORMAT) : "";
+    const endpoint = `${api.getAdList}?status=${salesStatus.confirmed}&startDate=${stDate}&endDate=${edDate}`;
+    fetchADs(endpoint, onFetch);
+  }, []);
+
   const fetchLastMonthBills = useCallback((selectedCompany, startDate, endDate, onFetch) => {
     const endpoint = `${api.getAdList}?companyId=${selectedCompany}&startDate=${startDate}&endDate=${endDate}&scheduleType=23&status=${salesStatus.confirmed}`;
     fetchADs(endpoint, onFetch);
@@ -168,6 +175,7 @@ const useSales = () => {
   return {
     isLoading,
     fetchPendingADs,
+    fetchConfirmedADList,
     fetchOneTimeADs,
     fetchADList,
     fetchCardPayList,

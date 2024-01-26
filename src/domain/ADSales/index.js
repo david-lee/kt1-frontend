@@ -3,6 +3,7 @@ import { Box, Grid, Tab, Tabs } from '@mui/material';
 import TabPanel from 'shared/components/TabPanel';
 import { useUserAuth } from 'shared/contexts/UserAuthContext';
 import PendingADs from './PendingADs';
+import ConfirmedADs from './ConfirmedADs';
 import CardPayments from './CardPayments';
 import { useNavigate } from 'react-router-dom';
 import { deptType } from 'data/constants';
@@ -30,9 +31,10 @@ const ADSales = () => {
         <Grid item>
           <Tabs value={tabIndex} onChange={handleChange} aria-label="Sales Tabs">
             <Tab label="Pending ADs" value={0} />
-            <Tab label="Card Payments" value={1} />
-            <Tab label="Issue All Invoices" value={2} />
-            <Tab label="Issue All E-Receipts" value={3} />
+            <Tab label="Confirmed ADs" value={1} />
+            <Tab label="Card Payments" value={2} />
+            <Tab label="Issue All Invoices" value={3} />
+            <Tab label="Issue All E-Receipts" value={4} />
           </Tabs>
         </Grid>
       </Grid>
@@ -42,14 +44,18 @@ const ADSales = () => {
       </TabPanel>
 
       <TabPanel value={tabIndex} index={1}>
-        <CardPayments />
+        <ConfirmedADs />
       </TabPanel>
 
       <TabPanel value={tabIndex} index={2}>
-        <BulkInvoices />
+        <CardPayments />
       </TabPanel>
 
       <TabPanel value={tabIndex} index={3}>
+        <BulkInvoices />
+      </TabPanel>
+
+      <TabPanel value={tabIndex} index={4}>
         <BulkEReceipts />
       </TabPanel>
     </Box>
