@@ -86,7 +86,7 @@ const useSales = () => {
           }
         });
         const random =resp.data.randomDates.map(({
-          adId, pAdId, company, adType, adTitle, page, size, startDate, endDate, cost, taxAmount, cadTitle,scheduleType
+          adId, pAdId, company, adType, adTitle, page, size, startDate, endDate, cost, taxAmount, color, isInvoiced, cadTitle,scheduleType
         }) => {
           return {
             adId,
@@ -103,7 +103,9 @@ const useSales = () => {
             endDate,
             cost,
             taxAmount,
-            total: cost + taxAmount
+            total: cost + taxAmount,
+            color,
+            isInvoiced
           }
         });          
         onFetch({main: mapped, randomDates: random, payments: resp.data.paidHistory});

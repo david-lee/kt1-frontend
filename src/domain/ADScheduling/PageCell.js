@@ -6,6 +6,7 @@ import { useUserAuth } from 'shared/contexts/UserAuthContext';
 import { numberWithCommas } from 'shared/utils';
 import path from 'data/routes';
 import LooksOneIcon from '@mui/icons-material/LooksOne';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 
 const sizeColor = {
   'FL': "#f44336",
@@ -29,7 +30,7 @@ const sizeColor = {
 const PageCell = ({ bgcolor, page, ad, sizeFilter, nonFilterSize, onClickPage }) => {
   const { user: { role }} = useUserAuth();
   const navigation = useNavigate();
-
+  
   const gotoCompany = useCallback((companyId) => {
     navigation(`/s/${path.advertiser}/${companyId}/2`);
   }, []);
@@ -71,10 +72,10 @@ const PageCell = ({ bgcolor, page, ad, sizeFilter, nonFilterSize, onClickPage })
             return (
               <Grid key={index} item xs={12} sx={{ bgcolor: color ? "inherit" : "rgba(220,220,220, .3)", cursor: "pointer" }}>
                 <Tooltip arrow title={pAdId != null ? `${pAdId}: ${adId}` : `${adId}: $${numberWithCommas(cost)}, $${numberWithCommas(taxAmount)}`}>
-                  <Typography variant="body2" onClick={() => gotoCompany(companyId)} sx={{textDecoration: isInvoiced === true ? "underline" : ""}}>
+                  <Typography variant="body2" onClick={() => gotoCompany(companyId)} sx={{textDecoration: pAdId != null ? "underline" : ""}}>
                     <Box component="span" sx={{ color: sizeColor[size], fontWeight: 600 }}>
                       {size}:
-                    </Box> {company} ({`${adTitle || ''}`}) {pAdId != null && (<LooksOneIcon />)}
+                    </Box> {company} ({`${adTitle || ''}`}) {isInvoiced ? <DescriptionRoundedIcon /> : ""}
                   </Typography>
                 </Tooltip>
               </Grid>

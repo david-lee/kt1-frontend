@@ -4,7 +4,6 @@ import { Box, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { formatUIDate, precisionRound } from 'shared/utils';
 import useSales from 'shared/hooks/useSales';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PaidIcon from '@mui/icons-material/Paid';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import ADDate from 'shared/components/ADDate';
