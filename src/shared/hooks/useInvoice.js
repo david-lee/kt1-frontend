@@ -221,6 +221,17 @@ const useInvoice = (fetchOnLoad) => {
       });
   }, []);
 
+  const issueAllCardPaymentInvoices = useCallback(() => {
+    setIsLoading(true);
+    axios.post(`${api.invoicebulkCardPaymentIssue}`, { userId: user.userId })
+      .then(data => {
+        console.log(data);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
   return {
     isLoading,
     invoices,
@@ -231,6 +242,7 @@ const useInvoice = (fetchOnLoad) => {
     issueInvoiceByCompany,
     issueAllInvoices,
     issuePreviewAllInvoices,
+    issueAllCardPaymentInvoices,
     reIssueInvoice,
     emailInvoiceByBill,
     emailInvoiceByCompany,

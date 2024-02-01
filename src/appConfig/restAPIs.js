@@ -19,6 +19,7 @@ const restApi = {
   invoiceReissue: '/invoice/reissue',
   invoiceBulkCheck: '/invoice/bulkIssuedCheck',
   invoicebulkIssue: '/invoice/issueAll',
+  invoicebulkCardPaymentIssue: '/invoice/issueAllCardPay',
   invoiceNumberOfIssues: '/invoice/numberOfIssues',
   login: '/auth/login',
   logout: '/auth/logout',

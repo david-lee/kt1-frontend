@@ -10,10 +10,11 @@ import api from "appConfig/restAPIs";
 const BulkInvoices = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [alreadyIssued, setAlreadyIssed] = useState(false);
-  const { isLoading, checkBulkIssue, issueAllInvoices, issuePreviewAllInvoices } = useInvoice();
+  const { isLoading, checkBulkIssue, issueAllInvoices, issuePreviewAllInvoices, issueAllCardPaymentInvoices } = useInvoice();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [numberOfIssues, setNumberOfIssues] = useState({download:0,email:0});
   const [isResult, setIsResult] = useState(false);
+  const [issueCardPayOpen, setIssueCardPayOpen] = useState(false);
 
   const onIssued = () => {
     setIsOpen(false);
@@ -28,6 +29,11 @@ const BulkInvoices = () => {
   const issuePreviewInvoices = () => {
     issuePreviewAllInvoices();
     setIsPreviewOpen(false);
+  }
+
+  const issueCardPayInvoices = () => {
+    issueAllCardPaymentInvoices();
+    setIssueCardPayOpen(false);
   }
 
   useEffect(() => {
@@ -58,10 +64,18 @@ const BulkInvoices = () => {
 
         <ConfirmDialog open={isPreviewOpen}
           title="Preview Bulk Invoices"
-          message="Do you want to issue all invoices to confirm?"
+          message="Do you want to issue all invoices to preview?"
           isLoading={isLoading}
           onOK={issuePreviewInvoices} 
           onCancel={() => setIsPreviewOpen(false)} onClose={() => setIsPreviewOpen(false)} 
+        />
+
+        <ConfirmDialog open={issueCardPayOpen}
+          title="Card Payment Bulk Invoices"
+          message="Do you want to issue all card payment invoices?"
+          isLoading={isLoading}
+          onOK={issueCardPayInvoices} 
+          onCancel={() => setIssueCardPayOpen(false)} onClose={() => setIssueCardPayOpen(false)} 
         />
 
         <ConfirmDialog open={isResult}
@@ -85,6 +99,12 @@ const BulkInvoices = () => {
         {alreadyIssued && <Typography color="error" variant="h6" sx={{ mt: 5 }}>
           It has been already issued for the month.</Typography>}
 
+        <LoadingButton startIcon={<ReceiptIcon />} variant="outlined"
+          onClick={() => setIssueCardPayOpen(true)} sx={{ mt: 5, mr: 3 }}
+        >
+          Issue All invoice for Card Payment
+        </LoadingButton>
+        
         <LoadingButton startIcon={<ReceiptIcon />} variant="outlined"
           onClick={() => setIsPreviewOpen(true)} sx={{ mt: 5, mr: 3 }}
         >
