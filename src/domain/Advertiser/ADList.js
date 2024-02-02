@@ -293,7 +293,7 @@ const ADList = ({ companyId, eInvoice, role }) => {
           </Grid>
         </Grid>
 
-        <Grid item component={Box} className="ag-theme-alpine" sx={{ height: 400, width: '100%', mb: 3 }}>
+        <Grid item component={Box} className="ag-theme-alpine" sx={{ height: 500, width: '100%', mb: 3 }}>
           <AgGridReact
             ref={gridRef}
             rowData={ads?.main}
@@ -307,6 +307,8 @@ const ADList = ({ companyId, eInvoice, role }) => {
             rowSelection="multiple"
             // rowMultiSelectWithClick={true}
             onSelectionChanged={onSelectionChanged}
+            pagination={true}
+            paginationPageSize={10}
           >
           </AgGridReact>
         </Grid>

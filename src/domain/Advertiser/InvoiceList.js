@@ -20,7 +20,7 @@ const InvoiceList = ({ companyId, eInvoice }) => {
   const [selectedRow, setSelectedRow] = useState([]);
   const [selectedBillRow, setSelectedBillRow] = useState([]);
   const { isLoading, invoices, fetchInvoices, reIssueInvoice } = useInvoice();
-  
+    
   const columnDefs = [
     { field: 'invoiceNo', headerName: 'Invoice No', width: 200, },
     { field: 'primaryName', headerName: 'Company', minWidth: 300 },
@@ -133,7 +133,7 @@ const InvoiceList = ({ companyId, eInvoice }) => {
         </Grid>
 
         <Grid item>
-          <Box sx={{ width: '100  %', height: 190 }} className="ag-theme-alpine">
+          <Box sx={{ width: '100  %', height: 400 }} className="ag-theme-alpine">
             <AgGridReact
               ref={gridRef}
               rowData={invoices}
@@ -145,6 +145,8 @@ const InvoiceList = ({ companyId, eInvoice }) => {
               }}
               rowSelection="single"
               onSelectionChanged={onSelectionChanged}
+              pagination={true}
+              paginationPageSize={10}
             >
             </AgGridReact>
           </Box>
