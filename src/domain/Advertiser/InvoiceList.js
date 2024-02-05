@@ -133,7 +133,7 @@ const InvoiceList = ({ companyId, eInvoice }) => {
         </Grid>
 
         <Grid item>
-          <Box sx={{ width: '100  %', height: 400 }} className="ag-theme-alpine">
+          <Box sx={{ width: '100  %', height: 200 }} className="ag-theme-alpine">
             <AgGridReact
               ref={gridRef}
               rowData={invoices}
@@ -145,8 +145,6 @@ const InvoiceList = ({ companyId, eInvoice }) => {
               }}
               rowSelection="single"
               onSelectionChanged={onSelectionChanged}
-              pagination={true}
-              paginationPageSize={10}
             >
             </AgGridReact>
           </Box>
