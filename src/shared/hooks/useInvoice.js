@@ -60,6 +60,54 @@ const useInvoice = (fetchOnLoad) => {
     });
   }, []);
 
+  const fetchCompletedInvoices = useCallback((companyId, onFetch) => {
+    setIsLoading(true);
+    const url = `${api.companyCompletedInvoice}?userId=${companyId}`;
+
+    axios.get(url).then((resp) => {
+      const mapped = resp.data.map(({ customerId, invoiceNo, primaryName, dueDate, issuedBy, issuedDate, paymentBills }) => {
+        let cost = 0;
+        let tax = 0;
+        let outstandingCost = 0;
+        let outstandingTax = 0;
+
+        paymentBills.forEach(bill => {
+          outstandingCost += bill.outstandingCost;
+          outstandingTax += bill.outstandingTax;
+          cost += bill.cost;
+          tax += bill.taxAmount;
+          bill.paidTotal = '';
+          bill.paidCost = '';
+          bill.paidTax = '';
+          bill.paidDate = new Date();
+          bill.method = '';
+        });
+
+        return {
+          customerId,
+          invoiceNo,
+          primaryName,
+          dueDate,
+          issuedBy,
+          issuedDate,
+          cost,
+          tax,
+          orgTotal: cost + tax,
+          outstandingCost,
+          outstandingTax,
+          outstandingTotal: outstandingCost + outstandingTax,
+          paymentBills
+        }
+      });
+
+      if (onFetch) onFetch(mapped)
+      else setInvoices(mapped);
+    }).finally(() => {
+      setIsLoading(false);
+    });
+  }, []);
+
+
   const getInvoice = (endPoint, data, viewPdf = true) => {
     setIsLoading(true);
 
@@ -131,6 +179,15 @@ const useInvoice = (fetchOnLoad) => {
     };
 
     return getInvoice(endPoint, data, !email);
+  };
+
+  const reDownloadInvoice = (invoiceNo) => {
+    const endPoint = `${api.reDownloadInvoice}`;
+    const data = {
+      invoice: invoiceNo
+    };
+    
+    return getInvoice(endPoint, data);
   };
 
   const checkInvoiceByBill = (companyId, adIds) => {
@@ -236,6 +293,7 @@ const useInvoice = (fetchOnLoad) => {
     isLoading,
     invoices,
     fetchInvoices,
+    fetchCompletedInvoices,
     viewInvoiceByBill,
     viewInvoiceByCompany,
     issueInvoiceByBill,
@@ -244,6 +302,7 @@ const useInvoice = (fetchOnLoad) => {
     issuePreviewAllInvoices,
     issueAllCardPaymentInvoices,
     reIssueInvoice,
+    reDownloadInvoice,
     emailInvoiceByBill,
     emailInvoiceByCompany,
     checkInvoiceByBill,
