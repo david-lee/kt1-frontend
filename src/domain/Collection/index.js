@@ -88,7 +88,7 @@ const Collection = () => {
       {!isLoading && (
         <Grid container direction="column" rowGap={5}>
           <Grid item sx={{ mb: 5 }}>
-            <Box sx={{ width: '100%', height: 450 }} className="ag-theme-alpine">
+            <Box sx={{ width: '100%', height: 600 }} className="ag-theme-alpine">
               <AgGridReact
                 ref={gridRef}
                 rowData={invoices}
@@ -101,6 +101,8 @@ const Collection = () => {
                 getRowId={params => params.data.invoiceNo}
                 rowSelection="single"
                 onSelectionChanged={onSelectionChanged}
+                pagination={true}
+                paginationPageSize={20}
               >
               </AgGridReact>
             </Box>

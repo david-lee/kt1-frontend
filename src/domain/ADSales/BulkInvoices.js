@@ -100,13 +100,13 @@ const BulkInvoices = () => {
           It has been already issued for the month.</Typography>}
 
         <LoadingButton startIcon={<ReceiptIcon />} variant="outlined"
-          onClick={() => setIssueCardPayOpen(true)} sx={{ mt: 5, mr: 3 }}
+          disabled={isLoading} onClick={() => setIssueCardPayOpen(true)} sx={{ mt: 5, mr: 3 }}
         >
           Issue All invoice for Card Payment
         </LoadingButton>
         
         <LoadingButton startIcon={<ReceiptIcon />} variant="outlined"
-          onClick={() => setIsPreviewOpen(true)} sx={{ mt: 5, mr: 3 }}
+          disabled={isLoading} onClick={() => setIsPreviewOpen(true)} sx={{ mt: 5, mr: 3 }}
         >
           Issue Preview All Invoices
         </LoadingButton>
