@@ -54,25 +54,25 @@ const ADList = ({ companyId, eInvoice, role }) => {
   const [isBackToPendingOpen, setIsBackToPendingOpen] = useState(false);
 
   const columnDefs = [
-    { field: 'status', headerName: '', width: 40, resizable: false,
+    { field: 'status', headerName: '', width: 32, resizable: false,
       cellRenderer: (props) => {
         return props.value.toLowerCase() === "confirmed" ? <CheckCircleIcon sx={{ position: 'relative', top: 5, color: "green" }} /> : <PendingIcon sx={{ color: "red", position: 'relative', top: 5 }} />
       },
       valueGetter: (params) => params.data.status.toLowerCase(),
     },
-    { field: 'isInvoiced', headerName: '', width: 40, resizable: false,
+    { field: 'isInvoiced', headerName: '', width: 32, resizable: false,
       cellRenderer: (props) => {
         return props.value ? <DescriptionRoundedIcon sx={{ position: 'relative', top: 5, color: "black" }} /> : <></>
       },
       valueGetter: (params) => params.data.isInvoiced ? 1 : 0,
     },
-    { field: 'paymentStatus', headerName: '', width: 40, resizable: false,
+    { field: 'paymentStatus', headerName: '', width: 32, resizable: false,
       cellRenderer: (props) => {
         return props.value ? <PaidIcon sx={{ position: 'relative', top: 5, color: "blue" }} /> : <></>
       },
       valueGetter: (params) => params.data.paymentStatus ? 1 : 0,
     },  
-    { field: 'color', headerName: '', width: 40, resizable: false,
+    { field: 'color', headerName: '', width: 32, resizable: false,
       cellRenderer: (props) => {
         return props.value ? <></> : <ContrastIcon sx={{ position: 'relative', top: 5, color: "gray" }} />
       },
