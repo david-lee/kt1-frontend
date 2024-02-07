@@ -41,7 +41,7 @@ const Receipt = ({ companyId, eReceipt, role }) => {
     setIsLoading(true);
     const fromDate = stDate ? format(stDate, DATA_DATE_FORMAT) : "";
     const toDate = edDate ? format(edDate, DATA_DATE_FORMAT) : "";
-console.log("numberOf", numOfSelected);
+
     axios.get(`${api.getReceiptList}?companyId=${companyId}&startDate=${fromDate}&endDate=${toDate}`)
       .then((resp) => {
         setReceiptList(resp);

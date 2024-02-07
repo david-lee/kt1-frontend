@@ -27,6 +27,7 @@ import { roleType } from 'data/constants';
 import EditBill from './EditBill';
 import useSales from 'shared/hooks/useSales';
 import UndoIcon from '@mui/icons-material/Undo';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 
 const IconLoadingButton = styled(LoadingButton)({
   "& .MuiButton-startIcon": {
@@ -58,6 +59,12 @@ const ADList = ({ companyId, eInvoice, role }) => {
         return props.value.toLowerCase() === "confirmed" ? <CheckCircleIcon sx={{ position: 'relative', top: 5, color: "green" }} /> : <PendingIcon sx={{ color: "red", position: 'relative', top: 5 }} />
       },
       valueGetter: (params) => params.data.status.toLowerCase(),
+    },
+    { field: 'isInvoiced', headerName: '', width: 40, resizable: false,
+      cellRenderer: (props) => {
+        return props.value ? <DescriptionRoundedIcon sx={{ position: 'relative', top: 5, color: "black" }} /> : <></>
+      },
+      valueGetter: (params) => params.data.isInvoiced ? 1 : 0,
     },
     { field: 'paymentStatus', headerName: '', width: 40, resizable: false,
       cellRenderer: (props) => {
