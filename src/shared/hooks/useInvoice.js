@@ -249,7 +249,7 @@ const useInvoice = (fetchOnLoad) => {
       });
   }, []);
 
-  const issueAllInvoices = useCallback((onIssued) => {
+  const issueAllInvoices = useCallback((onIssued, setNumberOfIssues) => {
     setIsLoading(true);
 
     axios.post(`${api.invoicebulkIssue}`, { userId: user.userId, issueType: 2 }, { responseType: 'blob' })
@@ -257,11 +257,19 @@ const useInvoice = (fetchOnLoad) => {
         const file = new Blob([data.data], {type: 'application/pdf'});
         const fileURL = URL.createObjectURL(file);
         window.open(fileURL);
+        handleNumberOfIssues(setNumberOfIssues);
         onIssued();
       })
       .finally(() => {
         setIsLoading(false);
       });
+  }, []);
+
+  const handleNumberOfIssues = useCallback((setNumberOfIssues) => {
+    axios.get(`${api.invoiceNumberOfIssues}`)
+      .then((resp) => {
+        setNumberOfIssues({email:resp.data[0].emails, download:resp.data[0].downloads});
+      })
   }, []);
 
   const issuePreviewAllInvoices = useCallback(() => {

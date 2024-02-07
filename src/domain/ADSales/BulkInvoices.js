@@ -18,12 +18,12 @@ const BulkInvoices = () => {
 
   const onIssued = () => {
     setIsOpen(false);
+    setIsResult(true);
     setAlreadyIssed(true);
   };
 
   const issueInvoices = () => {
-    issueAllInvoices(onIssued);
-    handleNumberOfIssues();
+    issueAllInvoices(onIssued, setNumberOfIssues);
   };
 
   const issuePreviewInvoices = () => {
@@ -39,17 +39,6 @@ const BulkInvoices = () => {
   useEffect(() => {
     checkBulkIssue((resp) => setAlreadyIssed(resp));
   }, []);
-
-  const handleNumberOfIssues = async () => {
-    await axios.get(`${api.invoiceNumberOfIssues}`)
-      .then((resp) => {
-        setNumberOfIssues({email:resp.data[0].emails, download:resp.data[0].downloads});
-      })
-      .finally(() => {
-        setIsResult(true);
-      });
-    
-  }
 
   return (
     <>
@@ -97,7 +86,8 @@ const BulkInvoices = () => {
         </Typography>
 
         {alreadyIssued && <Typography color="error" variant="h6" sx={{ mt: 5 }}>
-          It has been already issued for the month.</Typography>}
+          It has been already issued for the month.
+        </Typography>}
 
         <LoadingButton startIcon={<ReceiptIcon />} variant="outlined"
           disabled={isLoading} onClick={() => setIssueCardPayOpen(true)} sx={{ mt: 5, mr: 3 }}
