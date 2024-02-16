@@ -12,6 +12,8 @@
     "@mui/material": "^5.8.1",
     "@mui/x-date-pickers": "^5.0.0-alpha.4",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
+    "@stripe/react-stripe-js": "^2.5.0",
+    "@stripe/stripe-js": "^3.0.3",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",

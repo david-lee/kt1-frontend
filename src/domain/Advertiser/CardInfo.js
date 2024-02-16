@@ -16,6 +16,7 @@ import { LoadingButton } from '@mui/lab';
 import ConfirmDialog from "shared/components/ConfirmDialog";
 import AddCard from './AddCard';
 import UpdateCard from './UpdateCard';
+import StripeSetup from './StripeSetup';
 
 const IconLoadingButton = styled(LoadingButton)({
     "& .MuiButton-startIcon": {
@@ -38,6 +39,8 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
         companyEmail: companyEmail,
         regBy: userId
     });
+
+    const [setupOpen, setSetupOpen] = useState(false);
 
     const columnDefs = [
         { field: 'holderName', headerName: 'Card Holder', width: 260, minWidth: 200 },
@@ -96,7 +99,8 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
     }
 
     const addCard = () => {
-        setIsAddOpen(true);
+        // setIsAddOpen(true);
+        setSetupOpen(true);
     }
 
     const updateCard = () => {
@@ -108,6 +112,7 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
 
     return (
         <>
+            <StripeSetup open={setupOpen} />
             <ConfirmDialog open={isDeleteOpen}
                 message={`Do you want to delete it?`}
                 isLoading={isLoading} onOK={deleteCard} 
