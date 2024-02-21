@@ -3,10 +3,11 @@ import {Elements} from '@stripe/react-stripe-js';
 import{loadStripe} from '@stripe/stripe-js';
 import { STRIPE_PUB_KEY } from 'data/constants';
 import StripSetupForm from './StripeSetupForm';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const stripePromise = loadStripe(STRIPE_PUB_KEY);
 
-const client_secret = 'seti_1OkYETFTcVYEN1aoQEsL4YZx_secret_PZhdxTvEQHoxMFfZRBIEyo7qtlFBSKw';
 const layout = {
   type: 'tabs',
   defaultConllapsed: false,
@@ -25,7 +26,7 @@ const appearance = {
   },
 }
 
-const StripeSetup = () => {
+const StripeSetup = ({onClose, client_secret, setCompleteAddCardOpen}) => {
   const options = {
     clientSecret: client_secret,
     layout,
@@ -34,10 +35,23 @@ const StripeSetup = () => {
 
   return (
     <>
-      <Elements stripe={stripePromise} options={options}>
-        <StripSetupForm />
-      </Elements>
       
+    <Dialog
+      open={true}
+      onClose={onClose}
+      sx={{ "& .MuiPaper-root": { maxWidth: 1000, minWidth: 400, minHeight: 400 } }}
+    >
+      <DialogTitle>
+        Register Card
+        
+      </DialogTitle>
+      <DialogContent>
+        <Elements stripe={stripePromise} options={options}>
+          <StripSetupForm onClose={onClose} setCompleteAddCardOpen={setCompleteAddCardOpen} />
+        </Elements>
+      </DialogContent>
+      
+    </Dialog>  
     </>
   );
 }

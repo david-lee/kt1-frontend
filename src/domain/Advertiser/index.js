@@ -167,7 +167,7 @@ const Advertiser = () => {
             <MonthlySales companyId={company.userId} tabIndex={tabIndex} />
           </TabPanel>
           <TabPanel value={tabIndex} index={6}>
-            <CardInfo companyId={company.userId} companyName={company.primaryName} companyEmail={company.email} userId={userId} />
+            <CardInfo companyId={company.userId} companyName={company.primaryName} companyEmail={company.email} regBy={company.regBy} />
           </TabPanel>
           <TabPanel value={tabIndex} index={7}>
             <Receipt companyId={company.userId} eReceipt={company.eReceipt} role={role} />
