@@ -6,6 +6,7 @@ import { formatUIDate } from 'shared/utils';
 import AddIcon from '@mui/icons-material/Add';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckIcon from '@mui/icons-material/Check';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { LoadingButton } from '@mui/lab';
 import ConfirmDialog from "shared/components/ConfirmDialog";
 import StripeSetup from './StripeSetup';
@@ -45,6 +46,7 @@ const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
     const [cards, setCards] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
     const [isChangeDefaultCardOpen, setIsChangeDefaultCardOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const { customerIntent, customerCard } = useCard();
 
     const columnDefs = [
@@ -121,6 +123,18 @@ const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
         });
     }
 
+    const deleteCard = async () => {
+        const data = {
+            customerId: selectedRow.customerId
+        }
+        
+        await axios.put(`${api.stripeDeleteCard}`, data)
+            .then(() => {
+                fetchCards(companyId);
+                setIsDeleteOpen(false);
+        });
+    }
+
     return (
         <>
             <ConfirmDialog open={isIntentOpen}
@@ -138,6 +152,12 @@ const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
                 message={`Do you want to change the primary card?`}
                 isLoading={isLoading} onOK={changeDefaultCard} 
                 onCancel={() => setIsChangeDefaultCardOpen(false)} onClose={() => setIsChangeDefaultCardOpen(false)} 
+            />
+
+            <ConfirmDialog open={isDeleteOpen}
+                message={`Do you want to delete this?`}
+                isLoading={isLoading} onOK={deleteCard} 
+                onCancel={() => setIsDeleteOpen(false)} onClose={() => setIsDeleteOpen(false)} 
             />
             
             {setupOpen && <
@@ -159,9 +179,15 @@ const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
                         loadingPosition='start'
                         onClick={() => setIsChangeDefaultCardOpen(true)}
                         loading={isLoading}
-                        disabled={!selectedRow}
+                        disabled={!selectedRow || selectedRow.isPrimary}
                     >
                     </IconLoadingButton>
+                    <IconLoadingButton startIcon={<DeleteForeverIcon />} color="error" variant="outlined"
+                        loadingPosition='start'
+                        onClick={() => setIsDeleteOpen(true)}
+                        loading={isLoading}
+                        disabled={!selectedRow || selectedRow.isPrimary}
+                    ></IconLoadingButton>
                 </Grid>
                 <Grid item component={Box} className="ag-theme-alpine" sx={{ height: 400, width: 600, mb: 3 }}>
                     <AgGridReact
