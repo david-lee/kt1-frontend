@@ -40,9 +40,13 @@ const restApi = {
   statsPayment: '/stats/payment',
   monthlySales: '/sales/monthlySales',
   stripeCustomer: '/stripe/customer',
+
   stripeCreateCustomer: 'stripe/customer/create',
   stripeClientSecret: '/stripe/customer/secret',
   stripeCustomerCard: '/stripe/customer/card',
+  stripeCustomerCardList: '/stripe/customer/card',
+  stripeChangeDefaultCard: '/stripe/customer/card/default',
+
   stripePayment: '/stripe/payment',
   getReceiptList: '/Receipt/getReceiptList',
   issueReceipt: '/Receipt/issueReceipt',

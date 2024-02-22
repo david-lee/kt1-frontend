@@ -24,7 +24,6 @@ const useCard = () => {
     setIsLoading(true);
     axios.post(`${api.stripeCustomerCard}`, {customerId: customerId})
       .then(resp => {
-        console.log("resp", resp);
         setCardInfo({pmId: resp.data.id,
                     lastDigit: resp.data.card.last4, 
                     expMonth: resp.data.card.exp_month, 
