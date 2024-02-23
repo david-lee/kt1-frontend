@@ -39,7 +39,6 @@ const restApi = {
   statsAD: '/stats/advertisement',
   statsPayment: '/stats/payment',
   monthlySales: '/sales/monthlySales',
-  stripeCustomer: '/stripe/customer',
 
   stripeCreateCustomer: 'stripe/customer/create',
   stripeClientSecret: '/stripe/customer/secret',
@@ -49,7 +48,6 @@ const restApi = {
   stripeDeleteCard: '/stripe/customer/card/delete',
   stripePaymentCheckout: 'stripe/payment/checkout',
 
-  stripePayment: '/stripe/payment',
   getReceiptList: '/Receipt/getReceiptList',
   issueReceipt: '/Receipt/issueReceipt',
   receiptBulkCheck: '/Receipt/bulkIssuedCheck',

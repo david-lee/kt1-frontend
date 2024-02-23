@@ -8,7 +8,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import CardTransaction from './CardTransation';
 import CardPayTransaction from './CardPayTransaction';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
@@ -18,7 +17,7 @@ import { numberWithCommas } from 'shared/utils';
 import ADDate from 'shared/components/ADDate';
 import SearchIcon from '@mui/icons-material/Search';
 import { LoadingButton } from '@mui/lab';
-import { subMonths, addMonths, addDays, format } from 'date-fns';
+import { subMonths, addMonths, format } from 'date-fns';
 import { DATA_DATE_FORMAT } from 'data/constants';
 import { precisionRound } from 'shared/utils';
 
@@ -73,7 +72,6 @@ const CardPayForBill = () => {
         setPayTransactionOpen(true);
     }
 
-
     const handleDateChange = (type, value) => {
         if (type === 'from') setFromDate(value);
         if (type === 'to') setToDate(value);
@@ -105,14 +103,6 @@ const CardPayForBill = () => {
 
     return (
         <>
-            {/* {isCardTransactionOpen && <CardTransaction
-                onClose={() => setIsCardTransactionOpen(false)}
-                onOpen={isCardTransactionOpen}
-                payData={payData}
-                fetchCardPayBills={fetchCardPayBills}
-            />
-            } */}
-
             {payTransactionOpen && <CardPayTransaction
                 onClose={() => setPayTransactionOpen(false)}
                 onOpen={payTransactionOpen}
