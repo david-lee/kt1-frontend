@@ -47,6 +47,7 @@ const restApi = {
   stripeCustomerCardList: '/stripe/customer/card',
   stripeChangeDefaultCard: '/stripe/customer/card/default',
   stripeDeleteCard: '/stripe/customer/card/delete',
+  stripePaymentCheckout: 'stripe/payment/checkout',
 
   stripePayment: '/stripe/payment',
   getReceiptList: '/Receipt/getReceiptList',
