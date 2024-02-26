@@ -92,8 +92,8 @@ const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
     }, [companyId, companyName, companyEmail, regBy]);
 
     const createCustomerIntent = () => {
-        customerIntent(customerInfo, setClientSecret, setCustomerId);
-        setIsIntentOpen(true);
+        customerIntent(customerInfo, setClientSecret, setCustomerId, setIsIntentOpen);
+        // setIsIntentOpen(true);
     }
 
     const addCard = () => {

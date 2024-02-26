@@ -5,7 +5,7 @@ import api from "appConfig/restAPIs";
 const useCard = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const customerIntent = useCallback((data, setClientSecret, setCustomerId) => {
+  const customerIntent = useCallback((data, setClientSecret, setCustomerId, setIsIntentOpen) => {
     setIsLoading(true);
     axios.post(`${api.stripeCreateCustomer}`, data)
       .then(resp => {
@@ -17,6 +17,7 @@ const useCard = () => {
       })
       .finally(() => {
         setIsLoading(false);
+        setIsIntentOpen(true);
       });
   }, []);
 

@@ -3,8 +3,7 @@ import {Elements} from '@stripe/react-stripe-js';
 import{loadStripe} from '@stripe/stripe-js';
 import { STRIPE_PUB_KEY } from 'data/constants';
 import StripSetupForm from './StripeSetupForm';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
+import { Dialog, DialogTitle, DialogContent, } from '@mui/material';
 
 const stripePromise = loadStripe(STRIPE_PUB_KEY);
 
