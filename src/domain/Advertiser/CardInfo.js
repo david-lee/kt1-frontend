@@ -20,7 +20,7 @@ const IconLoadingButton = styled(LoadingButton)({
     }
 });
 
-const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
+const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
     const gridRef = useRef();
     const [isLoading, setIsLoading] = useState(false);
     
@@ -28,7 +28,7 @@ const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
         companyId: companyId,
         name: companyName,
         email: companyEmail,
-        regBy: regBy
+        regBy: userId
     });
     const [cardInfo, setCardInfo] = useState({
         pmId: "",
@@ -37,7 +37,7 @@ const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
         expYear: null,
         cardBrand: ""
     });
-    
+    console.log("userId in card info", userId);
     const [setupOpen, setSetupOpen] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
     const [customerId, setCustomerId] = useState("");
@@ -87,9 +87,9 @@ const CardInfo = ({ companyId, companyName, companyEmail, regBy }) => {
             companyId: companyId,
             name: companyName,
             email: companyEmail,
-            regBy: regBy
+            regBy: userId
         })
-    }, [companyId, companyName, companyEmail, regBy]);
+    }, [companyId, companyName, companyEmail, userId]);
 
     const createCustomerIntent = () => {
         customerIntent(customerInfo, setClientSecret, setCustomerId, setIsIntentOpen);
