@@ -21,7 +21,7 @@ const useCard = () => {
       });
   }, []);
 
-  const customerCard = useCallback((customerId, setCardInfo, setCompleteAddCardOpen) => {
+  const customerCard = useCallback((customerId, setCardInfo, setCompleteAddCardOpen, setIsProcessing) => {
     setIsLoading(true);
     axios.post(`${api.stripeCustomerCard}`, {customerId: customerId})
       .then(resp => {
@@ -35,6 +35,7 @@ const useCard = () => {
       .finally(() => {
         setIsLoading(false);
         setCompleteAddCardOpen(false);
+        setIsProcessing(false);
       })
   }, []);
 

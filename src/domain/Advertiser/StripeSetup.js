@@ -25,7 +25,7 @@ const appearance = {
   },
 }
 
-const StripeSetup = ({onClose, client_secret, setCompleteAddCardOpen}) => {
+const StripeSetup = ({onClose, client_secret, setCompleteAddCardOpen, setIsProcessing}) => {
   const options = {
     clientSecret: client_secret,
     layout,
