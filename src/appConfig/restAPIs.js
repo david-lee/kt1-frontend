@@ -39,9 +39,15 @@ const restApi = {
   statsAD: '/stats/advertisement',
   statsPayment: '/stats/payment',
   monthlySales: '/sales/monthlySales',
-  stripeCustomer: '/stripe/customer',
+
+  stripeCreateCustomer: 'stripe/customer/create',
+  stripeClientSecret: '/stripe/customer/secret',
   stripeCustomerCard: '/stripe/customer/card',
-  stripePayment: '/stripe/payment',
+  stripeCustomerCardList: '/stripe/customer/card',
+  stripeChangeDefaultCard: '/stripe/customer/card/default',
+  stripeDeleteCard: '/stripe/customer/card/delete',
+  stripePaymentCheckout: 'stripe/payment/checkout',
+
   getReceiptList: '/Receipt/getReceiptList',
   issueReceipt: '/Receipt/issueReceipt',
   receiptBulkCheck: '/Receipt/bulkIssuedCheck',

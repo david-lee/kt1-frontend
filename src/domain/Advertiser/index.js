@@ -89,7 +89,7 @@ const Advertiser = () => {
     navigate('/s/dashboard', { replace: true });
     return null;
   }
-
+console.log("userId", userId);
   return (
     <>
       <Grid container direction="row">

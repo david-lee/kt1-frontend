@@ -1,193 +1,220 @@
-import React, { useEffect, useCallback, useState, useRef } from 'react';
-import { Box, Button, Grid } from '@mui/material';
-import { styled } from '@mui/material/styles'
-import api from 'appConfig/restAPIs';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Box, Button, Grid, LinearProgress } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
-import axios from 'axios';
+import { styled } from '@mui/material/styles'
 import { formatUIDate } from 'shared/utils';
-import { roleType } from 'data/constants';
-
-import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckIcon from '@mui/icons-material/Check';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { LoadingButton } from '@mui/lab';
 import ConfirmDialog from "shared/components/ConfirmDialog";
-import AddCard from './AddCard';
-import UpdateCard from './UpdateCard';
+import StripeSetup from './StripeSetup';
+import useCard from 'shared/hooks/useCard';
+import api from 'appConfig/restAPIs';
+import axios from 'axios';
 
 const IconLoadingButton = styled(LoadingButton)({
-    "& .MuiButton-startIcon": {
-        marginLeft: 0, marginRight: 0,
-    }
+	"& .MuiButton-startIcon": {
+		marginLeft: 0, marginRight: 0,
+	}
 });
 
 const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
-    const gridRef = useRef();
-    const [cards, setCards] = useState(null);
-    const [selectedRow, setSelectedRow] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isDeleteOpen, setIsDeleteOpen] = useState(false);    
-    const [isAddOpen, setIsAddOpen] = useState(false);
-    const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-    const [isChangeCardOpen, setIsChangeCardOpen] = useState(false);
-    const [customerInfo, setCustomerInfo] = useState({
-        companyId: companyId,
-        companyName: companyName,
-        companyEmail: companyEmail,
-        regBy: userId
-    });
+	const gridRef = useRef();
+	const [isLoading, setIsLoading] = useState(false);
 
-    const columnDefs = [
-        { field: 'holderName', headerName: 'Card Holder', width: 260, minWidth: 200 },
-        { field: 'lastDigit', headerName: 'Last Digit', resizable: false, width: 120 },
-        { field: 'expirationMonth', headerName: 'Exp. Month', resizable: false, width: 120 },
-        { field: 'expirationYear', headerName: 'Exp. Year', resizable: false, width: 100 },
-        {
-            field: 'regDate', headerName: 'Register Date', resizable: false, width: 140,
-            valueFormatter: (params) => formatUIDate(params.value)
-        },
-        { 
-            field: 'isPrimary', headerName: 'Primary Card', resizable: false, width: 120,
-            cellRenderer: (props) => {
-                return props.value === true ? <CheckCircleIcon sx={{ position: 'relative', top: 5, color: "green" }} /> : ''
-            },
-            valueGetter: (params) => params.data.isPrimary
-        }
-    ];
+	const [customerInfo, setCustomerInfo] = useState({
+		companyId: companyId,
+		name: companyName,
+		email: companyEmail,
+		regBy: userId
+	});
+	const [cardInfo, setCardInfo] = useState({
+		pmId: "",
+		lastDigit: "",
+		expMonth: null,
+		expYear: null,
+		cardBrand: ""
+	});
+	console.log("userId in card info", userId);
+	const [setupOpen, setSetupOpen] = useState(false);
+	const [clientSecret, setClientSecret] = useState("");
+	const [customerId, setCustomerId] = useState("");
+	const [isIntentOpen, setIsIntentOpen] = useState(false);
+	const [completeAddCardOpen, setCompleteAddCardOpen] = useState(false);
+	const [cards, setCards] = useState(null);
+	const [selectedRow, setSelectedRow] = useState(null);
+	const [isChangeDefaultCardOpen, setIsChangeDefaultCardOpen] = useState(false);
+	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+	const [isProcessing, setIsProcessing] = useState(false);
+	const { customerIntent, customerCard } = useCard();
 
-    const fetchCards = useCallback((companyId) => {
-        setIsLoading(true);
+	const columnDefs = [
+		{ field: 'lastDigit', headerName: 'Last Digit', resizable: false, width: 100 },
+		{ field: 'expMonth', headerName: 'Exp. Month', resizable: false, width: 100 },
+		{ field: 'expYear', headerName: 'Exp. Year', resizable: false, width: 100 },
+		{
+			field: 'regDate', headerName: 'Register Date', resizable: false, width: 140,
+			valueFormatter: (params) => formatUIDate(params.value)
+		},
+		{
+			field: 'isPrimary', headerName: 'Primary', resizable: false, width: 100,
+			cellRenderer: (props) => {
+				return props.value === true ? <CheckCircleIcon sx={{ position: 'relative', top: 5, color: "green" }} /> : ''
+			},
+			valueGetter: (params) => params.data.isPrimary
+		}
+	];
 
-        axios.get(`${api.stripeCustomer}/${companyId}`)
-            .then(({ data }) => {
-                setCards(data);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [])
+	const fetchCards = useCallback((companyId) => {
+		setIsLoading(true);
 
-    useEffect(() => {
-        fetchCards(companyId);
-    }, [companyId, fetchCards]);
+		axios.get(`${api.stripeCustomerCardList}/${companyId}`)
+			.then(({ data }) => {
+				setCards(data);
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
+	}, [])
 
-    const onSelectionChanged = useCallback(() => {
-        const selectedRows = gridRef.current.api.getSelectedRows();
-        setSelectedRow(selectedRows[0]);
-      }, [])
+	useEffect(() => {
+		fetchCards(companyId);
+	}, [companyId, cardInfo]);
 
-    const deleteCard = async () => {
-      const { customerId } = await selectedRow;
-      await axios.delete(`${api.stripeCustomer}/${customerId}`)
-        .then(() => fetchCards(companyId))
-        .then(() => setIsDeleteOpen(false));
-    }
+	useEffect(() => {
+		setCustomerInfo({
+			companyId: companyId,
+			name: companyName,
+			email: companyEmail,
+			regBy: userId
+		})
+	}, [companyId, companyName, companyEmail, userId]);
 
-    const changeCard = async () => {
-        const data = {
-            companyId: selectedRow.companyId,
-            customerId: selectedRow.customerId
-        }
-        await axios.put(`${api.stripeCustomerCard}`, data)
-          .then(() => fetchCards(companyId))
-          .then(() => setIsChangeCardOpen(false));
-    }
+	const createCustomerIntent = () => {
+		customerIntent(customerInfo, setClientSecret, setCustomerId, setIsIntentOpen);
+		// setIsIntentOpen(true);
+	}
 
-    const addCard = () => {
-        setIsAddOpen(true);
-    }
+	const addCard = () => {
+		setSetupOpen(true);
+		setIsIntentOpen(false);
+	}
 
-    const updateCard = () => {
-        setIsUpdateOpen(true);
-    }
+	const completeAddCard = () => {
+		setIsProcessing(true);
+		customerCard(customerId, setCardInfo, setCompleteAddCardOpen, setIsProcessing);
+	}
 
-    if (isLoading) return <div>loading...</div>
-    if (!cards) return null;
+	const onSelectionChanged = useCallback(() => {
+		const selectedRows = gridRef.current.api.getSelectedRows();
+		setSelectedRow(selectedRows[0]);
+	}, [])
 
-    return (
-        <>
-            <ConfirmDialog open={isDeleteOpen}
-                message={`Do you want to delete it?`}
-                isLoading={isLoading} onOK={deleteCard} 
-                onCancel={() => setIsDeleteOpen(false)} onClose={() => setIsDeleteOpen(false)} 
-            />
+	const changeDefaultCard = async () => {
+		const data = {
+			companyId: companyId,
+			customerId: selectedRow.customerId
+		}
 
-            <ConfirmDialog open={isChangeCardOpen}
-                message={`Do you want to change the primary card?`}
-                isLoading={isLoading} onOK={changeCard} 
-                onCancel={() => setIsChangeCardOpen(false)} onClose={() => setIsChangeCardOpen(false)} 
-            />
-            
-            {isAddOpen && <
-                AddCard
-                  customerInfo={customerInfo}
-                  onClose={() => setIsAddOpen(false)}
-                  onSaved={() => {
-                    fetchCards(companyId);
-                    setIsAddOpen(false);
-                  }}
-                />}
+		await axios.put(`${api.stripeChangeDefaultCard}`, data)
+			.then(() => {
+				fetchCards(companyId);
+				setIsChangeDefaultCardOpen(false);
+			});
+	}
 
-            {isUpdateOpen && <
-                UpdateCard
-                  selectedRow = {selectedRow}
-                  onClose={() => setIsUpdateOpen(false)}
-                  onSaved={() => {
-                    fetchCards(companyId);
-                    setIsUpdateOpen(false);
-                    setSelectedRow(null);
-                  }}
-                />}
+	const deleteCard = async () => {
+		const data = {
+			customerId: selectedRow.customerId
+		}
 
-            <Grid container direction="column">
-                <Grid container item wrap="nowrap" alignItems="center" sx={{ mb: 2 }} columnGap={1}>
-                    <Button startIcon={<AddIcon />} variant="contained"
-                        onClick={addCard}
-                    >
-                        Add a Card
-                    </Button>
-                    <IconLoadingButton variant="outlined" startIcon={<EditIcon />}
-                        loadingPosition='start'
-                        onClick={updateCard}
-                        loading={isLoading}
-                        disabled={!selectedRow}
-                    >
-                    </IconLoadingButton>
-                    <IconLoadingButton startIcon={<DeleteForeverIcon />} color="error" variant="outlined"
-                        loadingPosition='start'
-                        onClick={() => setIsDeleteOpen(true)}
-                        loading={isLoading}
-                        disabled={!selectedRow}
-                    >
-                    </IconLoadingButton>
-                    <IconLoadingButton startIcon={<CheckIcon />} color="success" variant="outlined"
-                        loadingPosition='start'
-                        onClick={() => setIsChangeCardOpen(true)}
-                        loading={isLoading}
-                        disabled={!selectedRow}
-                    >
-                    </IconLoadingButton>
-                </Grid>
-                <Grid item component={Box} className="ag-theme-alpine" sx={{ height: 400, width: '100%', mb: 3 }}>
-                    <AgGridReact
-                        ref={gridRef}
-                        rowData={cards}
-                        columnDefs={columnDefs}
-                        defaultColDef={{
-                            sortable: true,
-                            resizable: true,
-                        }}
-                        // getRowId = {param => param.data.customerId}
-                        rowSelection = "single"
-                        onSelectionChanged={onSelectionChanged}
-                    >
-                    </AgGridReact>
-                </Grid>
-            </Grid>   
-        </>
-    );
+		await axios.put(`${api.stripeDeleteCard}`, data)
+			.then(() => {
+				fetchCards(companyId);
+				setIsDeleteOpen(false);
+			});
+	}
+
+	return (
+		<>
+			{isProcessing && (
+				<>
+					<LinearProgress color="secondary" />
+					<LinearProgress color="success" />
+				</>
+			)}
+
+			<ConfirmDialog open={isIntentOpen}
+				message={`Please click the button to register a card`}
+				isLoading={isLoading} onOK={addCard}
+				onCancel={() => setIsIntentOpen(false)} onClose={() => setIsIntentOpen(false)}
+			/>
+
+			<ConfirmDialog open={completeAddCardOpen}
+				message={`Card register is succeeded`}
+				isLoading={isLoading} onOK={completeAddCard}
+			/>
+
+			<ConfirmDialog open={isChangeDefaultCardOpen}
+				message={`Do you want to change the primary card?`}
+				isLoading={isLoading} onOK={changeDefaultCard}
+				onCancel={() => setIsChangeDefaultCardOpen(false)} onClose={() => setIsChangeDefaultCardOpen(false)}
+			/>
+
+			<ConfirmDialog open={isDeleteOpen}
+				message={`Do you want to delete this?`}
+				isLoading={isLoading} onOK={deleteCard}
+				onCancel={() => setIsDeleteOpen(false)} onClose={() => setIsDeleteOpen(false)}
+			/>
+
+			{setupOpen && <
+				StripeSetup
+				onClose={() => setSetupOpen(false)}
+				client_secret={clientSecret}
+				setCompleteAddCardOpen={setCompleteAddCardOpen}
+			/>}
+
+			<Grid container direction="column">
+				<Grid container item wrap="nowrap" alignItems="center" sx={{ mb: 2 }} columnGap={1}>
+					<Button startIcon={<AddIcon />} variant="contained" disabled={companyEmail === '-' || companyEmail === ''}
+						onClick={createCustomerIntent}
+					>
+						Add a Card
+					</Button>
+					<IconLoadingButton startIcon={<CheckIcon />} color="success" variant="outlined"
+						loadingPosition='start'
+						onClick={() => setIsChangeDefaultCardOpen(true)}
+						loading={isLoading}
+						disabled={!selectedRow || selectedRow.isPrimary}
+					>
+					</IconLoadingButton>
+					<IconLoadingButton startIcon={<DeleteForeverIcon />} color="error" variant="outlined"
+						loadingPosition='start'
+						onClick={() => setIsDeleteOpen(true)}
+						loading={isLoading}
+						disabled={!selectedRow || selectedRow.isPrimary}
+					></IconLoadingButton>
+				</Grid>
+				<Grid item component={Box} className="ag-theme-alpine" sx={{ height: 400, width: 600, mb: 3 }}>
+					<AgGridReact
+						ref={gridRef}
+						rowData={cards}
+						columnDefs={columnDefs}
+						defaultColDef={{
+							sortable: true,
+							resizable: true,
+						}}
+						getRowId={param => param.data.customerId}
+						rowSelection="single"
+						onSelectionChanged={onSelectionChanged}
+					>
+					</AgGridReact>
+				</Grid>
+			</Grid>
+		</>
+	);
 }
 
 export default CardInfo;

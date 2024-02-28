@@ -9,6 +9,9 @@ export const API_BASE_URL = 'https://api.koreatimes.net/api/v1';
 // export const API_BASE_URL = 'https://api.dev.koreatimes.net/api/v1';
 // export const API_BASE_URL = 'https://localhost:5000/api/v1';
 
+export const STRIPE_PUB_KEY = "pk_live_51J0pcLFTcVYEN1aoFspMOmRHY0X5FO5EhJro9x1xVkarTL3wvfIz2dDdrJ4U2sL362IhltlTySVYGQBrExCysSrT00JcdmqTHm";
+// export const STRIPE_PUB_KEY = "pk_test_51J0pcLFTcVYEN1aoOOqeqOnEaJIW0lKq0K3D2m0X6NSemN8D9oIeKgJ740KYoGdQMOFzbhWsxSoaNbZIBEh9qmfx00fbhXsT3Q";
+
 export const codeType = {
   userType: 1,
   dept: 2,
@@ -87,4 +90,10 @@ export const deptType = {
 export const reissueType = {
   reissue: 1,
   split: 2,
+};
+
+export const cardCompanyBrand = {
+  master: 2185,
+  visa: 2186,
+  bc: 2187
 };

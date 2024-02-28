@@ -8,7 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import CardTransaction from './CardTransation';
+import CardPayTransaction from './CardPayTransaction';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ import { numberWithCommas } from 'shared/utils';
 import ADDate from 'shared/components/ADDate';
 import SearchIcon from '@mui/icons-material/Search';
 import { LoadingButton } from '@mui/lab';
-import { subMonths, addDays, format } from 'date-fns';
+import { subMonths, addMonths, format } from 'date-fns';
 import { DATA_DATE_FORMAT } from 'data/constants';
 import { precisionRound } from 'shared/utils';
 
@@ -48,7 +48,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const CardPayForBill = () => {
-    const [isCardTransactionOpen, setIsCardTransactionOpen] = useState(false);
+    // const [isCardTransactionOpen, setIsCardTransactionOpen] = useState(false);
+    const [payTransactionOpen, setPayTransactionOpen] = useState(false);
     const [payData, setPayData] = useState(null);
     const [cardPayList, setCardPayList] = useState([]);
     const [isListLoading, setIsListLoading] = useState(false);
@@ -63,14 +64,13 @@ const CardPayForBill = () => {
 
     const navigate = useNavigate();
     const moveToCardRegister = (companyId) => {
-        navigate(`/s/${path.advertiser}/${companyId}/5`);
+        navigate(`/s/${path.advertiser}/${companyId}/6`);
     }
 
-    const payCard = (row) => {
+    const payCheckOut = (row) => {
         setPayData(row);
-        setIsCardTransactionOpen(true);
+        setPayTransactionOpen(true);
     }
-
 
     const handleDateChange = (type, value) => {
         if (type === 'from') setFromDate(value);
@@ -93,22 +93,22 @@ const CardPayForBill = () => {
 
     useEffect(() => {
         const currentDate = new Date();
-        const startDate = subMonths(currentDate, 2);
+        const startDate = subMonths(currentDate, 1);
+        const endDate = addMonths(currentDate, 1);
              
-        fetchCardPayBills(startDate, currentDate);
+        fetchCardPayBills(startDate, endDate);
         setFromDate(startDate);
-        setToDate(currentDate);
+        setToDate(endDate);
     }, [fetchCardPayBills])
 
     return (
         <>
-            {isCardTransactionOpen && <CardTransaction
-                onClose={() => setIsCardTransactionOpen(false)}
-                onOpen={isCardTransactionOpen}
+            {payTransactionOpen && <CardPayTransaction
+                onClose={() => setPayTransactionOpen(false)}
+                onOpen={payTransactionOpen}
                 payData={payData}
                 fetchCardPayBills={fetchCardPayBills}
-            />
-            }
+            />}
             
             <Grid container alignItems="center" xs={4} sx={{mt:8}}>
                 <ADDate label="From Date" width="120px" value={fromDate}
@@ -177,13 +177,13 @@ const CardPayForBill = () => {
                                         <StyledTableCell>{numberWithCommas(precisionRound(row.paidAmount + row.paidTax))}</StyledTableCell>
                                         <StyledTableCell>{numberWithCommas(precisionRound(row.cost + row.taxAmount - row.paidAmount - row.paidTax))}</StyledTableCell>
                                         <StyledTableCell>
-                                            {(row.creditCard.lastDigit !== "")
-                                                ? row.creditCard.lastDigit
+                                            {(row.payCard.lastDigit !== "")
+                                                ? row.payCard.lastDigit
                                                 : <Button variant="contained" color="info" onClick={() => moveToCardRegister(row.companyId)}>등록</Button>
                                             }
                                         </StyledTableCell>
                                         <StyledTableCell>
-                                            <Button variant="outlined" onClick={() => payCard(row)} disabled={!row.creditCard.lastDigit
+                                            <Button variant="outlined" onClick={() => payCheckOut(row)} disabled={!row.payCard.lastDigit
                                                 || (row.cost - row.paidAmount === 0 && row.taxAmount - row.paidTax === 0)}>
                                                 {(row.cost - row.paidAmount > 0 || row.taxAmount - row.paidTax > 0) ? "Pay" : "Done"}
                                             </Button>
