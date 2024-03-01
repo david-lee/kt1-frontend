@@ -20,10 +20,12 @@ import { LoadingButton } from '@mui/lab';
 import { subMonths, addMonths, format } from 'date-fns';
 import { DATA_DATE_FORMAT } from 'data/constants';
 import { precisionRound } from 'shared/utils';
+import Dropdown from 'shared/components/Dropdown';
+import { salesPersons, payStatusList } from 'data/adOptions';
 
 const IconLoadingButton = styled(LoadingButton)({
     "& .MuiButton-startIcon": {
-      marginLeft: 0, marginRight: 0,
+        marginLeft: 0, marginRight: 0,
     }
 });
 
@@ -58,7 +60,8 @@ const CardPayForBill = () => {
     const [searchAdType, setSearchAdType] = useState("");
     const [searchCompanyId, setSearchCompanyId] = useState("");
     const [searchCompanyName, setSearchCompanyName] = useState("");
-
+    const [salesPerson, setSalesPerson] = useState("");
+    const [payStatus, setPayStatus] = useState("");
     const [fromDate, setFromDate] = useState(null);
     const [toDate, setToDate] = useState(null);
 
@@ -95,7 +98,7 @@ const CardPayForBill = () => {
         const currentDate = new Date();
         const startDate = subMonths(currentDate, 1);
         const endDate = addMonths(currentDate, 1);
-             
+
         fetchCardPayBills(startDate, endDate);
         setFromDate(startDate);
         setToDate(endDate);
@@ -109,8 +112,8 @@ const CardPayForBill = () => {
                 payData={payData}
                 fetchCardPayBills={fetchCardPayBills}
             />}
-            
-            <Grid container alignItems="center" xs={4} sx={{mt:8}}>
+
+            <Grid container alignItems="center" xs={4} sx={{ mt: 8 }}>
                 <ADDate label="From Date" width="120px" value={fromDate}
                     onChange={(newValue) => { handleDateChange('from', newValue); }}
                 />
@@ -137,6 +140,7 @@ const CardPayForBill = () => {
                             <StyledTableCell>Balance</StyledTableCell>
                             <StyledTableCell>Last 4 digit</StyledTableCell>
                             <StyledTableCell>Pay</StyledTableCell>
+                            <StyledTableCell>Sales Person</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -147,18 +151,30 @@ const CardPayForBill = () => {
                                     onChange={e => setSearchBillNo(e.target.value)} />
                             </TableCell>
                             <TableCell>
-                                <TextField id="outlined-size-small" size="small" label="Ad Type" variant="outlined"
+                                <TextField id="outlined-size-small" size="small" label="Type" variant="outlined"
                                     onChange={e => setSearchAdType(e.target.value.toUpperCase())} />
                             </TableCell>
                             <TableCell>
-                                <TextField id="outlined-size-small" size="small" label="Company Id" variant="outlined"
+                                <TextField id="outlined-size-small" size="small" label="Id" variant="outlined"
                                     onChange={e => setSearchCompanyId(e.target.value)} />
                             </TableCell>
                             <TableCell>
                                 <TextField id="outlined-size-small" size="small" label="Company Name" variant="outlined"
                                     onChange={e => setSearchCompanyName(e.target.value)} />
                             </TableCell>
-                            <TableCell /><TableCell /><TableCell /><TableCell />
+                            <TableCell /><TableCell /><TableCell /><TableCell /><TableCell />
+                            <TableCell>
+                                <Dropdown id="payStatus" name="payStatus" label="Pay Status" value={payStatus}
+                                    onChange={e => setPayStatus(e.target.value)}
+                                    options={payStatusList} width={120}
+                                />
+                            </TableCell>
+                            <TableCell>
+                                <Dropdown id="salesPerson" name="salesPerson" label="Sales Person" value={salesPerson}
+                                    onChange={e => setSalesPerson(e.target.value)}
+                                    options={salesPersons} width={120}
+                                />
+                            </TableCell>
                         </TableRow>
                         {
                             cardPayList
@@ -166,6 +182,8 @@ const CardPayForBill = () => {
                                 .filter(x => x.adType.includes(searchAdType))
                                 .filter(x => x.companyName.includes(searchCompanyName))
                                 .filter(x => x.companyId.toString().includes(searchCompanyId))
+                                .filter(x => payStatus.length === 0 ? true : (payStatus === "Pay" ? x.cost - x.paidAmount > 0 : x.cost - x.paidAmount === 0))
+                                .filter(x => salesPerson.length === 0 ? true : x.salesPerson === salesPerson)
                                 .map((row) => (
                                     <StyledTableRow key={row.adId}>
                                         <StyledTableCell>{row.adId}</StyledTableCell>
@@ -188,6 +206,7 @@ const CardPayForBill = () => {
                                                 {(row.cost - row.paidAmount > 0 || row.taxAmount - row.paidTax > 0) ? "Pay" : "Done"}
                                             </Button>
                                         </StyledTableCell>
+                                        <StyledTableCell>{salesPersons.find(p => p.codeId === row.salesPerson).value}</StyledTableCell>
                                     </StyledTableRow>
                                 ))
                         }
