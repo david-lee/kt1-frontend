@@ -37,7 +37,7 @@ const CardInfo = ({ companyId, companyName, companyEmail, userId }) => {
 		expYear: null,
 		cardBrand: ""
 	});
-	console.log("userId in card info", userId);
+	
 	const [setupOpen, setSetupOpen] = useState(false);
 	const [clientSecret, setClientSecret] = useState("");
 	const [customerId, setCustomerId] = useState("");

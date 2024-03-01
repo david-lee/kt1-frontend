@@ -5,6 +5,7 @@ import PendingIcon from '@mui/icons-material/Pending';
 import ReplayIcon from '@mui/icons-material/Replay';
 import ContrastIcon from '@mui/icons-material/Contrast';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { AgGridReact } from 'ag-grid-react';
 import { formatUIDate, precisionRound } from 'shared/utils';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -19,6 +20,8 @@ import { addMonths, subMonths, format } from 'date-fns';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import LastMonthBills from './LastMonthBills';
 import SnackbarMessage from 'shared/components/SnackbarMessage';
+import { useNavigate } from "react-router-dom";
+import path from 'data/routes';
 
 const ADSales = () => {
   const gridRef = useRef();
@@ -119,6 +122,11 @@ const ADSales = () => {
 
   const onCloseLastMonthBills = () => setIsOpen(false);
 
+  const navigate = useNavigate();
+  const moveToCompany = (companyId) => {
+    navigate(`/s/${path.advertiser}/${companyId}/0`);
+  }
+
   return (
     <>
       <SnackbarMessage errorMessage={errorMessage} onClose={() => setErrorMessage('')} />
@@ -158,6 +166,11 @@ const ADSales = () => {
                     onClick={() => fetchPendingADs(onFetch)} 
                   >
                     Reload
+                  </LoadingButton>
+                  <LoadingButton startIcon={<OpenInNewIcon />} variant="outlined" disabled={isLoading || selectedNodes === null || selectedNodes.length !== 1 }
+                    onClick={() => moveToCompany(selectedNodes[0].data.companyId)} 
+                  >
+                    To Company
                   </LoadingButton>
                 </>
               )}
