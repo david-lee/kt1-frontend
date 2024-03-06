@@ -112,7 +112,7 @@ const AddNewCompany = () => {
           <DialogTitle>Add New Company</DialogTitle>
           <DialogContent>
             <CompanyInfo {
-              ...{ values: fmk.values, handleChange: fmk.handleChange, setFieldValue: fmk.setFieldValue, editMode: true, isNew: true }}
+              ...{ values: fmk.values, handleChange: fmk.handleChange, setFieldValue: fmk.setFieldValue, editMode: true, isNew: true, handleClose: handleClose }}
             />
             <Grid container direction="column" rowGap={5} columnGap={3} wrap="nowrap" sx={{ mt: 5 }}>
               <AddressInfo 

@@ -21,7 +21,6 @@ const AddCard = ({ customerInfo, onClose, onSaved }) => {
     const [isAddLoading, setIsAddLoading] = useState(false);
 
     const handleAddCard = async (data) => {
-        console.log('data',data);
         await axios.post(`${api.stripeCustomer}`, data)
             .then((res) => {
                 console.log(res);
