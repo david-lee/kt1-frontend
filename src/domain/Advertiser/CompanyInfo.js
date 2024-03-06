@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import path from 'data/routes';
 
-const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew, handleClose }) => {
+const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew, handleClose, handleClear }) => {
   const { mainCategory, subCategory, salesId, primaryName, secondaryName, userId, oldCustomerId = "", ownerName,
     phoneNumber, email, contactName, contactNumber, contactEmail, regDate, updatedDate, updatedBy, eInvoice, bulkInvoice, randomList, eReceipt, bulkReceipt, status } = values;
 
@@ -21,6 +21,7 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew, han
   const [subCategories, setSubCategories] = useState([]);
   const [checkExisted, setCheckExisted] = useState(false);
   const [newCompanyName, setNewCompanyName] = useState(null);
+  const [existedCompany, setExistedCompany] = useState(null);
   const [addMessage, setAddMessage] = useState("");
   const [{ salesPeople }] = useAppContext();
   const { getSubCategory } = useCode();
@@ -44,15 +45,19 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew, han
   }, [mainCategory, subCategory, getSubCategory]);
 
   const getExistedCompanyName = () =>{
-    axios.post(`${api.companySearch}`, {primaryName: newCompanyName})
+    if(newCompanyName.length < 3){
+      setExistedCompany([]);
+    }
+    else{
+      axios.post(`${api.companySearch}`, {primaryName: newCompanyName})
       .then(({data}) => {
-        const msg = data === 'available' ? data : data[0].userId + '-' + data[0].primaryName;
-        setAddMessage(msg);
+        setExistedCompany(data);
       })
       .catch((error) => {
         console.log(error);
       })
       .finally()
+    }
   }
 
   const handleCheckCompanyName = () => {
@@ -66,14 +71,15 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew, han
 
   const closeCheckExisted = () => {
     setCheckExisted(false);
-    setNewCompanyName("");
+    // setNewCompanyName("");
+    setExistedCompany(null);
   }
 
   const navigate = useNavigate();
-  const moveToCompany = () => {
+  const moveToCompany = (companyId) => {
     closeCheckExisted();
-    handleClose();
-    const companyId = parseInt(addMessage.slice(0,6));
+    handleClear();
+    handleClose();    
     navigate(`/s/${path.advertiser}/${companyId}/0`);
   }
 
@@ -81,14 +87,18 @@ const CompanyInfo = ({ values, handleChange, setFieldValue, editMode, isNew, han
     <>      
       <Dialog open={checkExisted}>
         <DialogTitle>
-           {addMessage === '' ? 'Click the Check' : (addMessage === 'available' ? 'You can use this name' : 'This name is already used')}
+           {newCompanyName === '' ? 'Please input a company name and retry' : newCompanyName} 
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>{addMessage}</DialogContentText>
-          {addMessage === 'available' || addMessage === '' ? '' : <Button onClick={() => moveToCompany()}>Move To Company</Button>}
+          {newCompanyName === '' || existedCompany === null ? '' : 
+            (existedCompany.length === 0 ? 'available' : existedCompany.map((row) => (
+            <DialogContentText key={row.userId.toString()}>
+              <Button onClick={() => moveToCompany(row.userId)}>{row.userId}-{row.primaryName} ({row.ownerName})</Button>
+            </DialogContentText>
+          )))}
         </DialogContent>
         <DialogActions>
-          <LoadingButton variant="contained" onClick={() => checkAvailiy()}>
+          <LoadingButton variant="contained" onClick={() => checkAvailiy()} disabled={newCompanyName === ''}>
             Check
           </LoadingButton>
           <LoadingButton variant="outlined" onClick={() => closeCheckExisted()}>
