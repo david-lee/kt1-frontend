@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import api from 'appConfig/restAPIs';
 import axios from 'axios';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material';
 import { formatUIDate } from 'shared/utils';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -34,7 +34,7 @@ const RenewalListPerMonth = ({ isOpenRenewal, setIsOpenRenewal, setRenewalYear, 
         setRenewalMonthlyList(data);
       })
       .finally(() => { });
-  }, []);
+  }, [renewalYear, renewalMonth]);
   
   return (
     <>

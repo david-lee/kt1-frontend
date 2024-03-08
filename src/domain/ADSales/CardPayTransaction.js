@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import React, { useState, useEffect } from 'react';
 import SnackbarMessage from 'shared/components/SnackbarMessage';
@@ -22,6 +22,7 @@ const CardPayTransaction = ({ onClose, onOpen, payData, fetchCardPayBills }) => 
   const [tax, setTax] = useState(taxAmount - paidTax);
   const [total, setTotal] = useState(cost + taxAmount - paidAmount - paidTax);
   const [isPayLoading, setIsPayLoading] = useState(false);
+  const [transErrMge, setTransErrMge] = useState("");
   const { user } = useUserAuth();
 
   useEffect(() => {
@@ -47,9 +48,14 @@ const CardPayTransaction = ({ onClose, onOpen, payData, fetchCardPayBills }) => 
   const handleCardPay = async (data) => {
     await axios.post(`${api.stripePaymentCheckout}`, data)
         .then((res) => {
-            console.log("res", res);
+          if(res.data.status !== 'succeeded'){
+            setTransErrMge(`Payment was not accepted`);
+          }else{
+            onClose();
+          }
             // fetchCardPayBills();
-        });
+        })
+        .finally(() => {})
   };
 
   const submitCardPay = async () => {
@@ -72,8 +78,7 @@ const CardPayTransaction = ({ onClose, onOpen, payData, fetchCardPayBills }) => 
     fetchCardPayBills(startDate, endDate);
     
     setIsPayLoading(false);
-    onClose();
-};
+  };
 
   return (
     <>
@@ -87,6 +92,9 @@ const CardPayTransaction = ({ onClose, onOpen, payData, fetchCardPayBills }) => 
           <Grid container direction="row" sx={{ justifyContent: 'space-between' }}>
             <Grid item>
               Pay the bill
+            </Grid>
+            <Grid item>
+              <Typography variant="h6" sx={{color: "red", fontWeight: "bold"}}>{transErrMge}</Typography>
             </Grid>
             <Grid item>
               <Button startIcon={<ClearIcon />} onClick={() => onClose()} variant="outlined" fontSize="small"></Button>

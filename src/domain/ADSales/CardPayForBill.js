@@ -197,11 +197,11 @@ const CardPayForBill = () => {
                                         <StyledTableCell>
                                             {(row.payCard.lastDigit !== "")
                                                 ? row.payCard.lastDigit
-                                                : <Button variant="contained" color="info" onClick={() => moveToCardRegister(row.companyId)}>등록</Button>
+                                                : <Button variant="outlined" color="info" onClick={() => moveToCardRegister(row.companyId)}>등록</Button>
                                             }
                                         </StyledTableCell>
                                         <StyledTableCell>
-                                            <Button variant="outlined" onClick={() => payCheckOut(row)} disabled={!row.payCard.lastDigit
+                                            <Button variant="contained" onClick={() => payCheckOut(row)} disabled={!row.payCard.lastDigit
                                                 || (row.cost - row.paidAmount === 0 && row.taxAmount - row.paidTax === 0)}>
                                                 {(row.cost - row.paidAmount > 0 || row.taxAmount - row.paidTax > 0) ? "Pay" : "Done"}
                                             </Button>
