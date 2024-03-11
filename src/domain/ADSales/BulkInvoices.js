@@ -9,7 +9,7 @@ import api from "appConfig/restAPIs";
 
 const BulkInvoices = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [alreadyIssued, setAlreadyIssed] = useState(false);
+  const [alreadyIssued, setAlreadyIssued] = useState(false);
   const { isLoading, checkBulkIssue, issueAllInvoices, issuePreviewAllInvoices, issueAllCardPaymentInvoices } = useInvoice();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [numberOfIssues, setNumberOfIssues] = useState({download:0,email:0});
@@ -19,7 +19,7 @@ const BulkInvoices = () => {
   const onIssued = () => {
     setIsOpen(false);
     setIsResult(true);
-    setAlreadyIssed(true);
+    setAlreadyIssued(true);
   };
 
   const issueInvoices = () => {
@@ -37,7 +37,7 @@ const BulkInvoices = () => {
   }
 
   useEffect(() => {
-    checkBulkIssue((resp) => setAlreadyIssed(resp));
+    checkBulkIssue((resp) => setAlreadyIssued(resp));
   }, []);
 
   return (

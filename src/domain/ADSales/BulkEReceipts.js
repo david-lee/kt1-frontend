@@ -22,8 +22,8 @@ const BulkEReceipts = () => {
   };
 
   const issueReceipts = () => {
-    const preDate = format(subMonths(new Date(), 1), DATA_DATE_FORMAT).substring(0,7) + "01";
-    const curDate = format(new Date(), DATA_DATE_FORMAT).substring(0,7) + "01";
+    const preDate = format(subMonths(new Date(), 1), DATA_DATE_FORMAT).substring(0,6) + "01";
+    const curDate = format(new Date(), DATA_DATE_FORMAT).substring(0,6) + "01";
     
     const period = {
       fromDate:preDate,
