@@ -95,5 +95,6 @@ export const reissueType = {
 export const cardCompanyBrand = {
   master: 2185,
   visa: 2186,
-  bc: 2187
+  bc: 2187,
+  mastercard: 2185
 };
