@@ -167,7 +167,7 @@ const EditBill = ({ gridApi, selectedNode: bill, randomDates, onSaved, onClose }
               <ADPrice label="Cost" value={cost} onChange={e => setCost(e.target.value)} onBlur={handleBlurOnCost} />
             </Grid>
             <Grid item xs={2}>
-              <ADPrice label="Tax" value={tax} readOnly />
+              <ADPrice label="Tax" value={tax} onChange={e => setTax(e.target.value)} />
             </Grid>
             <Grid item xs={2}>
               <ADPrice label="Total" value={total} readOnly />

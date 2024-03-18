@@ -33,6 +33,10 @@ const AddDialog = ({isOpen, onClose, onSaved, onError, adDate, page, adType}) =>
     setPrice(e.target.value);
   };
 
+  const handleTax = (e) => {
+    setTax(e.target.value);
+  };
+
   const handleBlurOnCost = () => {
     if (!price) return;
 
@@ -123,7 +127,7 @@ const AddDialog = ({isOpen, onClose, onSaved, onError, adDate, page, adType}) =>
               <ADPrice id="price" label="Price" onChange={handlePrice} onBlur={handleBlurOnCost} value={price} />
             </Grid>
             <Grid item xs={1}>
-              <ADPrice label="Tax" value={tax} readOnly />
+              <ADPrice label="Tax" value={tax} onChange={handleTax} />
             </Grid>
             <Grid item xs={1}>
               <ADPrice label="Total" value={total} readOnly />
