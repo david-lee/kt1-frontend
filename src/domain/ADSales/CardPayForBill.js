@@ -61,7 +61,7 @@ const CardPayForBill = () => {
     const [searchCompanyId, setSearchCompanyId] = useState("");
     const [searchCompanyName, setSearchCompanyName] = useState("");
     const [salesPerson, setSalesPerson] = useState("");
-    const [payStatus, setPayStatus] = useState("");
+    const [payStatus, setPayStatus] = useState("Pay");
     const [fromDate, setFromDate] = useState(null);
     const [toDate, setToDate] = useState(null);
 
