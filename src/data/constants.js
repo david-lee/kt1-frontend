@@ -96,5 +96,6 @@ export const cardCompanyBrand = {
   master: 2185,
   visa: 2186,
   bc: 2187,
-  mastercard: 2185
+  mastercard: 2185,
+  amex: 2188,
 };

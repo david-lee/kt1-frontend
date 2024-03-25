@@ -49,7 +49,7 @@ const CardPayTransaction = ({ onClose, onOpen, payData, fetchCardPayBills }) => 
     await axios.post(`${api.stripePaymentCheckout}`, data)
         .then((res) => {
           if(res.data.status !== 'succeeded'){
-            setTransErrMge(`Payment was not accepted`);
+            setTransErrMge(res.data.last_payment_error.message);
           }else{
             onClose();
           }
