@@ -112,16 +112,42 @@ const Collection = () => {
     if (paymentBills) fmk.setValues({ bills: paymentBills });
   }, [paymentBills]);
 
+  //custom validation funciton
+  const validate = (values) => {
+    const errors = {};
+
+    if (
+      !(values.paidCost || values.paidTax || values.paidDate || values.method)
+    ) {
+      errors.msg = 'Please fill in all the required fields!';
+    }
+
+    return errors;
+  };
+
   let fmk = useFormik({
     validationSchema: Yup.object().shape({
-      bills: Yup.array(
-        Yup.object({
-          paidCost: Yup.string().required('paidCost required'),
-          paidTax: Yup.string().required('paidTax required'),
-          paidDate: Yup.string().required('paidDate required'),
-          method: Yup.string().required('payment method required'),
+      bills: Yup.array()
+        .of(
+          Yup.object({
+            paidTotal: Yup.string().required('Paid Total required'),
+            paidCost: Yup.string().required('paidCost required'),
+            paidTax: Yup.string().required('paidTax required'),
+            paidDate: Yup.string().required('paidDate required'),
+            method: Yup.string().required('payment method required'),
+          })
+        )
+        .compact(function (v) {
+          console.log(v);
+          return (
+            (v.method ||
+              v.paidCost ||
+              v.paidDate ||
+              v.paidTax ||
+              v.paidTotal) === undefined
+          );
         })
-      ),
+        .min(1, 'Need to fill in at least one row'),
     }),
     initialValues: { bills: paymentBills },
     initialErrors: {

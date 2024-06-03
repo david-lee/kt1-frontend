@@ -10,8 +10,8 @@ export const DEFAULT_ADDRESS = {
   province: '-',
   postal: '-',
 };
-export const API_BASE_URL = 'https://api.koreatimes.net/api/v1';
-// export const API_BASE_URL = 'https://api.dev.koreatimes.net/api/v1';
+// export const API_BASE_URL = 'https://api.koreatimes.net/api/v1';
+export const API_BASE_URL = 'https://api.dev.koreatimes.net/api/v1';
 // export const API_BASE_URL = 'https://localhost:5000/api/v1';
 
 export const STRIPE_PUB_KEY =

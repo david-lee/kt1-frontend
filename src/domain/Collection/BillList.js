@@ -131,6 +131,8 @@ const BillList = ({ fmk, isLoading }) => {
     }
   };
 
+  console.log(fmk.errors);
+
   return (
     <>
       <Button variant="contained" onClick={AutoFill} sx={'width: 10em'}>
@@ -312,6 +314,7 @@ const BillList = ({ fmk, isLoading }) => {
                       {...params}
                       variant="standard"
                       sx={{ my: 0, mr: 3, width: 150, '& input': { p: 1 } }}
+                      error={false}
                     />
                   )}
                 />
@@ -338,12 +341,13 @@ const BillList = ({ fmk, isLoading }) => {
         }
         </Grid>
       )} */}
+
       {role !== roleType.director && (
         <Grid container justifyContent="center" columnGap={4}>
           <LoadingButton
             variant="contained"
             onClick={() => setIsSave(true)}
-            disabled={isLoading || !fmk.isValid} //fmk.initialErrors will always enable save btn
+            disabled={isLoading || !(fmk.isValid && fmk.dirty)} //fmk.initialErrors will always enable save btn
           >
             Save
           </LoadingButton>
@@ -351,6 +355,7 @@ const BillList = ({ fmk, isLoading }) => {
           {/* <Button variant="outlined" onClick={handleDone}>Done</Button> */}
         </Grid>
       )}
+      {fmk.errors.msg ? <div>{fmk.errors.msg}</div> : null}
     </>
   );
 };
