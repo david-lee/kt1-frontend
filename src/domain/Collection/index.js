@@ -138,7 +138,6 @@ const Collection = () => {
           })
         )
         .compact(function (v) {
-          console.log(v);
           return (
             (v.method ||
               v.paidCost ||

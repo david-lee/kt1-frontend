@@ -23,7 +23,7 @@ const BillList = ({ fmk, isLoading }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   //toggle state for autofill button
-  const [isToggled, setIsToggled] = useState(false);
+  const [isReset, setisReset] = useState(false);
 
   //create copy of billsList
   const createBillsCopy = () => [...fmk.values.bills];
@@ -72,24 +72,24 @@ const BillList = ({ fmk, isLoading }) => {
   const AutoFill = () => {
     let billsListCopy = createBillsCopy();
 
-    if (!isToggled) {
-      billsListCopy.forEach((row) => {
-        row.paidTotal = row.outstandingCost + row.outstandingTax;
-        row.paidCost = row.outstandingCost;
-        row.paidTax = row.outstandingTax;
-        row.method = 2183; // auto setting paid method to "Cheque"
-      });
-    } else {
+    if (isReset) {
       billsListCopy.forEach((row) => {
         row.paidTotal = '';
         row.paidCost = '';
         row.paidTax = '';
         row.method = '';
       });
+    } else {
+      billsListCopy.forEach((row) => {
+        row.paidTotal = row.outstandingCost + row.outstandingTax;
+        row.paidCost = row.outstandingCost;
+        row.paidTax = row.outstandingTax;
+        row.method = 2183; // auto setting paid method to "Cheque"
+      });
     }
     // call this method to rerender entire form once after changing formik bills values
     fmk.setValues({ bills: billsListCopy });
-    setIsToggled(!isToggled);
+    setisReset(!isReset);
   };
 
   const calculatedAmount = (e, index) => {
@@ -151,9 +151,9 @@ const BillList = ({ fmk, isLoading }) => {
         variant="contained"
         onClick={AutoFill}
         sx={{ width: '10em' }}
-        color={isToggled ? 'warning' : 'primary'}
+        color={isReset ? 'warning' : 'primary'}
       >
-        {isToggled ? 'Reset' : 'Auto-Fill'}
+        {isReset ? 'Reset' : 'Auto-Fill'}
       </Button>
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
