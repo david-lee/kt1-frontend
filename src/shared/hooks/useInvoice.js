@@ -43,7 +43,7 @@ const useInvoice = (fetchOnLoad) => {
               bill.paidTotal = '';
               bill.paidCost = '';
               bill.paidTax = '';
-              bill.paidDate = new Date();
+              bill.paidDate = '';
               bill.method = '';
             });
 
