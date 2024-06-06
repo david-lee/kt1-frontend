@@ -22,6 +22,9 @@ const BillList = ({ fmk, isLoading }) => {
   const [isSave, setIsSave] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  //toggle state for autofill button
+  const [isReset, setisReset] = useState(false);
+
   //create copy of billsList
   const createBillsCopy = () => [...fmk.values.bills];
 
@@ -69,15 +72,24 @@ const BillList = ({ fmk, isLoading }) => {
   const AutoFill = () => {
     let billsListCopy = createBillsCopy();
 
-    billsListCopy.forEach((row) => {
-      row.paidTotal = row.outstandingCost + row.outstandingTax;
-      row.paidCost = row.outstandingCost;
-      row.paidTax = row.outstandingTax;
-      row.method = 2183; // auto setting paid method to "Cheque"
-    });
-
+    if (isReset) {
+      billsListCopy.forEach((row) => {
+        row.paidTotal = '';
+        row.paidCost = '';
+        row.paidTax = '';
+        row.method = '';
+      });
+    } else {
+      billsListCopy.forEach((row) => {
+        row.paidTotal = row.outstandingCost + row.outstandingTax;
+        row.paidCost = row.outstandingCost;
+        row.paidTax = row.outstandingTax;
+        row.method = 2183; // auto setting paid method to "Cheque"
+      });
+    }
     // call this method to rerender entire form once after changing formik bills values
     fmk.setValues({ bills: billsListCopy });
+    setisReset(!isReset);
   };
 
   const calculatedAmount = (e, index) => {
@@ -131,10 +143,17 @@ const BillList = ({ fmk, isLoading }) => {
     }
   };
 
+  console.log(fmk.errors);
+
   return (
     <>
-      <Button variant="contained" onClick={AutoFill} sx={'width: 10em'}>
-        Auto-Fill
+      <Button
+        variant="contained"
+        onClick={AutoFill}
+        sx={{ width: '10em' }}
+        color={isReset ? 'warning' : 'primary'}
+      >
+        {isReset ? 'Reset' : 'Auto-Fill'}
       </Button>
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -312,6 +331,7 @@ const BillList = ({ fmk, isLoading }) => {
                       {...params}
                       variant="standard"
                       sx={{ my: 0, mr: 3, width: 150, '& input': { p: 1 } }}
+                      error={false}
                     />
                   )}
                 />
@@ -338,6 +358,7 @@ const BillList = ({ fmk, isLoading }) => {
         }
         </Grid>
       )} */}
+
       {role !== roleType.director && (
         <Grid container justifyContent="center" columnGap={4}>
           <LoadingButton
@@ -351,6 +372,7 @@ const BillList = ({ fmk, isLoading }) => {
           {/* <Button variant="outlined" onClick={handleDone}>Done</Button> */}
         </Grid>
       )}
+      {fmk.errors.msg ? <div>{fmk.errors.msg}</div> : null}
     </>
   );
 };
